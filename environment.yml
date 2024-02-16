@@ -1,0 +1,8 @@
+name: rerun-c3d
+channels:
+- conda-forge
+- default
+dependencies:
+- ezc3d
+- rerun-sdk
+- numpy

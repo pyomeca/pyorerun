@@ -1,0 +1,18 @@
+[project]
+name = "rerun-c3d"
+dynamic = ["version"]
+dependencies = [
+    "ezc3d",
+    "numpy",
+    "rerun-sdk",
+    ]
+authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
+maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
+description = "A Python package to rerun C3D files."
+license = "MIT"
+readme = "README.md"
+keywords = ["c3d", "motion capture", "rerun"]
+
+[project.urls]
+homepage = "http://github.com/Ipuch/rerun-c3d"
+
