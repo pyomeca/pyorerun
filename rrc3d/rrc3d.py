@@ -1,9 +1,9 @@
-import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
-import numpy as np
 import ezc3d
+import numpy as np
+import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
+
 
 def rrc3d(cd3_file: ezc3d.c3d | str) -> None:
-
 
     # Load a c3d file
     c3d_file = c3d_file_format(cd3_file)
@@ -20,7 +20,7 @@ def rrc3d(cd3_file: ezc3d.c3d | str) -> None:
     unit = c3d_file["parameters"]["POINT"]["UNITS"]["value"]
 
     labels = c3d_file["parameters"]["POINT"]["LABELS"]["value"]
-
+    labels = [label.encode("utf-8") for label in labels]
     COLORS = np.ones((nb_markers, 3))
 
     if unit == "mm":
@@ -36,7 +36,7 @@ def rrc3d(cd3_file: ezc3d.c3d | str) -> None:
 
         rr.log(
             "my markers",
-            rr.Points3D(positions_f, colors=COLORS, radii=10, labels=labels)
+            rr.Points3D(positions_f, colors=COLORS, radii=10, labels=labels),
         )
 
         time += 1 / frequency
