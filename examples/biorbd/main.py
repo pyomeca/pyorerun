@@ -1,6 +1,6 @@
 import numpy as np
 
-from rrc3d import rrbiorbd
+from pyorerun import rrbiorbd
 
 
 def main():
