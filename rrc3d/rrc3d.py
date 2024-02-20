@@ -4,6 +4,14 @@ import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 
 
 def rrc3d(cd3_file: ezc3d.c3d | str) -> None:
+    """
+    Display a c3d file in rerun.
+
+    Parameters
+    ----------
+    cd3_file: ezc3d.c3d | str
+        The c3d file to display.
+    """
 
     # Load a c3d file
     c3d_file = c3d_file_format(cd3_file)
