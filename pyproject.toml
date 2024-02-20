@@ -5,6 +5,7 @@ dependencies = [
     "ezc3d",
     "numpy",
     "rerun-sdk",
+    "trimesh",
     ]
 authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]

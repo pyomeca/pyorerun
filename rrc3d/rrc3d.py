@@ -29,6 +29,7 @@ def rrc3d(cd3_file: ezc3d.c3d | str) -> None:
 
     labels = c3d_file["parameters"]["POINT"]["LABELS"]["value"]
     labels = [label.encode("utf-8") for label in labels]
+
     COLORS = np.ones((nb_markers, 3))
 
     if unit == "mm":

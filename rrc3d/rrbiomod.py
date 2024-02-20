@@ -114,10 +114,14 @@ class RerunBiorbd:
         self.homogenous_matrices = None
         self.model_markers = None
         self.tspan = None
-        self.model_marker_color = np.ones((self.model.nb_markers, 3))
+        self.__model_markers_color = np.array([0, 0, 255])
+        self.__model_markers_size = 0.01
 
     def set_marker_color(self, color: np.ndarray) -> None:
-        self.model_marker_color = np.tile(color, (self.model.nb_markers, 1))
+        self.__model_markers_color = color
+
+    def set_marker_size(self, size: float) -> None:
+        self.__model_markers_size = size
 
     def set_q(self, q: np.ndarray) -> None:
         self.homogenous_matrices = self.model.all_frame_homogeneous_matrices(q)
@@ -150,17 +154,23 @@ class RerunBiorbd:
                 )
 
             # put first frame in shape (n_mark, 3)
-            # positions_f = self.model_markers[i, :, :3]
-            #
-            # rr.log(
-            #     MY_STL + "/my_markers",
-            #     rr.Points3D(
-            #         positions_f,
-            #         # colors=self.model_marker_color,
-            #         radii=100,
-            #         # labels=self.model.marker_names,
-            #     ),
-            # )
+            positions_f = self.model_markers[i, :, :3]
+
+            labels = [f"marker:_{i}" for i in range(self.model.nb_markers)]
+            labels = [label.encode("utf-8") for label in labels]
+
+            rr.log(
+                MY_STL + "/my_markers",
+                rr.Points3D(
+                    positions_f,
+                    colors=np.tile(
+                        self.__model_markers_color, (self.model.nb_markers, 1)
+                    ),
+                    radii=np.ones(self.model.nb_markers) * self.__model_markers_size,
+                    # NOTE: not sure how to register the labels but I don't want to display then in the viewer.
+                    # labels=labels,
+                ),
+            )
 
 
 def display_frame(rr):
@@ -170,7 +180,7 @@ def display_frame(rr):
         rr.Arrows3D(
             origins=np.zeros(3),
             vectors=np.array([1, 0, 0]),
-            colors=np.array([0, 0, 1]),
+            colors=np.array([255, 0, 0]),
         ),
     )
     rr.log(
@@ -178,7 +188,7 @@ def display_frame(rr):
         rr.Arrows3D(
             origins=np.zeros(3),
             vectors=np.array([0, 1, 0]),
-            colors=np.array([0, 1, 0]),
+            colors=np.array([0, 255, 0]),
         ),
     )
     rr.log(
@@ -186,7 +196,7 @@ def display_frame(rr):
         rr.Arrows3D(
             origins=np.zeros(3),
             vectors=np.array([0, 0, 1]),
-            colors=np.array([1, 0, 0]),
+            colors=np.array([0, 0, 255]),
         ),
     )
     return rr
