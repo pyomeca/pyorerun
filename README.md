@@ -7,7 +7,7 @@ And all also animate biorbd models from the pyomeca organization.
 
 Then, ensure it is accessible in your Python environment by installing the package:
 
-``` python setup.py install ```
+``` pip install . ``` or ``` python setup.py install ```
 
 Conda install will come soon. Don't worry 😊.
 
