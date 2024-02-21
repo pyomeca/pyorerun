@@ -1,19 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "rerun-c3d"
-dynamic = ["version"]
+vesrion = "0.2.0"
+authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
+maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
+description = "A Python package to rerun C3D files and pyomeca simulations.",
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+         "Programming Language :: Python :: 3",
+         "License :: OSI Approved :: MIT License",
+         "Operating System :: OS Independent",
+     ]
 dependencies = [
     "ezc3d",
     "numpy",
     "rerun-sdk",
     "trimesh",
     ]
-authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
-maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
-description = "A Python package to rerun C3D files."
-license = {file = "LICENSE"}
-readme = "README.md"
+
 keywords = ["c3d", "motion capture", "rerun", "biorbd", "pyomeca"]
 
 [project.urls]
 homepage = "http://github.com/Ipuch/pyorerun"
-
