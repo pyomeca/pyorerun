@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pyorerun",
-    version="0.2.0",
+    version="0.2.1",
     # packages=find_packages(),
     install_requires=[
         "ezc3d",

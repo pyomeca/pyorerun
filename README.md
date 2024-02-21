@@ -1,4 +1,6 @@
 # Pyorerun
+[![Maintainability](https://api.codeclimate.com/v1/badges/01514075d6e809ac88df/maintainability)](https://codeclimate.com/github/Ipuch/pyorerun/maintainability)
+
 We can rerun c3d files and display their original content.
 And all also animate biorbd models from the pyomeca organization.
 
