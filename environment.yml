@@ -1,4 +1,4 @@
-name: rerun-c3d
+name: pyorerun
 channels:
 - conda-forge
 - default
@@ -6,3 +6,5 @@ dependencies:
 - ezc3d
 - rerun-sdk
 - numpy
+- biorbd
+- trimesh

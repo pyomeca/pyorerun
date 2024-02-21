@@ -22,7 +22,6 @@ dependencies = [
     "rerun-sdk",
     "trimesh",
     ]
-
 keywords = ["c3d", "motion capture", "rerun", "biorbd", "pyomeca"]
 
 [project.urls]
