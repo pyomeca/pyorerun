@@ -21,10 +21,10 @@ def display_frame(animation_id) -> None:
 def display_meshes(animation_id, meshes, homogenous_matrices) -> None:
     """Display the meshes"""
     for j, mesh in enumerate(meshes):
-        transformed_trimesh = meshes[j].apply_transform(homogenous_matrices[j, :, :])
+        transformed_trimesh = mesh.apply_transform(homogenous_matrices[j, :, :])
 
         rr.log(
-            animation_id + f"/{j}",
+            animation_id + f"/{mesh.name}_{j}",
             rr.Mesh3D(
                 vertex_positions=transformed_trimesh.vertices,
                 vertex_normals=transformed_trimesh.vertex_normals,

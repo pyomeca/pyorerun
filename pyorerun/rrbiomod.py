@@ -21,10 +21,10 @@ def rr_biorbd(biomod: str, q: np.ndarray, tspan: np.ndarray) -> None:
     """
     model = BiorbdModel(biomod)
 
-    rerun_biorbd = RerunBiorbd(model)
+    rerun_biorbd = RerunBiorbdPhase(model)
     rerun_biorbd.set_tspan(tspan)
     rerun_biorbd.set_q(q)
-    rerun_biorbd.rerun("animation")
+    rerun_biorbd.rerun("animation", clear_last_node=False)
 
 
 class RerunBiorbdPhase:
@@ -83,7 +83,7 @@ class RerunBiorbdPhase:
     def nb_frames(self) -> int:
         return len(self.tspan)
 
-    def rerun(self, name: str = "animation_id", init: bool = True) -> None:
+    def rerun(self, name: str = "animation_id", init: bool = True, clear_last_node: bool = False) -> None:
         full_name = f"{name}_{self.phase}"
         if init:
             rr.init(self.model.path, spawn=True)
@@ -101,13 +101,13 @@ class RerunBiorbdPhase:
                     positions=markers.positions[i, :, :3],
                     point3d=markers.to_rerun(self.__show_marker_labels),
                 )
-
-        self.clear(full_name)
+        if clear_last_node:
+            self.clear(full_name)
 
     def clear(self, name) -> None:
         """remove the displayed components by the end of the animation phase"""
-        for i, _ in enumerate(self.model.meshes):
-            rr.log(name + f"/{i}", rr.Clear(recursive=False))
+        for i, mesh in enumerate(self.model.meshes):
+            rr.log(name + f"/{mesh.name}_{i}", rr.Clear(recursive=False))
 
         for markers in self._markers:
             rr.log(name + f"/{markers.name}_markers", rr.Clear(recursive=False))
@@ -115,7 +115,7 @@ class RerunBiorbdPhase:
 
 class RerunBiorbd:
     """
-    A class to animate a biorbd model in rerun.
+    A class to animate a biorbd model in rerun with multiple phases.
     """
 
     def __init__(self) -> None:
@@ -161,5 +161,7 @@ class RerunBiorbd:
         rr.init("multi_phase_animation", spawn=True)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, rerun_biorbd in enumerate(phase):
-                rerun_biorbd.rerun(f"{name}/phase_{i}/element_{j}", init=False)
-                # rerun_biorbd.rerun(f"{name}_{0}", init=False)
+                if i < self.nb_phase - 1:
+                    rerun_biorbd.rerun(f"{name}/phase_{i}/element_{j}", init=False, clear_last_node=True)
+                else:
+                    rerun_biorbd.rerun(f"{name}/phase_{i}/element_{j}", init=False, clear_last_node=False)
