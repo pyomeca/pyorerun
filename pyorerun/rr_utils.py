@@ -1,7 +1,8 @@
 import numpy as np
+import rerun as rr
 
 
-def display_frame(rr, animation_id) -> None:
+def display_frame(animation_id) -> None:
     """Display the world reference frame"""
     for axis, color in zip(["X", "Y", "Z"], [[255, 0, 0], [0, 255, 0], [0, 0, 255]]):
         rr.log(
@@ -14,7 +15,7 @@ def display_frame(rr, animation_id) -> None:
         )
 
 
-def display_meshes(rr, animation_id, meshes, homogenous_matrices) -> None:
+def display_meshes(animation_id, meshes, homogenous_matrices) -> None:
     """Display the meshes"""
     for j, mesh in enumerate(meshes):
         transformed_trimesh = meshes[j].apply_transform(homogenous_matrices[j, :, :])
@@ -29,14 +30,12 @@ def display_meshes(rr, animation_id, meshes, homogenous_matrices) -> None:
         )
 
 
-def display_markers(rr, animation_id, name, positions, colors, radii, labels=None) -> None:
+def display_markers(animation_id, name, positions, colors, radii, labels=None) -> None:
     """
     Display the markers
 
     Parameters
     ----------
-    rr: rerun
-        The rerun object
     animation_id: str
         The animation id
     name: str

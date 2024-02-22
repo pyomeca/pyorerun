@@ -88,12 +88,11 @@ class RerunBiorbd:
         for i, t in enumerate(self.tspan):
             rr.set_time_seconds("stable_time", t)
 
-            display_frame(rr, name)
-            display_meshes(rr, name, self.model.meshes, self.homogenous_matrices[i, :, :, :])
+            display_frame(name)
+            display_meshes(name, self.model.meshes, self.homogenous_matrices[i, :, :, :])
 
             for markers in self._markers:
                 display_markers(
-                    rr,
                     name,
                     name=markers.name,
                     positions=markers.positions[i, :, :3],
