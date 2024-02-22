@@ -1,7 +1,9 @@
-import biorbd
-import trimesh
+from functools import partial
 
-MY_STL = "my_stl"
+import biorbd
+import numpy as np
+import rerun as rr
+import trimesh
 
 
 class TransformableMesh:
@@ -11,8 +13,10 @@ class TransformableMesh:
     """
 
     def __init__(self, mesh: trimesh.Trimesh):
+        self.__name = mesh.metadata["file_name"]
         self.__mesh = mesh
         self.transformed_mesh = mesh.copy()
+        self.__color = np.array([0, 0, 0])
 
     def apply_transform(self, transform) -> trimesh.Trimesh:
         """Apply a transform to the mesh from its initial position"""
@@ -25,20 +29,21 @@ class TransformableMesh:
     def mesh(self):
         return self.__mesh
 
+    @property
+    def name(self):
+        return self.__name
+
 
 def load_biorbd_meshes(biomod: biorbd.Model) -> list[TransformableMesh]:
     """
     Load all the meshes from a biorbd model
+
+    todo: add mesh color, scaling and location from the biomod file
     """
     meshes = []
     for i in range(biomod.nbSegment()):
-        stl_file_path = (
-            biomod.segment(i).characteristics().mesh().path().absolutePath().to_string()
-        )
+        stl_file_path = biomod.segment(i).characteristics().mesh().path().absolutePath().to_string()
         mesh = trimesh.load(stl_file_path, file_type="stl")
         meshes.append(TransformableMesh(mesh))
 
     return meshes
-
-
-

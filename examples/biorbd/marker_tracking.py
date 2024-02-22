@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyorerun import BiorbdModel, RerunBiorbd
+from pyorerun import BiorbdModel, RerunBiorbdPhase
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
     noisy_markers = biorbd_model.all_frame_markers(q + 0.1 * np.random.rand(2, nb_frames))
 
     # running the animation
-    rerun_biorbd = RerunBiorbd(biorbd_model)
+    rerun_biorbd = RerunBiorbdPhase(biorbd_model)
     rerun_biorbd.set_tspan(t_span)
     rerun_biorbd.set_q(q)
     rerun_biorbd.add_marker_set(
