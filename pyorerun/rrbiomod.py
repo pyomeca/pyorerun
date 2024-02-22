@@ -27,12 +27,13 @@ def rr_biorbd(biomod: str, q: np.ndarray, tspan: np.ndarray) -> None:
     rerun_biorbd.rerun("animation")
 
 
-class RerunBiorbd:
+class RerunBiorbdPhase:
     """
     A class to animate a biorbd model in rerun.
     """
 
-    def __init__(self, biomod: BiorbdModel) -> None:
+    def __init__(self, biomod: BiorbdModel, phase: int = 0):
+        self.phase = phase
         self.model = biomod
         self.homogenous_matrices = None
         self.model_markers = None
@@ -61,7 +62,8 @@ class RerunBiorbd:
         marker_set = MarkerSet(positions, labels)
         marker_set.set_name(name)
         marker_set.set_color(np.array([0, 0, 0]) if color is None else color)
-        marker_set.set_size(size)
+        if size is not None:
+            marker_set.set_size(size)
         self._markers.append(marker_set)
 
     def set_q(self, q: np.ndarray) -> None:
@@ -81,22 +83,83 @@ class RerunBiorbd:
     def nb_frames(self) -> int:
         return len(self.tspan)
 
-    def rerun(self, name: str = "animation_id") -> None:
-
-        rr.init(self.model.path, spawn=True)
+    def rerun(self, name: str = "animation_id", init: bool = True) -> None:
+        full_name = f"{name}_{self.phase}"
+        if init:
+            rr.init(self.model.path, spawn=True)
 
         for i, t in enumerate(self.tspan):
             rr.set_time_seconds("stable_time", t)
 
-            display_frame(name)
-            display_meshes(name, self.model.meshes, self.homogenous_matrices[i, :, :, :])
+            display_frame(full_name)
+            display_meshes(full_name, self.model.meshes, self.homogenous_matrices[i, :, :, :])
 
             for markers in self._markers:
                 display_markers(
-                    name,
+                    full_name,
                     name=markers.name,
                     positions=markers.positions[i, :, :3],
-                    colors=np.tile(markers.color, (markers.nb_markers, 1)),
-                    radii=np.ones(markers.nb_markers) * markers.size,
-                    labels=markers.labels if self.__show_marker_labels else None,
+                    point3d=markers.to_rerun(self.__show_marker_labels),
                 )
+
+        self.clear(full_name)
+
+    def clear(self, name) -> None:
+        """remove the displayed components by the end of the animation phase"""
+        for i, _ in enumerate(self.model.meshes):
+            rr.log(name + f"/{i}", rr.Clear(recursive=False))
+
+        for markers in self._markers:
+            rr.log(name + f"/{markers.name}_markers", rr.Clear(recursive=False))
+
+
+class RerunBiorbd:
+    """
+    A class to animate a biorbd model in rerun.
+    """
+
+    def __init__(self) -> None:
+        self.rerun_biorbd_phases = [[]]
+
+    def add_phase(self, biomod: BiorbdModel, t_span, q, phase: int = None) -> None:
+
+        if self.nb_phase - phase < 0:
+            raise ValueError(
+                f"You must add the phases in order.", f"Add phase {self.nb_phase} before adding phase {phase}."
+            )
+
+        if self.nb_phase - phase == 0:
+            self.rerun_biorbd_phases.append([])
+
+        rerun_biorbd = RerunBiorbdPhase(biomod, phase=self.next_phase if phase is None else phase)
+        rerun_biorbd.set_tspan(t_span)
+        rerun_biorbd.set_q(q)
+
+        self.rerun_biorbd_phases[phase].append(rerun_biorbd)
+
+    def add_marker_set(
+        self,
+        positions: np.ndarray,
+        name: str,
+        color,
+        labels: tuple[str] = None,
+        size: float = None,
+        phase: int = None,
+    ) -> None:
+        phase = phase if phase is not None else self.next_phase
+        self.rerun_biorbd_phases[phase][0].add_marker_set(positions, name, color, labels, size)
+
+    @property
+    def next_phase(self) -> int:
+        return len(self.rerun_biorbd_phases)
+
+    @property
+    def nb_phase(self) -> int:
+        return len(self.rerun_biorbd_phases)
+
+    def rerun(self, name: str = "animation_id") -> None:
+        rr.init("multi_phase_animation", spawn=True)
+        for i, phase in enumerate(self.rerun_biorbd_phases):
+            for j, rerun_biorbd in enumerate(phase):
+                rerun_biorbd.rerun(f"{name}/phase_{i}/element_{j}", init=False)
+                # rerun_biorbd.rerun(f"{name}_{0}", init=False)

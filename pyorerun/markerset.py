@@ -1,6 +1,9 @@
 from abc import ABC
+from functools import partial
+from typing import Callable
 
 import numpy as np
+import rerun as rr
 
 
 class Component(ABC):
@@ -57,3 +60,11 @@ class MarkerSet(Component):
 
     def set_size(self, size: float) -> None:
         self.__size = size
+
+    def to_rerun(self, show_labels) -> Callable[[np.ndarray], rr.Points3D]:
+        return partial(
+            rr.Points3D,
+            colors=np.tile(self.color, (self.nb_markers, 1)),
+            radii=np.ones(self.nb_markers) * self.size,
+            labels=self.labels if show_labels else None,
+        )

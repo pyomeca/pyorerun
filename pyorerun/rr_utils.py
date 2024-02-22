@@ -1,3 +1,5 @@
+from typing import Callable
+
 import numpy as np
 import rerun as rr
 
@@ -12,6 +14,7 @@ def display_frame(animation_id) -> None:
                 vectors=np.eye(3)[list("XYZ").index(axis)],
                 colors=np.array(color),
             ),
+            timeless=True,
         )
 
 
@@ -30,7 +33,9 @@ def display_meshes(animation_id, meshes, homogenous_matrices) -> None:
         )
 
 
-def display_markers(animation_id, name, positions, colors, radii, labels=None) -> None:
+def display_markers(
+    animation_id, name: str, positions: np.ndarray, point3d: Callable[[np.ndarray], rr.Points3D]
+) -> None:
     """
     Display the markers
 
@@ -42,21 +47,11 @@ def display_markers(animation_id, name, positions, colors, radii, labels=None) -
         The name of the markers
     positions: np.ndarray
         The markers positions [n_markers x 3]
-    colors: np.ndarray
-        The markers colors [n_markers x 3]
-    radii: np.ndarray
-        The markers radii [n_markers]
-
+    point3d: Callable[[np.ndarray], rr.Points3D]
+        The function to create the markers partially filled with functools.partial
     """
-    if labels is not None:
-        labels = [label.encode("utf-8") for label in labels]
 
     rr.log(
         animation_id + f"/{name}_markers",
-        rr.Points3D(
-            positions=positions,
-            colors=colors,
-            radii=radii,
-            labels=labels,
-        ),
+        point3d(positions=positions),
     )
