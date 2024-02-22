@@ -2,9 +2,8 @@ import numpy as np
 import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 
 from .biorbd_interface import BiorbdModel
-from .rr_utils import display_frame
-
-MY_STL = "my_stl"
+from .markerset import MarkerSet
+from .rr_utils import display_frame, display_meshes, display_markers
 
 
 def rr_biorbd(biomod: str, q: np.ndarray, tspan: np.ndarray) -> None:
@@ -23,8 +22,8 @@ def rr_biorbd(biomod: str, q: np.ndarray, tspan: np.ndarray) -> None:
     model = BiorbdModel(biomod)
 
     rerun_biorbd = RerunBiorbd(model)
-    rerun_biorbd.set_q(q)
     rerun_biorbd.set_tspan(tspan)
+    rerun_biorbd.set_q(q)
     rerun_biorbd.rerun("animation")
 
 
@@ -40,6 +39,11 @@ class RerunBiorbd:
         self.tspan = None
         self.__model_markers_color = np.array([0, 0, 255])
         self.__model_markers_size = 0.01
+        self._markers = []
+        self.__show_marker_labels = False
+
+    def show_labels(self, show: bool) -> None:
+        self.__show_marker_labels = show
 
     def set_marker_color(self, color: np.ndarray) -> None:
         self.__model_markers_color = color
@@ -47,47 +51,53 @@ class RerunBiorbd:
     def set_marker_size(self, size: float) -> None:
         self.__model_markers_size = size
 
+    def add_marker_set(
+        self, positions: np.ndarray, name: str, color, labels: tuple[str] = None, size: float = None
+    ) -> None:
+        if positions.shape[0] != self.nb_frames:
+            raise ValueError(
+                "The number of frames in the markers must be the same as the number of frames in the animation."
+            )
+        marker_set = MarkerSet(positions, labels)
+        marker_set.set_name(name)
+        marker_set.set_color(np.array([0, 0, 0]) if color is None else color)
+        marker_set.set_size(size)
+        self._markers.append(marker_set)
+
     def set_q(self, q: np.ndarray) -> None:
         self.homogenous_matrices = self.model.all_frame_homogeneous_matrices(q)
-        self.model_markers = self.model.all_frame_markers(q)
+        self.add_marker_set(
+            positions=self.model.all_frame_markers(q),
+            name="model",
+            labels=self.model.marker_names,
+            color=self.__model_markers_color,
+            size=self.__model_markers_size,
+        )
 
     def set_tspan(self, tspan: np.ndarray) -> None:
         self.tspan = tspan
 
+    @property
+    def nb_frames(self) -> int:
+        return len(self.tspan)
+
     def rerun(self, name: str = "animation_id") -> None:
 
-        rr.init(name, spawn=True)
+        rr.init(self.model.path, spawn=True)
 
         for i, t in enumerate(self.tspan):
             rr.set_time_seconds("stable_time", t)
 
-            display_frame(rr, MY_STL)
+            display_frame(rr, name)
+            display_meshes(rr, name, self.model.meshes, self.homogenous_matrices[i, :, :, :])
 
-            for j, mesh in enumerate(self.model.meshes):
-                transformed_trimesh = self.model.meshes[j].apply_transform(self.homogenous_matrices[i, j, :, :])
-
-                rr.log(
-                    MY_STL + f"/{j}",
-                    rr.Mesh3D(
-                        vertex_positions=transformed_trimesh.vertices,
-                        vertex_normals=transformed_trimesh.vertex_normals,
-                        indices=transformed_trimesh.faces,
-                    ),
+            for markers in self._markers:
+                display_markers(
+                    rr,
+                    name,
+                    name=markers.name,
+                    positions=markers.positions[i, :, :3],
+                    colors=np.tile(markers.color, (markers.nb_markers, 1)),
+                    radii=np.ones(markers.nb_markers) * markers.size,
+                    labels=markers.labels if self.__show_marker_labels else None,
                 )
-
-            # put first frame in shape (n_mark, 3)
-            positions_f = self.model_markers[i, :, :3]
-
-            labels = [f"marker:_{i}" for i in range(self.model.nb_markers)]
-            labels = [label.encode("utf-8") for label in labels]
-
-            rr.log(
-                MY_STL + "/my_markers",
-                rr.Points3D(
-                    positions_f,
-                    colors=np.tile(self.__model_markers_color, (self.model.nb_markers, 1)),
-                    radii=np.ones(self.model.nb_markers) * self.__model_markers_size,
-                    # NOTE: not sure how to register the labels but I don't want to display then in the viewer.
-                    # labels=labels,
-                ),
-            )
