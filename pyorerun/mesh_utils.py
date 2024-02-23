@@ -40,20 +40,9 @@ def load_biorbd_meshes(biomod: biorbd.Model) -> list[TransformableMesh]:
     meshes = []
 
     for segment in biomod.segments():
-        if segment_has_meshes(biomod, segment):
+        if segment.characteristics().mesh().hasMesh():
             stl_file_path = segment.characteristics().mesh().path().absolutePath().to_string()
             mesh = trimesh.load(stl_file_path, file_type="stl")
             meshes.append(TransformableMesh(mesh))
 
     return meshes
-
-
-def segment_has_meshes(biomod: biorbd.Model, segment) -> bool:
-    """
-    Check if the biorbd model has meshes, by checking if the mesh path is different from the biomod path
-    if it is the same, it means that the mesh is not present in the segment
-    """
-    full_path = biomod.path().absolutePath().to_string()
-    biomod_path = full_path[: full_path.rfind("/")]
-    mesh_path = segment.characteristics().mesh().path().absolutePath().to_string()[:-1]
-    return biomod_path != mesh_path
