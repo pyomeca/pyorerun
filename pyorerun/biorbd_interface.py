@@ -25,9 +25,16 @@ class BiorbdModel:
 
     def all_segment_homogeneous_matrices_in_global(self, q: np.ndarray) -> np.ndarray:
         """
-        Returns a Nsegx4x4 array containing the roto-translation matrix of each segment in the global reference frame.
+        Returns a Nsegx4x4 array containing the roto-translation matrix of each segment that has a mesh
+        in the global reference frame.
         """
-        return np.array([self.segment_homogeneous_matrices_in_global(q, i) for i in range(self.model.nbSegment())])
+        return np.array(
+            [
+                self.segment_homogeneous_matrices_in_global(q, i)
+                for i in range(self.model.nbSegment())
+                if self.model.segment(i).characteristics().mesh().hasMesh()
+            ]
+        )
 
     def all_frame_homogeneous_matrices(self, q: np.ndarray) -> np.ndarray:
         """
