@@ -26,12 +26,6 @@ class Component(ABC):
         self.__name = name
 
 
-class Object3D(Component):
-    def __init__(self, name: str):
-        super().__init__()
-        self.name = name
-
-
 class MarkerSet(Component):
     def __init__(self, positions: np.ndarray, labels: tuple[str]) -> None:
         """
