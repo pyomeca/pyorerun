@@ -1,8 +1,5 @@
-from functools import partial
-
 import biorbd
 import numpy as np
-import rerun as rr
 import trimesh
 
 
@@ -41,9 +38,22 @@ def load_biorbd_meshes(biomod: biorbd.Model) -> list[TransformableMesh]:
     todo: add mesh color, scaling and location from the biomod file
     """
     meshes = []
-    for i in range(biomod.nbSegment()):
-        stl_file_path = biomod.segment(i).characteristics().mesh().path().absolutePath().to_string()
-        mesh = trimesh.load(stl_file_path, file_type="stl")
-        meshes.append(TransformableMesh(mesh))
+
+    for segment in biomod.segments():
+        if segment_has_meshes(biomod, segment):
+            stl_file_path = segment.characteristics().mesh().path().absolutePath().to_string()
+            mesh = trimesh.load(stl_file_path, file_type="stl")
+            meshes.append(TransformableMesh(mesh))
 
     return meshes
+
+
+def segment_has_meshes(biomod: biorbd.Model, segment) -> bool:
+    """
+    Check if the biorbd model has meshes, by checking if the mesh path is different from the biomod path
+    if it is the same, it means that the mesh is not present in the segment
+    """
+    full_path = biomod.path().absolutePath().to_string()
+    biomod_path = full_path[: full_path.rfind("/")]
+    mesh_path = segment.characteristics().mesh().path().absolutePath().to_string()[:-1]
+    return biomod_path != mesh_path
