@@ -1,3 +1,5 @@
+from functools import partial
+
 import numpy as np
 import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 
@@ -172,9 +174,10 @@ class RerunBiorbd:
         rr.init("multi_phase_animation", spawn=True)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, rerun_biorbd in enumerate(phase):
+
+                partial_rerun = partial(rerun_biorbd.rerun, name=f"{rerun_biorbd.window}/phase_{i}/element_{j}", init=False)
+
                 if i < self.nb_phase - 1:
-                    rerun_biorbd.rerun(f"{rerun_biorbd.window}/phase_{i}/element_{j}", init=False, clear_last_node=True)
+                    partial_rerun(clear_last_node=True)
                 else:
-                    rerun_biorbd.rerun(
-                        f"{rerun_biorbd.window}/phase_{i}/element_{j}", init=False, clear_last_node=False
-                    )
+                    partial_rerun(clear_last_node=False)
