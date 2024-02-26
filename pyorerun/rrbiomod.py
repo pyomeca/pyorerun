@@ -170,12 +170,14 @@ class RerunBiorbd:
     def nb_phase(self) -> int:
         return len(self.rerun_biorbd_phases)
 
-    def rerun(self) -> None:
-        rr.init("multi_phase_animation", spawn=True)
+    def rerun(self, server_name: str = "multi_phase_animation") -> None:
+        rr.init(server_name, spawn=True)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, rerun_biorbd in enumerate(phase):
 
-                partial_rerun = partial(rerun_biorbd.rerun, name=f"{rerun_biorbd.window}/phase_{i}/element_{j}", init=False)
+                partial_rerun = partial(
+                    rerun_biorbd.rerun, name=f"{rerun_biorbd.window}/phase_{i}/element_{j}", init=False
+                )
 
                 if i < self.nb_phase - 1:
                     partial_rerun(clear_last_node=True)

@@ -35,7 +35,7 @@ def main():
 
     rerun_biorbd.add_marker_set(noisy_markers, "noisy_markers", color=np.array([255, 0, 0]), phase=0)
 
-    rerun_biorbd.rerun()
+    rerun_biorbd.rerun("multi_model_test")
 
 
 if __name__ == "__main__":
