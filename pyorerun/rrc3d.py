@@ -36,20 +36,28 @@ def rrc3d(cd3_file: ezc3d.c3d | str) -> None:
         positions /= 1000
 
     time = initial_time
+    t_span = np.linspace(initial_time, nb_frames / frequency, nb_frames)
 
     rr.init(filename, spawn=True)
 
     for i in range(nb_frames):
+        rr.set_time_seconds("stable_time", t_span[i])
         # put first frame in shape (n_mark, 3)
         positions_f = positions[:3, :, i].T
 
         rr.log(
-            "my markers",
+            "my_markers",
             rr.Points3D(positions_f, colors=COLORS, radii=10, labels=labels),
         )
 
-        time += 1 / frequency
-        rr.set_time_seconds("stable_time", time)
+        for m in labels:
+            for i, axis in enumerate(["X", "Y", "Z"]):
+                rr.log(
+                    f"markers_graphs/{m}/{axis}",
+                    rr.Scalar(
+                        positions_f[labels.index(m), i],
+                    ),
+                )
 
 
 def c3d_file_format(cd3_file) -> ezc3d.c3d:
