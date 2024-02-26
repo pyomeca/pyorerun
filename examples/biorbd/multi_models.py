@@ -31,11 +31,11 @@ def main():
     rerun_biorbd.add_phase(biorbd_model, t_span0, q0, phase=0)
     rerun_biorbd.add_phase(biorbd_model, t_span0, q0 + 0.2, phase=0)
     rerun_biorbd.add_phase(biorbd_model, t_span0[-1] + t_span1, q1, phase=1)
+    rerun_biorbd.add_phase(biorbd_model, t_span0[-1] + t_span1, q1, phase=1, window="split_animation")
 
     rerun_biorbd.add_marker_set(noisy_markers, "noisy_markers", color=np.array([255, 0, 0]), phase=0)
 
-    # rerun_biorbd.rerun_biorbd_phases[0][0].rerun("animation")
-    rerun_biorbd.rerun("animation")
+    rerun_biorbd.rerun()
 
 
 if __name__ == "__main__":

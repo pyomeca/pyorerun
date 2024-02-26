@@ -31,6 +31,7 @@ def main():
         size=0.01,
         color=np.array([0, 0, 0]),
     )
+    # rerun_biorbd.show_labels(True)
     rerun_biorbd.rerun("animation")
 
 
