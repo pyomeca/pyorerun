@@ -45,6 +45,7 @@ class RerunBiorbdPhase:
         self.__model_markers_size = 0.01
         self._markers = []
         self.__show_marker_labels = False
+        self.__show_local_frames = True
 
     def set_window(self, window: str) -> None:
         self.__window = window
@@ -52,6 +53,9 @@ class RerunBiorbdPhase:
     @property
     def window(self) -> str:
         return self.__window
+
+    def show_local_frames(self, show: bool) -> None:
+        self.__show_local_frames = show
 
     def show_labels(self, show: bool) -> None:
         self.__show_marker_labels = show
@@ -102,7 +106,7 @@ class RerunBiorbdPhase:
             rr.set_time_seconds("stable_time", t)
 
             display_frame(full_name)
-            display_meshes(full_name, self.model.meshes, self.homogenous_matrices[i, :, :, :])
+            display_meshes(full_name, self.model.meshes, self.homogenous_matrices[i, :, :, :], self.__show_local_frames)
 
             for markers in self._markers:
                 display_markers(

@@ -4,21 +4,27 @@ import numpy as np
 import rerun as rr
 
 
-def display_frame(animation_id) -> None:
+def display_frame(
+    animation_id, scale: float = 1, timeless: str = True, homogenous_transform: np.ndarray = None
+) -> None:
     """Display the world reference frame"""
+
+    origin = homogenous_transform[:3, 3] if homogenous_transform is not None else np.zeros(3)
+    vectors = homogenous_transform[:3, :3] if homogenous_transform is not None else np.eye(3)
+
     for axis, color in zip(["X", "Y", "Z"], [[255, 0, 0], [0, 255, 0], [0, 0, 255]]):
         rr.log(
             f"{animation_id}/{axis}",
             rr.Arrows3D(
-                origins=np.zeros(3),
-                vectors=np.eye(3)[list("XYZ").index(axis)],
+                origins=origin,
+                vectors=vectors[:, list("XYZ").index(axis)] * scale,
                 colors=np.array(color),
             ),
-            timeless=True,
+            timeless=timeless,
         )
 
 
-def display_meshes(animation_id, meshes, homogenous_matrices) -> None:
+def display_meshes(animation_id, meshes, homogenous_matrices: np.ndarray, show_local_frames: bool) -> None:
     """Display the meshes"""
     for j, mesh in enumerate(meshes):
         transformed_trimesh = mesh.apply_transform(homogenous_matrices[j, :, :])
@@ -31,6 +37,14 @@ def display_meshes(animation_id, meshes, homogenous_matrices) -> None:
                 indices=transformed_trimesh.faces,
             ),
         )
+
+        if show_local_frames:
+            display_frame(
+                animation_id + f"/{mesh.name}_{j}/frame",
+                scale=0.1,
+                timeless=False,
+                homogenous_transform=homogenous_matrices[j, :, :],
+            )
 
 
 def display_markers(
