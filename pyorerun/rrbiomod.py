@@ -71,7 +71,9 @@ class RerunBiorbdPhase:
     ) -> None:
         if positions.shape[0] != self.nb_frames:
             raise ValueError(
-                "The number of frames in the markers must be the same as the number of frames in the animation."
+                f"The number of frames in the markers ({positions.shape[0]}) "
+                f"must be the same as the number of frames in the animation ({self.nb_frames}). "
+                f"For phase {self.phase}."
             )
         marker_set = MarkerSet(positions, labels)
         marker_set.set_name(name)
@@ -104,19 +106,23 @@ class RerunBiorbdPhase:
 
         for i, t in enumerate(self.tspan):
             rr.set_time_seconds("stable_time", t)
+            self.display_components(full_name, i)
 
-            display_frame(full_name)
-            display_meshes(full_name, self.model.meshes, self.homogenous_matrices[i, :, :, :], self.__show_local_frames)
-
-            for markers in self._markers:
-                display_markers(
-                    full_name,
-                    name=markers.name,
-                    positions=markers.positions[i, :, :3],
-                    point3d=markers.to_rerun(self.__show_marker_labels),
-                )
         if clear_last_node:
             self.clear(full_name)
+
+    def display_components(self, full_name: str, frame) -> None:
+        """Display the components of the model at a specific frame"""
+        display_frame(full_name)
+        display_meshes(full_name, self.model.meshes, self.homogenous_matrices[frame, :, :, :], self.__show_local_frames)
+
+        for markers in self._markers:
+            display_markers(
+                full_name,
+                name=markers.name,
+                positions=markers.positions[frame, :, :3],
+                point3d=markers.to_rerun(self.__show_marker_labels),
+            )
 
     def clear(self, name) -> None:
         """remove the displayed components by the end of the animation phase"""
