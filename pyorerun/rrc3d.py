@@ -1,14 +1,10 @@
 from pathlib import Path
 
 import ezc3d
-import numpy as np
+import rerun as rr
 from pyomeca import Markers as PyoMarkers
 
 from .phase_rerun import PhaseRerun
-
-# from .rr_utils import display_markers
-
-COLOR = np.array([255, 255, 255])
 
 
 def rrc3d(c3d_file: str) -> None:
@@ -31,14 +27,10 @@ def rrc3d(c3d_file: str) -> None:
     phase_rerun.add_xp_markers(filename, pyomarkers)
     phase_rerun.rerun(filename)
 
-    #     for m in labels:
-    #         for j, axis in enumerate(["X", "Y", "Z"]):
-    #             rr.log(
-    #                 f"markers_graphs/{m}/{axis}",
-    #                 rr.Scalar(
-    #                     positions_f[labels.index(m), j],
-    #                 ),
-    #             )
+    # todo: find a better way to display curves but hacky way ok for now
+    for frame, t in enumerate(t_span):
+        rr.set_time_seconds("stable_time", t)
+        phase_rerun.xp_data.xp_data[0].to_rerun_curve(frame)
 
 
 def c3d_file_format(cd3_file) -> ezc3d.c3d:

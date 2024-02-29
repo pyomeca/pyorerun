@@ -10,7 +10,7 @@ class MarkersXp(Markers, ExperimentalData):
         self.name = name + "/markers"
         self.markers = markers
         self.radius = radius if radius is not None else 0.01
-        self.color = color if color is not None else np.array([0, 0, 255])
+        self.color = color if color is not None else np.array([255, 255, 255])
 
     @property
     def nb_markers(self):
@@ -38,6 +38,19 @@ class MarkersXp(Markers, ExperimentalData):
                 labels=self.markers_names,
             ),
         )
+
+    def to_rerun_curve(self, frame) -> None:
+        """todo:  should it be a MarkerCurve type?"""
+        positions_f = from_pyomeca_to_rerun(self.markers[:3, :, frame].to_numpy())
+        markers_names = self.markers_names
+        for m in markers_names:
+            for j, axis in enumerate(["X", "Y", "Z"]):
+                rr.log(
+                    f"markers_graphs/{m}/{axis}",
+                    rr.Scalar(
+                        positions_f[markers_names.index(m), j],
+                    ),
+                )
 
 
 def from_pyomeca_to_rerun(marker_positions: np.ndarray) -> np.ndarray:
