@@ -1,6 +1,7 @@
 import numpy as np
+from pyomeca import Markers
 
-from pyorerun import BiorbdModel, RerunBiorbdPhase
+from pyorerun import BiorbdModel, PhaseRerun
 
 
 def main():
@@ -18,20 +19,19 @@ def main():
 
     # loading biorbd model
     biorbd_model = BiorbdModel(biorbd_model_path)
-    noisy_markers = biorbd_model.all_frame_markers(q + 0.1 * np.random.rand(2, nb_frames))
+    all_q = q + 0.1 * np.random.rand(2, nb_frames)
+    noisy_markers = np.zeros((3, biorbd_model.nb_markers, nb_frames))
+    for i in range(nb_frames):
+        noisy_markers[:, :, i] = biorbd_model.markers(all_q[:, i]).T
 
     # running the animation
-    rerun_biorbd = RerunBiorbdPhase(biorbd_model)
-    rerun_biorbd.set_tspan(t_span)
-    rerun_biorbd.set_q(q)
-    rerun_biorbd.add_marker_set(
-        positions=noisy_markers,
+    rerun_biorbd = PhaseRerun(t_span)
+    rerun_biorbd.add_animated_model(biorbd_model, q)
+    markers = Markers(data=noisy_markers, channels=list(biorbd_model.marker_names))
+    rerun_biorbd.add_xp_markers(
         name="noisy_markers",
-        labels=biorbd_model.marker_names,
-        size=0.01,
-        color=np.array([0, 0, 0]),
+        markers=markers,
     )
-    # rerun_biorbd.show_labels(True)
     rerun_biorbd.rerun("animation")
 
 

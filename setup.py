@@ -10,6 +10,7 @@ setup(
         "rerun-sdk",
         "trimesh",
         "biorbd",
+        "pyomeca",
     ],
     author="Pierre Puchaud",
     author_email="puchaud.pierre@gmail.com",
