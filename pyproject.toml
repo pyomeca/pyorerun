@@ -24,6 +24,7 @@ dependencies = [
     "numpy",
     "rerun-sdk",
     "trimesh",
+    "pyomeca",
 #    "biorbd" # Not yet available on pypi, use `conda install -c conda-forge biorbd`
     ]
 keywords = ["c3d", "motion capture", "rerun", "biorbd", "pyomeca"]

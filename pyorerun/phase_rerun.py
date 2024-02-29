@@ -33,7 +33,7 @@ class PhaseRerun:
         self.biorbd_models = BiorbdRerunPhase(name=self.name, phase=phase)
         self.xp_data = XpRerunPhase(name=self.name, phase=phase)
 
-        self.__window = "animation"
+        self.__window = window
         self.__model_markers_color = np.array([0, 0, 255])
         self.__model_markers_size = 0.01
         self.__show_marker_labels = False

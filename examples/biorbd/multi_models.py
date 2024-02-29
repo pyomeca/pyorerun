@@ -1,3 +1,8 @@
+"""
+This example shows how to run multiple models in the same window. It also shows how to run multiple phases in different
+windows. It also shows how to add experimental markers to the animation.
+"""
+
 import numpy as np
 from numpy import random
 from pyomeca import Markers
