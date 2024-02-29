@@ -34,3 +34,7 @@ class LocalFrame(Components):
     def to_rerun(self, q: np.ndarray) -> None:
         for component in self.components:
             component.to_rerun(q)
+
+    @property
+    def component_names(self) -> list[str]:
+        return [component.name for component in self.components]

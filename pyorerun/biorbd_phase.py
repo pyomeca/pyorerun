@@ -28,3 +28,10 @@ class BiorbdRerunPhase:
     @property
     def nb_models(self):
         return len(self.models)
+
+    @property
+    def component_names(self):
+        all_component_names = []
+        for model in self.rerun_models:
+            all_component_names.extend(model.component_names)
+        return all_component_names

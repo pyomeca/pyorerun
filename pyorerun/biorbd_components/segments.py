@@ -14,7 +14,6 @@ class BiorbdModelSegments(Components):
         self.name = name
         self.model = model
         self.markers = BiorbdModelMarkers(name, model.marker_names, callable=model.markers, color=None, radius=None)
-
         self.segments = []
         for i, (segment, mesh_path) in enumerate(zip(model.segments_with_mesh, model.mesh_paths)):
             segment_name = name + "/" + segment.name().to_string()
@@ -36,6 +35,10 @@ class BiorbdModelSegments(Components):
         for segment in self.segments:
             all_segment_components.extend(segment.components)
         return [self.markers, *all_segment_components]
+
+    @property
+    def component_names(self) -> list[str]:
+        return [component.name for component in self.components]
 
     def to_rerun(self, q: np.ndarray) -> None:
         for component in self.components:

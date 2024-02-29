@@ -46,10 +46,14 @@ class TransformableMesh(Component):
         homogenous_matrices = self.transform_callable(q)
         transformed_trimesh = self.apply_transform(homogenous_matrices)
         rr.log(
-            self.name + f"/{self.name}",
+            self.name,
             rr.Mesh3D(
                 vertex_positions=transformed_trimesh.vertices,
                 vertex_normals=transformed_trimesh.vertex_normals,
                 indices=transformed_trimesh.faces,
             ),
         )
+
+    @property
+    def component_names(self):
+        return [self.name]

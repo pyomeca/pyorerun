@@ -13,3 +13,7 @@ class XpRerunPhase:
     def to_rerun(self, frame: int):
         for data in self.xp_data:
             data.to_rerun(frame)
+
+    @property
+    def component_names(self) -> list[str]:
+        return [data.name for data in self.xp_data]

@@ -13,7 +13,7 @@ class PhaseRerun:
     A class to animate a biorbd model in rerun.
     """
 
-    def __init__(self, t_span: np.ndarray, phase: int = 0):
+    def __init__(self, t_span: np.ndarray, phase: int = 0, window: str = None):
         """
         Parameters
         ----------
@@ -24,6 +24,8 @@ class PhaseRerun:
         """
         self.phase = phase
         self.name = f"animation_phase_{self.phase}"
+        if window:
+            self.name = f"{window}/{self.name}"
 
         # same t_span for the phase
         self.t_span = t_span
@@ -96,10 +98,9 @@ class PhaseRerun:
     def set_marker_size(self, size: float) -> None:
         self.__model_markers_size = size
 
-    def rerun(self, name: str = "animation_id", init: bool = True, clear_last_node: bool = False) -> None:
-        full_name = f"{name}_{self.phase}"
+    def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
         if init:
-            rr.init(f"animation_phase_{self.phase}", spawn=True)
+            rr.init(f"{name}_{self.phase}", spawn=True)
 
         for frame, t in enumerate(self.t_span):
             rr.set_time_seconds("stable_time", t)
@@ -107,12 +108,5 @@ class PhaseRerun:
             self.xp_data.to_rerun(frame)
 
         if clear_last_node:
-            self.clear(full_name)
-
-    def clear(self, name) -> None:
-        """remove the displayed components by the end of the animation phase"""
-        for i, mesh in enumerate(self.model.meshes):
-            rr.log(name + f"/{mesh.name}_{i}", rr.Clear(recursive=False))
-
-        for markers in self._markers:
-            rr.log(name + f"/{markers.name}_markers", rr.Clear(recursive=False))
+            for component in [*self.biorbd_models.component_names, *self.xp_data.component_names]:
+                rr.log(component, rr.Clear(recursive=False))
