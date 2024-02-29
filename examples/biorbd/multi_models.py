@@ -23,6 +23,7 @@ def main():
     q1, t_span1 = building_some_q_and_t_span(20, 0.5)
 
     # loading biorbd model
+    # todo to restore
     biorbd_model = BiorbdModel(biorbd_model_path)
     noisy_markers = biorbd_model.all_frame_markers(q0 + 0.1 * np.random.rand(2, nb_frames))
 

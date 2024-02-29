@@ -31,3 +31,9 @@ class Markers(Component):
     @abstractmethod
     def nb_markers(self):
         pass
+
+
+class ExperimentalData(Component):
+    @abstractmethod
+    def nb_frames(self):
+        pass

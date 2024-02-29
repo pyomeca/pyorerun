@@ -2,7 +2,7 @@ import numpy as np
 import rerun as rr
 from trimesh import Trimesh, load
 
-from .abstract_class import Component
+from pyorerun.abstract.abstract_class import Component
 
 
 class TransformableMesh(Component):

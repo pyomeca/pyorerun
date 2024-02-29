@@ -1,6 +1,6 @@
 import numpy as np
 
-from .abstract_class import Components
+from pyorerun.abstract.abstract_class import Components
 from .axis import Axis
 
 

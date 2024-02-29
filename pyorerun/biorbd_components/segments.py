@@ -2,7 +2,7 @@ from functools import partial
 
 import numpy as np
 
-from .abstract_class import Components
+from pyorerun.abstract.abstract_class import Components
 from .mesh import TransformableMesh
 from .model_interface import BiorbdModel
 from .model_markers import BiorbdModelMarkers

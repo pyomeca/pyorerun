@@ -1,6 +1,6 @@
 import numpy as np
 
-from .abstract_class import Component
+from pyorerun.abstract.abstract_class import Component
 from .local_frame import LocalFrame
 from .mesh import TransformableMesh
 
