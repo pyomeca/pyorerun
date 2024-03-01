@@ -33,12 +33,6 @@ class PhaseRerun:
         self.biorbd_models = BiorbdRerunPhase(name=self.name, phase=phase)
         self.xp_data = XpRerunPhase(name=self.name, phase=phase)
 
-        self.__window = window
-        self.__model_markers_color = np.array([0, 0, 255])
-        self.__model_markers_size = 0.01
-        self.__show_marker_labels = False
-        self.__show_local_frames = True
-
     def add_animated_model(self, biomod: BiorbdModel, q: np.ndarray) -> None:
         """
         Add an animated model to the phase.
@@ -76,27 +70,8 @@ class PhaseRerun:
                 f"They must have the same length."
                 f"Current shapes are q: {markers.shape[1]} and tspan: {self.t_span.shape}."
             )
-
+        markers
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
-
-    def set_window(self, window: str) -> None:
-        self.__window = window
-
-    @property
-    def window(self) -> str:
-        return self.__window
-
-    def show_local_frames(self, show: bool) -> None:
-        self.__show_local_frames = show
-
-    def show_labels(self, show: bool) -> None:
-        self.__show_marker_labels = show
-
-    def set_marker_color(self, color: np.ndarray) -> None:
-        self.__model_markers_color = color
-
-    def set_marker_size(self, size: float) -> None:
-        self.__model_markers_size = size
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
         if init:

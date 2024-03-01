@@ -1,16 +1,15 @@
 import numpy as np
 import rerun as rr
 
-from pyorerun.abstract.abstract_class import Component
+from ..abstract.abstract_class import Component
+from ..abstract.markers import MarkerProperties
 
 
 class BiorbdModelMarkers(Component):
-    def __init__(self, name, markers_names: list[str], radius, color, callable: callable):
+    def __init__(self, name, marker_properties: MarkerProperties, callable_markers: callable):
         self.name = name + "/model_markers"
-        self.markers_names = markers_names
-        self.callable_markers = callable
-        self.radius = radius if radius is not None else 0.01
-        self.color = color if color is not None else np.array([0, 0, 255])
+        self.marker_properties = marker_properties
+        self.callable_markers = callable_markers
 
     @property
     def nb_markers(self):
@@ -25,9 +24,9 @@ class BiorbdModelMarkers(Component):
             self.name,
             rr.Points3D(
                 positions=self.callable_markers(q),
-                radii=np.ones(self.nb_markers) * self.radius,
-                colors=np.tile(self.color, (self.nb_markers, 1)),
-                labels=self.markers_names,
+                radii=self.marker_properties.radius_to_rerun(),
+                colors=self.marker_properties.color_to_rerun(),
+                labels=self.marker_properties.markers_names,
             ),
         )
 

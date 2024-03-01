@@ -2,15 +2,19 @@ import numpy as np
 import rerun as rr
 from pyomeca import Markers as PyoMarkers
 
-from ..abstract.abstract_class import Markers, ExperimentalData
+from ..abstract.abstract_class import ExperimentalData
+from ..abstract.markers import Markers, MarkerProperties
 
 
 class MarkersXp(Markers, ExperimentalData):
-    def __init__(self, name, markers: PyoMarkers, radius: float = None, color: float = None):
+    def __init__(self, name, markers: PyoMarkers):
         self.name = name + "/markers"
         self.markers = markers
-        self.radius = radius if radius is not None else 0.01
-        self.color = color if color is not None else np.array([255, 255, 255])
+        self.markers_properties = MarkerProperties(
+            markers_names=markers.channel.values.tolist(),
+            radius=0.01,
+            color=np.array([255, 255, 255]),
+        )
 
     @property
     def nb_markers(self):
@@ -22,7 +26,7 @@ class MarkersXp(Markers, ExperimentalData):
 
     @property
     def nb_frames(self):
-        return len(self.callable_markers(q))
+        return len(self.markers.shape[2])
 
     @property
     def nb_components(self):
@@ -33,8 +37,8 @@ class MarkersXp(Markers, ExperimentalData):
             self.name,
             rr.Points3D(
                 positions=from_pyomeca_to_rerun(self.markers[:3, :, frame].to_numpy()),
-                radii=np.ones(self.nb_markers) * self.radius,
-                colors=np.tile(self.color, (self.nb_markers, 1)),
+                radii=self.markers_properties.radius_to_rerun(),
+                colors=self.markers_properties.color_to_rerun(),
                 labels=self.markers_names,
             ),
         )
