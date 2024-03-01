@@ -1,3 +1,6 @@
-from pyorerun import rrc3d
+import os
 
-rrc3d("example.c3d")
+import pyorerun as prr
+
+print(os.getcwd())
+prr.c3d("example.c3d")

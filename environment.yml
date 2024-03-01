@@ -6,5 +6,6 @@ dependencies:
 - ezc3d
 - rerun-sdk
 - numpy
-- biorbd
+- biorbd>=1.10.5
 - trimesh
+- pyomeca
