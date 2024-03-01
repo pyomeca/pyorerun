@@ -48,9 +48,6 @@ class MultiPhaseRerun:
     def rerun(self, server_name: str = "multi_phase_animation") -> None:
         rr.init(server_name, spawn=True)
         for i, phase in enumerate(self.rerun_biorbd_phases):
-            for j, (window, rr_phase) in enumerate(phase.items()):
-
-                if i < self.nb_phase - 1:
-                    rr_phase.rerun(init=False, clear_last_node=True)
-                else:
-                    rr_phase.rerun(init=False, clear_last_node=False)
+            for j, rr_phase in enumerate(phase.values()):
+                more_phases_after_this_one = i < self.nb_phase - 1
+                rr_phase.rerun(init=False, clear_last_node=more_phases_after_this_one)

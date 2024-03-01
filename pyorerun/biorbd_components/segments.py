@@ -2,18 +2,25 @@ from functools import partial
 
 import numpy as np
 
-from pyorerun.abstract.abstract_class import Components
 from .mesh import TransformableMesh
 from .model_interface import BiorbdModel
 from .model_markers import BiorbdModelMarkers
 from .segment import BiorbdModelSegment
+from ..abstract.abstract_class import Components
+from ..abstract.markers import MarkerProperties
 
 
 class BiorbdModelSegments(Components):
     def __init__(self, name, model: BiorbdModel):
         self.name = name
         self.model = model
-        self.markers = BiorbdModelMarkers(name, model.marker_names, callable=model.markers, color=None, radius=None)
+        self.markers = BiorbdModelMarkers(
+            name,
+            marker_properties=MarkerProperties(
+                markers_names=model.marker_names, color=np.array([0, 0, 255]), radius=0.01
+            ),
+            callable_markers=model.markers,
+        )
         self.segments = []
         for i, (segment, mesh_path) in enumerate(zip(model.segments_with_mesh, model.mesh_paths)):
             segment_name = name + "/" + segment.name().to_string()
