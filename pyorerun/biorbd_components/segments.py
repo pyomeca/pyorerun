@@ -46,9 +46,7 @@ class BiorbdModelSegments(Components):
             segment_name = self.name + "/" + segment.name().to_string()
             transform_callable = partial(self.model.segment_homogeneous_matrices_in_global, segment_index=segment.id())
             mesh = TransformableMesh.from_file(segment_name, mesh_path, transform_callable)
-            segments.append(
-                BiorbdModelSegment(name=segment_name, transform_callable=transform_callable, mesh=mesh)
-            )
+            segments.append(BiorbdModelSegment(name=segment_name, transform_callable=transform_callable, mesh=mesh))
         return segments
 
     @property

@@ -12,11 +12,11 @@ class BiorbdModelMarkers(Component):
         self.callable_markers = callable_markers
 
     @property
-    def nb_markers(self):
-        return len(self.markers_names)
+    def nb_markers(self) -> int:
+        return self.marker_properties.nb_markers
 
     @property
-    def nb_components(self):
+    def nb_components(self) -> int:
         return 1
 
     def to_rerun(self, q: np.ndarray) -> None:
