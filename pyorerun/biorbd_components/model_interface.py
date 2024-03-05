@@ -69,3 +69,31 @@ class BiorbdModel:
         Returns the position of the center of mass in the global reference frame
         """
         return self.model.CoM(GeneralizedCoordinates(q)).to_array()
+
+    @property
+    def nb_ligaments(self) -> int:
+        """
+        Returns the number of ligaments
+        """
+        return self.model.nbLigaments()
+
+    @property
+    def ligament_names(self) -> tuple[str, ...]:
+        """
+        Returns the names of the ligaments
+        """
+        return tuple([s.to_string() for s in self.model.ligamentNames()])
+
+    def ligament_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
+        """
+        Returns the position of the ligaments in the global reference frame
+        """
+        ligaments = []
+        self.model.updateLigaments(q, True)
+        for ligament_idx in range(self.nb_ligaments):
+            ligament = self.model.ligament(ligament_idx)
+            ligament_strip = []
+            for pts in ligament.position().pointsInGlobal():
+                ligament_strip.append(pts.to_array().tolist())
+            ligaments.append(ligament_strip)
+        return ligaments
