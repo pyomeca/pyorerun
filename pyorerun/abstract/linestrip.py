@@ -5,20 +5,20 @@ import numpy as np
 from .abstract_class import Component
 
 
-class Markers(Component):
+class LineStrips(Component):
     @abstractmethod
-    def nb_markers(self):
+    def nb_strips(self):
         pass
 
 
-class MarkerProperties:
+class LineStripProperties:
     """
-    A class used to represent the properties of a marker.
+    A class used to represent the properties of a line strip.
 
 
     Attributes
     ----------
-    markers_names : list[str]
+    strip_names : list[str]
         a list of names for the markers
     radius : float
         the radius of the markers
@@ -27,7 +27,7 @@ class MarkerProperties:
 
     Methods
     -------
-    nb_markers():
+    nb_strips():
         Returns the number of markers.
     radius_to_rerun():
         Returns a numpy array with the radius of each marker.
@@ -35,25 +35,25 @@ class MarkerProperties:
         Returns a numpy array with the color of each marker.
     """
 
-    def __init__(self, markers_names: list[str, ...] | tuple[str, ...], radius: float, color: np.ndarray):
+    def __init__(self, strip_names: list[str, ...] | tuple[str, ...], radius: float | np.ndarray, color: np.ndarray):
         """
         Constructs all the necessary attributes for the MarkerProperties object.
 
         Parameters
         ----------
-            markers_names : list[str, ...] | tuple[str, ...]
-                a list of names for the markers
-            radius : float
-                the radius of the markers
-            color : np.ndarray
-                the color of the markers
+        strip_names : list[str]
+            a list of names for the markers
+        radius : float
+            the radius of the markers
+        color : np.ndarray
+            the color of the markers
         """
-        self.markers_names = markers_names
+        self.strip_names = strip_names
         self.radius = radius
         self.color = color
 
     @property
-    def nb_markers(self):
+    def nb_strips(self):
         """
         Returns the number of markers.
 
@@ -62,9 +62,9 @@ class MarkerProperties:
         int
             The number of markers.
         """
-        return len(self.markers_names)
+        return len(self.strip_names)
 
-    def radius_to_rerun(self) -> None:
+    def radius_to_rerun(self) -> np.ndarray:
         """
         Returns a numpy array with the radius of each marker.
 
@@ -73,9 +73,12 @@ class MarkerProperties:
         np.ndarray
             A numpy array with the radius of each marker.
         """
-        return np.ones(self.nb_markers) * self.radius
+        if isinstance(self.radius, float):
+            return np.ones(self.nb_strips) * self.radius
+        else:
+            return self.radius
 
-    def color_to_rerun(self) -> None:
+    def color_to_rerun(self) -> np.ndarray:
         """
         Returns a numpy array with the color of each marker.
 
@@ -84,4 +87,7 @@ class MarkerProperties:
         np.ndarray
             A numpy array with the color of each marker.
         """
-        return np.tile(self.color, (self.nb_markers, 1))
+        if self.color.ndim == 1:
+            return np.tile(self.color, (self.nb_strips, 1))
+        else:
+            return np.tile(self.color, (self.nb_strips, 1))
