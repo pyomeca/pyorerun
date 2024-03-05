@@ -33,11 +33,11 @@ class BiorbdModel:
         return self.model.nbSegment()
 
     @property
-    def segments(self) -> tuple[biorbd.Segment]:
+    def segments(self) -> tuple[biorbd.Segment, ...]:
         return self.model.segments()
 
     @property
-    def segments_with_mesh(self) -> tuple[biorbd.Segment]:
+    def segments_with_mesh(self) -> tuple[biorbd.Segment, ...]:
         return tuple([s for s in self.model.segments() if s.characteristics().mesh().hasMesh()])
 
     @property
