@@ -55,3 +55,14 @@ endsegment
         parent Seg2
         position 0 0 -1
     endmarker
+
+
+ligament    linear_spring
+    Type    linearspring
+    stiffness	6380
+    origin	Seg1
+    insertion	Seg2
+    OriginPosition    0 0.3 -1
+    InsertionPosition    0 0 -0.5
+    ligamentslacklength    0.125
+endligament
