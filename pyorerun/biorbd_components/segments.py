@@ -1,4 +1,5 @@
 from functools import partial
+from typing import Any
 
 import numpy as np
 
@@ -19,7 +20,7 @@ class ModelUpdater(Components):
         self.markers = self.create_markers_updater()
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
-        self.muscles = self.create_muscles()
+        self.muscles = self.create_muscles_updater()
 
     def create_markers_updater(self):
         return MarkersUpdater(
@@ -54,6 +55,17 @@ class ModelUpdater(Components):
             segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, mesh=mesh))
         return segments
 
+    def create_muscles_updater(self):
+        return MusclesUpdater(
+            self.name,
+            properties=LineStripProperties(
+                strip_names=self.model.muscle_names,
+                color=np.array([255, 0, 0]),
+                radius=0.004,
+            ),
+            update_callable=self.model.muscle_strips,
+        )
+
     @property
     def nb_components(self):
         nb_components = 0
@@ -65,7 +77,7 @@ class ModelUpdater(Components):
         all_segment_components = []
         for segment in self.segments:
             all_segment_components.extend(segment.components)
-        return [self.markers, *all_segment_components, self.ligaments]
+        return [self.markers, *all_segment_components, self.ligaments, self.muscles]
 
     @property
     def component_names(self) -> list[str]:

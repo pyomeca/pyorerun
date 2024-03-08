@@ -119,3 +119,31 @@ class BiorbdModel:
                 ligament_strip.append(pts.to_array().tolist())
             ligaments.append(ligament_strip)
         return ligaments
+
+    @property
+    def nb_muscles(self) -> int:
+        """
+        Returns the number of ligaments
+        """
+        return self.model.nbMuscles()
+
+    @property
+    def muscle_names(self) -> tuple[str, ...]:
+        """
+        Returns the names of the ligaments
+        """
+        return tuple([s.to_string() for s in self.model.muscleNames()])
+
+    def muscle_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
+        """
+        Returns the position of the ligaments in the global reference frame
+        """
+        muscles = []
+        self.model.updateMuscles(q, True)
+        for idx in range(self.nb_muscles):
+            muscle = self.model.muscle(idx)
+            muscle_strip = []
+            for pts in muscle.position().pointsInGlobal():
+                muscle_strip.append(pts.to_array().tolist())
+            muscles.append(muscle_strip)
+        return muscles
