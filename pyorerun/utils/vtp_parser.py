@@ -40,7 +40,7 @@ def handle_polygons_shape(mesh_dictionary: dict, polygon_apex_idx: np.ndarray) -
         mat = np.zeros((mesh_dictionary["polygons"].shape[0], polygon_apex_idx.size))
         mat[:, : mesh_dictionary["polygons"].shape[1]] = mesh_dictionary["polygons"]
         diff = polygon_apex_idx.size - mesh_dictionary["polygons"].shape[1]
-        mat[:, mesh_dictionary["polygons"].shape[1]:] = np.repeat(
+        mat[:, mesh_dictionary["polygons"].shape[1] :] = np.repeat(
             mesh_dictionary["polygons"][:, -1].reshape(-1, 1), diff, axis=1
         )
         mesh_dictionary["polygons"] = mat
