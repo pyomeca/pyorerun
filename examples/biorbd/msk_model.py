@@ -6,7 +6,7 @@ from pyorerun import BiorbdModel, PhaseRerun
 def main():
     # building some time components
     nb_frames = 10
-    nb_seconds = 0.1
+    nb_seconds = 1
     t_span = np.linspace(0, nb_seconds, nb_frames)
 
     model = BiorbdModel("models/shoulder_model.bioMod")
