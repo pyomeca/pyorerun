@@ -5,7 +5,7 @@ from ..abstract.abstract_class import Component
 from ..abstract.markers import MarkerProperties
 
 
-class BiorbdModelMarkers(Component):
+class MarkersUpdater(Component):
     def __init__(self, name, marker_properties: MarkerProperties, callable_markers: callable):
         self.name = name + "/model_markers"
         self.marker_properties = marker_properties

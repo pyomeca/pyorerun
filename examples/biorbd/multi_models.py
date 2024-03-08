@@ -21,7 +21,7 @@ def building_some_q_and_t_span(nb_frames: int, nb_seconds: int) -> tuple[np.ndar
 
 
 def main():
-    biorbd_model_path = "double_pendulum.bioMod"
+    biorbd_model_path = "models/double_pendulum.bioMod"
 
     # building some time components
     nb_frames = 200

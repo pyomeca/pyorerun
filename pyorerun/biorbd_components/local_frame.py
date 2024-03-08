@@ -1,10 +1,10 @@
 import numpy as np
 
 from pyorerun.abstract.abstract_class import Components
-from .axis import Axis
+from .axisupdater import AxisUpdater
 
 
-class LocalFrame(Components):
+class LocalFrameUpdater(Components):
     def __init__(self, name, transform_callable: callable):
         """
 
@@ -18,10 +18,10 @@ class LocalFrame(Components):
         """
         self.name = name
         self.transform_callable = transform_callable
-        self.scale = 0.3
-        self.x_axis = Axis(name + "/X", transform_callable, 0)
-        self.y_axis = Axis(name + "/Y", transform_callable, 1)
-        self.z_axis = Axis(name + "/Z", transform_callable, 2)
+        self.scale = 0.1  # NOTE: This is a hard-coded value, and not transferred to the x,y,z axis objects
+        self.x_axis = AxisUpdater(name + "/X", transform_callable, 0)
+        self.y_axis = AxisUpdater(name + "/Y", transform_callable, 1)
+        self.z_axis = AxisUpdater(name + "/Z", transform_callable, 2)
 
     @property
     def components(self):

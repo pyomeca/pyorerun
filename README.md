@@ -5,7 +5,7 @@ We can rerun c3d files and display their original content.
 And all also animate biorbd models from the pyomeca organization.
 
 # Installation prerequisites
-``` conda install -c conda-forge ezc3d rerun-sdk trimesh numpy biorbd ```
+``` conda install -c conda-forge ezc3d rerun-sdk trimesh numpy biorbd pyomeca ```
 
 Then, ensure it is accessible in your Python environment by installing the package:
 
@@ -18,9 +18,9 @@ Conda install will come soon. Don't worry 😊.
 # Rerun .c3d - As simple as that
 
 ``` python3
-from pyorerun import rrc3d
+import pyorerun as prr
 
-rrc3d("example.c3d")
+prr.c3d("example.c3d")
 ```
 
 <p align="center">

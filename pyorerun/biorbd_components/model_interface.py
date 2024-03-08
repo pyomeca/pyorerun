@@ -1,6 +1,28 @@
 import biorbd
 import numpy as np
-from biorbd import GeneralizedCoordinates
+from biorbd import GeneralizedCoordinates, segment_index
+
+
+class BiorbdSegment:
+    """
+    An interface to simplify the access to a segment of a biorbd model
+    """
+
+    def __init__(self, segment, index):
+        self.segment = segment
+        self._index = index
+
+    @property
+    def name(self):
+        return self.segment.name().to_string()
+
+    @property
+    def id(self):
+        return self._index
+
+    @property
+    def has_mesh(self):
+        return self.segment.characteristics().mesh().hasMesh()
 
 
 class BiorbdModel:
@@ -33,12 +55,12 @@ class BiorbdModel:
         return self.model.nbSegment()
 
     @property
-    def segments(self) -> tuple[biorbd.Segment, ...]:
-        return self.model.segments()
+    def segments(self) -> tuple[BiorbdSegment, ...]:
+        return tuple(BiorbdSegment(s, i) for i, s in enumerate(self.model.segments()))
 
     @property
-    def segments_with_mesh(self) -> tuple[biorbd.Segment, ...]:
-        return tuple([s for s in self.model.segments() if s.characteristics().mesh().hasMesh()])
+    def segments_with_mesh(self) -> tuple[BiorbdSegment, ...]:
+        return tuple([s for s in self.segments if s.has_mesh])
 
     @property
     def mesh_paths(self) -> list[str]:
@@ -97,3 +119,31 @@ class BiorbdModel:
                 ligament_strip.append(pts.to_array().tolist())
             ligaments.append(ligament_strip)
         return ligaments
+
+    @property
+    def nb_muscles(self) -> int:
+        """
+        Returns the number of ligaments
+        """
+        return self.model.nbMuscles()
+
+    @property
+    def muscle_names(self) -> tuple[str, ...]:
+        """
+        Returns the names of the ligaments
+        """
+        return tuple([s.to_string() for s in self.model.muscleNames()])
+
+    def muscle_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
+        """
+        Returns the position of the ligaments in the global reference frame
+        """
+        muscles = []
+        self.model.updateMuscles(q, True)
+        for idx in range(self.nb_muscles):
+            muscle = self.model.muscle(idx)
+            muscle_strip = []
+            for pts in muscle.position().pointsInGlobal():
+                muscle_strip.append(pts.to_array().tolist())
+            muscles.append(muscle_strip)
+        return muscles
