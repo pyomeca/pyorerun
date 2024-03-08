@@ -43,8 +43,13 @@ class BiorbdModelSegments(Components):
     def create_segments(self):
         segments = []
         for i, (segment, mesh_path) in enumerate(zip(self.model.segments_with_mesh, self.model.mesh_paths)):
-            segment_name = self.name + "/" + segment.name().to_string()
-            transform_callable = partial(self.model.segment_homogeneous_matrices_in_global, segment_index=segment.id())
+            segment_name = self.name + "/" + segment.name
+            # transform_callable = partial(self.model.segment_homogeneous_matrices_in_global, segment_index=segment.id())
+            transform_callable = partial(
+                self.model.segment_homogeneous_matrices_in_global,
+                segment_index=segment.id,
+            )
+
             mesh = TransformableMesh.from_file(segment_name, mesh_path, transform_callable)
             segments.append(BiorbdModelSegment(name=segment_name, transform_callable=transform_callable, mesh=mesh))
         return segments

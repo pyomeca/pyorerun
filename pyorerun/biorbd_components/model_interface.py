@@ -1,6 +1,28 @@
 import biorbd
 import numpy as np
-from biorbd import GeneralizedCoordinates
+from biorbd import GeneralizedCoordinates, segment_index
+
+
+class BiorbdSegment:
+    """
+    An interface to simplify the access to a segment of a biorbd model
+    """
+
+    def __init__(self, segment, index):
+        self.segment = segment
+        self._index = index
+
+    @property
+    def name(self):
+        return self.segment.name().to_string()
+
+    @property
+    def id(self):
+        return self._index
+
+    @property
+    def has_mesh(self):
+        return self.segment.characteristics().mesh().hasMesh()
 
 
 class BiorbdModel:
@@ -33,12 +55,12 @@ class BiorbdModel:
         return self.model.nbSegment()
 
     @property
-    def segments(self) -> tuple[biorbd.Segment, ...]:
-        return self.model.segments()
+    def segments(self) -> tuple[BiorbdSegment, ...]:
+        return tuple(BiorbdSegment(s, i) for i, s in enumerate(self.model.segments()))
 
     @property
-    def segments_with_mesh(self) -> tuple[biorbd.Segment, ...]:
-        return tuple([s for s in self.model.segments() if s.characteristics().mesh().hasMesh()])
+    def segments_with_mesh(self) -> tuple[BiorbdSegment, ...]:
+        return tuple([s for s in self.segments if s.has_mesh])
 
     @property
     def mesh_paths(self) -> list[str]:
