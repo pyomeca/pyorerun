@@ -15,7 +15,7 @@ def main():
     q[1, :] = np.linspace(0, 0.3, nb_frames)
 
     # running the animation
-    prr.animate("double_pendulum.bioMod", q, tspan=t_span)
+    prr.animate("models/double_pendulum.bioMod", q, tspan=t_span)
 
 
 if __name__ == "__main__":

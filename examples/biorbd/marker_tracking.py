@@ -5,7 +5,7 @@ from pyorerun import BiorbdModel, PhaseRerun
 
 
 def main():
-    biorbd_model_path = "double_pendulum.bioMod"
+    biorbd_model_path = "models/double_pendulum.bioMod"
 
     # building some time components
     nb_frames = 200
