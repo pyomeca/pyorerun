@@ -2,7 +2,8 @@ import numpy as np
 import rerun as rr
 from trimesh import Trimesh, load
 
-from pyorerun.abstract.abstract_class import Component
+from ..abstract.abstract_class import Component
+from ..utils.vtp_parser import read_vtp_file
 
 
 class TransformableMesh(Component):
@@ -20,8 +21,18 @@ class TransformableMesh(Component):
 
     @classmethod
     def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMesh":
-        mesh = load(file_path, file_type="stl")
-        return cls(name, mesh, transform_callable)
+        if file_path.endswith(".stl"):
+            mesh = load(file_path, file_type="stl")
+            return cls(name, mesh, transform_callable)
+        if file_path.endswith(".vtp"):
+            output = read_vtp_file(file_path)
+            mesh = Trimesh(
+                vertices=output["nodes"],
+                faces=output["polygons"],
+                vertex_normals=output["normals"],
+                metadata={"file_name": file_path.split("/")[-1].split(".")[0]},
+            )
+            return cls(name, mesh, transform_callable)
 
     def apply_transform(self, homogenous_matrix: np.ndarray) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""
