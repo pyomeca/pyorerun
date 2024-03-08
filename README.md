@@ -18,9 +18,9 @@ Conda install will come soon. Don't worry 😊.
 # Rerun .c3d - As simple as that
 
 ``` python3
-from pyorerun import rrc3d
+import pyorerun as prr
 
-rrc3d("example.c3d")
+prr.c3d("example.c3d")
 ```
 
 <p align="center">
