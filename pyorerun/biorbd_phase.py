@@ -1,7 +1,7 @@
 import numpy as np
 
 from .biorbd_components.model_interface import BiorbdModel
-from .biorbd_components.segments import BiorbdModelSegments
+from .biorbd_components.segments import ModelUpdater
 
 
 class BiorbdRerunPhase:
@@ -18,7 +18,7 @@ class BiorbdRerunPhase:
 
     def add_animated_model(self, biomod: BiorbdModel, q: np.ndarray):
         self.models.append(biomod)
-        self.rerun_models.append(BiorbdModelSegments(name=f"{self.name}/{self.nb_models}_{biomod.name}", model=biomod))
+        self.rerun_models.append(ModelUpdater(name=f"{self.name}/{self.nb_models}_{biomod.name}", model=biomod))
         self.q.append(q)
 
     def to_rerun(self, frame: int):
