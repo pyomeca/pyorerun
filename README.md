@@ -31,8 +31,32 @@ prr.c3d("example.c3d")
     />
 </p>
 
-# NOTE
-- Only handle markers for now
+**NOTE**: Only handle markers for now
+
+# Rerun biorbd Models
+
+``` python3
+from pyorerun import BiorbdModel, PhaseRerun
+
+nb_frames = 10
+nb_seconds = 0.1
+t_span = np.linspace(0, nb_seconds, nb_frames)
+
+model = BiorbdModel("models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod")
+q = np.zeros((model.model.nbQ(), nb_frames))
+
+viz = PhaseRerun(t_span)
+viz.add_animated_model(model, q)
+viz.rerun("msk_model")
+```
+
+<p align="center">
+    <img
+      src="docs/msk_example.png"
+      alt="logo"
+      width="500"
+    />
+</p>
 
 # Contributing
 Contributions are welcome. I will be happy to review and help you to improve the code.
