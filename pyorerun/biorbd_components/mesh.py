@@ -6,7 +6,7 @@ from ..abstract.abstract_class import Component
 from ..utils.vtp_parser import read_vtp_file
 
 
-class TransformableMesh(Component):
+class TransformableMeshUpdater(Component):
     """
     A class to handle a trimesh object and its transformations
     and always 'apply_transform' from its initial position
@@ -20,7 +20,7 @@ class TransformableMesh(Component):
         self.transform_callable = transform_callable
 
     @classmethod
-    def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMesh":
+    def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl"):
             mesh = load(file_path, file_type="stl")
             return cls(name, mesh, transform_callable)

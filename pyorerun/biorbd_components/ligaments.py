@@ -4,15 +4,15 @@ import rerun as rr
 from ..abstract.linestrip import LineStrips, LineStripProperties
 
 
-class BiorbdModelLigaments(LineStrips):
-    def __init__(self, name, ligament_properties: LineStripProperties, callable_ligaments: callable):
-        self.name = name + "/ligaments"
-        self.ligament_properties = ligament_properties
-        self.callable_ligament = callable_ligaments
+class LineStripUpdater(LineStrips):
+    def __init__(self, name, properties: LineStripProperties, update_callable: callable):
+        self.name = name
+        self.properties = properties
+        self.update_callable = update_callable
 
     @property
     def nb_strips(self) -> int:
-        return self.ligament_properties.nb_strips
+        return self.properties.nb_strips
 
     @property
     def nb_components(self) -> int:
@@ -22,9 +22,23 @@ class BiorbdModelLigaments(LineStrips):
         rr.log(
             self.name,
             rr.LineStrips3D(
-                strips=self.callable_ligament(q),
-                radii=self.ligament_properties.radius_to_rerun(),
-                colors=self.ligament_properties.color_to_rerun(),
-                labels=self.ligament_properties.strip_names,
+                strips=self.update_callable(q),
+                radii=self.properties.radius_to_rerun(),
+                colors=self.properties.color_to_rerun(),
+                labels=self.properties.strip_names,
             ),
+        )
+
+
+class LigamentsUpdater(LineStripUpdater):
+    def __init__(self, name, properties: LineStripProperties, update_callable: callable):
+        super(LigamentsUpdater, self).__init__(
+            name=name + "/ligaments", properties=properties, update_callable=update_callable
+        )
+
+
+class MusclesUpdater(LineStripUpdater):
+    def __init__(self, name, properties: LineStripProperties, update_callable: callable):
+        super(MusclesUpdater, self).__init__(
+            name=name + "/muscles", properties=properties, update_callable=update_callable
         )

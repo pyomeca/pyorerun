@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyorerun.biorbd_components.local_frame import LocalFrame, Axis
+from pyorerun.biorbd_components.local_frame import LocalFrameUpdater, AxisUpdater
 
 
 def dummy_callable_transform(q):
@@ -8,15 +8,15 @@ def dummy_callable_transform(q):
 
 
 def test_local_frame():
-    local_frame = LocalFrame("test", dummy_callable_transform)
+    local_frame = LocalFrameUpdater("test", dummy_callable_transform)
 
     # Test initialization
     assert local_frame.name == "test"
     assert local_frame.transform_callable == dummy_callable_transform
     assert local_frame.scale == 0.3
-    assert isinstance(local_frame.x_axis, Axis)
-    assert isinstance(local_frame.y_axis, Axis)
-    assert isinstance(local_frame.z_axis, Axis)
+    assert isinstance(local_frame.x_axis, AxisUpdater)
+    assert isinstance(local_frame.y_axis, AxisUpdater)
+    assert isinstance(local_frame.z_axis, AxisUpdater)
 
     # Test components property
     assert len(local_frame.components) == 3

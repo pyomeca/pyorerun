@@ -1,16 +1,16 @@
 import numpy as np
 
 from pyorerun.abstract.abstract_class import Component
-from .local_frame import LocalFrame
-from .mesh import TransformableMesh
+from .local_frame import LocalFrameUpdater
+from .mesh import TransformableMeshUpdater
 
 
-class BiorbdModelSegment(Component):
-    def __init__(self, name, transform_callable: callable, mesh: TransformableMesh):
+class SegmentUpdater(Component):
+    def __init__(self, name, transform_callable: callable, mesh: TransformableMeshUpdater):
         self.name = name
         self.transform_callable = transform_callable
         self.mesh = mesh
-        self.local_frame = LocalFrame(name + "/frame", transform_callable)
+        self.local_frame = LocalFrameUpdater(name + "/frame", transform_callable)
 
     @property
     def nb_components(self):

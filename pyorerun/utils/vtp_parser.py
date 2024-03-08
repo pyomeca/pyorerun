@@ -80,10 +80,10 @@ def read_vtp_file(filename: str) -> dict:
     for ligne in content:
         if "<Piece" in ligne:
             num_points = extract_number_from_line(ligne, 'NumberOfPoints="')
+            num_polys = extract_number_from_line(ligne, 'NumberOfPolys="')
+
             mesh_dictionary["normals"] = np.zeros((num_points, 3))
             mesh_dictionary["nodes"] = np.zeros((num_points, 3))
-
-            num_polys = extract_number_from_line(ligne, 'NumberOfPolys="')
             mesh_dictionary["polygons"] = np.zeros((num_polys, 3))
 
         elif '<PointData Normals="Normals">' in ligne:

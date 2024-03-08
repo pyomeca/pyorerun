@@ -4,7 +4,7 @@ import rerun as rr
 from pyorerun.abstract.abstract_class import Component
 
 
-class Axis(Component):
+class AxisUpdater(Component):
     def __init__(self, name, transform_callable: callable, axis: int):
         """
 
@@ -19,7 +19,7 @@ class Axis(Component):
         self.name = name
         self.transform_callable = transform_callable
         self.axis = axis
-        self.scale = 0.3
+        self.scale = 0.1
 
     def nb_components(self):
         return 1
