@@ -25,7 +25,7 @@ class ModelUpdater(Components):
 
     def create_markers_updater(self):
         if self.model.nb_markers == 0:
-            return EmptyUpdater()
+            return EmptyUpdater(self.name + "/markers")
         return MarkersUpdater(
             self.name,
             marker_properties=MarkerProperties(
@@ -36,7 +36,7 @@ class ModelUpdater(Components):
 
     def create_ligaments_updater(self):
         if self.model.nb_ligaments == 0:
-            return EmptyUpdater()
+            return EmptyUpdater(self.name + "/ligaments")
 
         return LigamentsUpdater(
             self.name,
@@ -61,14 +61,14 @@ class ModelUpdater(Components):
             mesh = (
                 TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
                 if segment.has_mesh
-                else EmptyUpdater()
+                else EmptyUpdater(segment_name + "/mesh")
             )
             segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, mesh=mesh))
         return segments
 
     def create_muscles_updater(self):
         if self.model.nb_muscles == 0:
-            return EmptyUpdater()
+            return EmptyUpdater(self.name + "/muscles")
         return MusclesUpdater(
             self.name,
             properties=LineStripProperties(
