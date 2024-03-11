@@ -10,22 +10,26 @@ class BiorbdSegment:
 
     def __init__(self, segment, index):
         self.segment = segment
-        self._index = index
+        self._index: int = index
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.segment.name().to_string()
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._index
 
     @property
-    def has_mesh(self):
+    def has_mesh(self) -> bool:
         return self.segment.characteristics().mesh().hasMesh()
 
+    @property
+    def mesh_path(self) -> str:
+        return self.segment.characteristics().mesh().path().absolutePath().to_string()
 
-class BiorbdModel:
+
+class BiorbdModelNoMesh:
     """
     A class to handle a biorbd model and its transformations
     """
@@ -57,18 +61,6 @@ class BiorbdModel:
     @property
     def segments(self) -> tuple[BiorbdSegment, ...]:
         return tuple(BiorbdSegment(s, i) for i, s in enumerate(self.model.segments()))
-
-    @property
-    def segments_with_mesh(self) -> tuple[BiorbdSegment, ...]:
-        return tuple([s for s in self.segments if s.has_mesh])
-
-    @property
-    def mesh_paths(self) -> list[str]:
-        return [
-            s.characteristics().mesh().path().absolutePath().to_string()
-            for s in self.model.segments()
-            if s.characteristics().mesh().hasMesh()
-        ]
 
     def segment_homogeneous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
         """
@@ -147,3 +139,17 @@ class BiorbdModel:
                 muscle_strip.append(pts.to_array().tolist())
             muscles.append(muscle_strip)
         return muscles
+
+
+class BiorbdModel(BiorbdModelNoMesh):
+    """
+    This class extends the BiorbdModelNoMesh class and overrides the segments property.
+    It filters the segments to only include those that have a mesh.
+    """
+
+    def __init__(self, path):
+        super().__init__(path)
+
+    @property
+    def segments(self) -> tuple[BiorbdSegment, ...]:
+        return tuple([s for s in super().segments if s.has_mesh])

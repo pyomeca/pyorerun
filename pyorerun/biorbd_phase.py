@@ -1,7 +1,7 @@
 import numpy as np
 
 from .biorbd_components.model_interface import BiorbdModel
-from .biorbd_components.segments import ModelUpdater
+from .biorbd_components.model_updapter import ModelUpdater
 
 
 class BiorbdRerunPhase:

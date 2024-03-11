@@ -8,6 +8,7 @@ from .model_interface import BiorbdModel
 from .model_markers import MarkersUpdater
 from .segment import SegmentUpdater
 from ..abstract.abstract_class import Components
+from ..abstract.empty_updater import EmptyUpdater
 from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
 from ..biorbd_components.ligaments import LigamentsUpdater, MusclesUpdater
@@ -23,6 +24,8 @@ class ModelUpdater(Components):
         self.muscles = self.create_muscles_updater()
 
     def create_markers_updater(self):
+        if self.model.nb_markers == 0:
+            return EmptyUpdater(self.name + "/markers")
         return MarkersUpdater(
             self.name,
             marker_properties=MarkerProperties(
@@ -32,6 +35,9 @@ class ModelUpdater(Components):
         )
 
     def create_ligaments_updater(self):
+        if self.model.nb_ligaments == 0:
+            return EmptyUpdater(self.name + "/ligaments")
+
         return LigamentsUpdater(
             self.name,
             properties=LineStripProperties(
@@ -44,18 +50,25 @@ class ModelUpdater(Components):
 
     def create_segments_updater(self):
         segments = []
-        for i, (segment, mesh_path) in enumerate(zip(self.model.segments_with_mesh, self.model.mesh_paths)):
+
+        for i, segment in enumerate(self.model.segments):
             segment_name = self.name + "/" + segment.name
             transform_callable = partial(
                 self.model.segment_homogeneous_matrices_in_global,
                 segment_index=segment.id,
             )
 
-            mesh = TransformableMeshUpdater.from_file(segment_name, mesh_path, transform_callable)
+            mesh = (
+                TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
+                if segment.has_mesh
+                else EmptyUpdater(segment_name + "/mesh")
+            )
             segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, mesh=mesh))
         return segments
 
     def create_muscles_updater(self):
+        if self.model.nb_muscles == 0:
+            return EmptyUpdater(self.name + "/muscles")
         return MusclesUpdater(
             self.name,
             properties=LineStripProperties(
