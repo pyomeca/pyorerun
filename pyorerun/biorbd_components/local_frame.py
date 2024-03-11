@@ -1,10 +1,10 @@
 import numpy as np
+import rerun as rr
 
-from pyorerun.abstract.abstract_class import Components
-from .axisupdater import AxisUpdater
+from ..abstract.abstract_class import Component
 
 
-class LocalFrameUpdater(Components):
+class LocalFrameUpdater(Component):
     def __init__(self, name, transform_callable: callable):
         """
 
@@ -19,22 +19,19 @@ class LocalFrameUpdater(Components):
         self.name = name
         self.transform_callable = transform_callable
         self.scale = 0.1  # NOTE: This is a hard-coded value, and not transferred to the x,y,z axis objects
-        self.x_axis = AxisUpdater(name + "/X", transform_callable, 0)
-        self.y_axis = AxisUpdater(name + "/Y", transform_callable, 1)
-        self.z_axis = AxisUpdater(name + "/Z", transform_callable, 2)
-
-    @property
-    def components(self):
-        return [self.x_axis, self.y_axis, self.z_axis]
 
     @property
     def nb_components(self):
-        return len(self.components)
+        return 1
 
     def to_rerun(self, q: np.ndarray) -> None:
-        for component in self.components:
-            component.to_rerun(q)
+        homogenous_matrices = self.transform_callable(q)
+        rr.log(
+            self.name,
+            rr.Transform3D(
+                # scale=self.scale,
+                translation=homogenous_matrices[:3, 3],
+                mat3x3=homogenous_matrices[:3, :3],
+            ),
+        )
 
-    @property
-    def component_names(self) -> list[str]:
-        return [component.name for component in self.components]

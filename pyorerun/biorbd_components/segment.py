@@ -20,7 +20,7 @@ class SegmentUpdater(Component):
 
     @property
     def components(self) -> list[Component]:
-        return [self.mesh, *self.local_frame.components]
+        return [self.mesh, self.local_frame]
 
     def to_rerun(self, q: np.ndarray) -> None:
         for component in self.components:
