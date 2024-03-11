@@ -34,4 +34,3 @@ class LocalFrameUpdater(Component):
                 mat3x3=homogenous_matrices[:3, :3],
             ),
         )
-
