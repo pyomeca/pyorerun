@@ -15,6 +15,14 @@ class TransformableMeshUpdater(Component):
     def __init__(self, name: str, mesh: Trimesh, transform_callable: callable):
         self.__name = name + "/" + mesh.metadata["file_name"]
         self.__mesh = mesh
+
+        transformed_trimesh = self.apply_transform(np.eye(4))
+        self.__rerun_mesh = rr.Mesh3D(
+            vertex_positions=self.__mesh.vertices,
+            vertex_normals=transformed_trimesh.vertex_normals,
+            indices=self.__mesh.faces,
+        )
+
         self.transformed_mesh = mesh.copy()
         self.__color = np.array([0, 0, 0])
         self.transform_callable = transform_callable
@@ -46,6 +54,10 @@ class TransformableMeshUpdater(Component):
         return self.__mesh
 
     @property
+    def rerun_mesh(self) -> rr.Mesh3D:
+        return self.__rerun_mesh
+
+    @property
     def name(self):
         return self.__name
 
@@ -55,14 +67,16 @@ class TransformableMeshUpdater(Component):
 
     def to_rerun(self, q: np.ndarray) -> None:
         homogenous_matrices = self.transform_callable(q)
-        transformed_trimesh = self.apply_transform(homogenous_matrices)
         rr.log(
             self.name,
-            rr.Mesh3D(
-                vertex_positions=transformed_trimesh.vertices,
-                vertex_normals=transformed_trimesh.vertex_normals,
-                indices=transformed_trimesh.faces,
+            rr.Transform3D(
+                translation=homogenous_matrices[:3, 3],
+                mat3x3=homogenous_matrices[:3, :3],
             ),
+        )
+        rr.log(
+            self.name,
+            self.rerun_mesh,
         )
 
     @property
