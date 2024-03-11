@@ -10,6 +10,7 @@ class MarkersXp(Markers, ExperimentalData):
     def __init__(self, name, markers: PyoMarkers):
         self.name = name + "/markers"
         self.markers = markers
+        self.markers_numpy = markers.to_numpy()
         self.markers_properties = MarkerProperties(
             markers_names=markers.channel.values.tolist(),
             radius=0.01,
@@ -36,7 +37,7 @@ class MarkersXp(Markers, ExperimentalData):
         rr.log(
             self.name,
             rr.Points3D(
-                positions=from_pyomeca_to_rerun(self.markers[:3, :, frame].to_numpy()),
+                positions=from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame]),
                 radii=self.markers_properties.radius_to_rerun(),
                 colors=self.markers_properties.color_to_rerun(),
                 labels=self.markers_names,
@@ -45,7 +46,7 @@ class MarkersXp(Markers, ExperimentalData):
 
     def to_rerun_curve(self, frame) -> None:
         """todo:  should it be a MarkerCurve type?"""
-        positions_f = from_pyomeca_to_rerun(self.markers[:3, :, frame].to_numpy())
+        positions_f = from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame])
         markers_names = self.markers_names
         for m in markers_names:
             for j, axis in enumerate(["X", "Y", "Z"]):
