@@ -10,18 +10,18 @@ class BiorbdSegment:
 
     def __init__(self, segment, index):
         self.segment = segment
-        self._index = index
+        self._index: int = index
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.segment.name().to_string()
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._index
 
     @property
-    def has_mesh(self):
+    def has_mesh(self) -> bool:
         return self.segment.characteristics().mesh().hasMesh()
 
 
