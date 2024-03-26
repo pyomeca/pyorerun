@@ -33,7 +33,7 @@ class PhaseRerun:
         self.biorbd_models = BiorbdRerunPhase(name=self.name, phase=phase)
         self.xp_data = XpRerunPhase(name=self.name, phase=phase)
 
-    def add_animated_model(self, biomod: BiorbdModel, q: np.ndarray) -> None:
+    def add_animated_model(self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: PyoMarkers = None) -> None:
         """
         Add an animated model to the phase.
 
@@ -43,15 +43,36 @@ class PhaseRerun:
             The biorbd model to display.
         q: np.ndarray
             The generalized coordinates of the model.
+        tracked_markers: PyoMarkers
+            The markers to display, and sets a link between the model markers and the tracked markers.
         """
-        if q.shape[1] != self.t_span.shape[0]:
+        shape_is_not_consistent = q.shape[1] != self.t_span.shape[0]
+        if shape_is_not_consistent:
             raise ValueError(
                 f"The shapes of q and tspan are inconsistent. "
                 f"They must have the same length."
                 f"Current shapes are q: {q.shape[1]} and tspan: {self.t_span.shape}."
             )
 
-        self.biorbd_models.add_animated_model(biomod, q)
+        if tracked_markers is None:
+            self.biorbd_models.add_animated_model(biomod, q)
+        else:
+            self.biorbd_models.add_animated_model(biomod, q, tracked_markers.to_numpy()[:3, :, :])
+            self.__add_tracked_markers(biomod, tracked_markers)
+
+    def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers) -> None:
+        """Add the tracked markers to the phase."""
+        shape_of_markers_is_not_consistent = biomod.nb_markers != tracked_markers.shape[1]
+        names_are_ordered_differently = biomod.marker_names != tuple(tracked_markers.channel.data.tolist())
+        if shape_of_markers_is_not_consistent or names_are_ordered_differently:
+            raise ValueError(
+                f"The markers of the model and the tracked markers are inconsistent. "
+                f"They must have the same names and shape."
+                f"Current markers are {biomod.marker_names} and tracked markers: {tracked_markers.channels}."
+            )
+
+        self.add_xp_markers(f"{biomod.name}_tracked_markers", tracked_markers)
+        # add the weird_link between them
 
     def add_xp_markers(self, name, markers: PyoMarkers) -> None:
         """
@@ -70,7 +91,6 @@ class PhaseRerun:
                 f"They must have the same length."
                 f"Current shapes are q: {markers.shape[1]} and tspan: {self.t_span.shape}."
             )
-        markers
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:

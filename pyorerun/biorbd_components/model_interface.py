@@ -72,7 +72,7 @@ class BiorbdModelNoMesh:
 
     def markers(self, q: np.ndarray) -> np.ndarray:
         """
-        Returns a Nmarkersx3 array containing the position of each marker in the global reference frame
+        Returns a [N_markers x 3] array containing the position of each marker in the global reference frame
         """
         return np.array(
             [self.model.markers(GeneralizedCoordinates(q))[i].to_array() for i in range(self.model.nbMarkers())]

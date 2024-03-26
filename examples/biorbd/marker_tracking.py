@@ -19,19 +19,20 @@ def main():
 
     # loading biorbd model
     biorbd_model = BiorbdModel(biorbd_model_path)
-    all_q = q + 0.1 * np.random.rand(2, nb_frames)
+    all_q = q + 0.3 * np.random.rand(2, nb_frames)
     noisy_markers = np.zeros((3, biorbd_model.nb_markers, nb_frames))
     for i in range(nb_frames):
         noisy_markers[:, :, i] = biorbd_model.markers(all_q[:, i]).T
 
     # running the animation
     rerun_biorbd = PhaseRerun(t_span)
-    rerun_biorbd.add_animated_model(biorbd_model, q)
     markers = Markers(data=noisy_markers, channels=list(biorbd_model.marker_names))
-    rerun_biorbd.add_xp_markers(
-        name="noisy_markers",
-        markers=markers,
-    )
+    rerun_biorbd.add_animated_model(biorbd_model, q, tracked_markers=markers)
+
+    # rerun_biorbd.add_xp_markers(
+    #     name="noisy_markers",
+    #     markers=markers,
+    # )
     rerun_biorbd.rerun("animation")
 
 
