@@ -67,8 +67,8 @@ class PhaseRerun:
         if shape_of_markers_is_not_consistent or names_are_ordered_differently:
             raise ValueError(
                 f"The markers of the model and the tracked markers are inconsistent. "
-                f"They must have the same names and shape."
-                f"Current markers are {biomod.marker_names} and tracked markers: {tracked_markers.channels}."
+                f"They must have the same names and shape.\n"
+                f"Current markers are {biomod.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
             )
 
         self.add_xp_markers(f"{biomod.name}_tracked_markers", tracked_markers)
