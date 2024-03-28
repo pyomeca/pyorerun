@@ -16,16 +16,22 @@ class TransformableMeshUpdater(Component):
         self.__name = name + "/" + mesh.metadata["file_name"]
         self.__mesh = mesh
 
+        self.transformed_mesh = mesh.copy()
+        self.__color = np.array([0, 0, 0])
+        self.transform_callable = transform_callable
+
+    def set_color(self, color: tuple[int, int, int]) -> None:
+        self.__color = np.array(color)
+        self._set_rerun_mesh3d()
+
+    def _set_rerun_mesh3d(self):
         transformed_trimesh = self.apply_transform(np.eye(4))
         self.__rerun_mesh = rr.Mesh3D(
             vertex_positions=self.__mesh.vertices,
             vertex_normals=transformed_trimesh.vertex_normals,
+            vertex_colors=np.tile(self.__color, (self.__mesh.vertices.shape[0], 1)),
             indices=self.__mesh.faces,
         )
-
-        self.transformed_mesh = mesh.copy()
-        self.__color = np.array([0, 0, 0])
-        self.transform_callable = transform_callable
 
     @classmethod
     def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMeshUpdater":
