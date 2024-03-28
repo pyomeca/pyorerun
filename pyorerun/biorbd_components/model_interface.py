@@ -2,6 +2,8 @@ import biorbd
 import numpy as np
 from biorbd import GeneralizedCoordinates, segment_index
 
+from .model_display_options import DisplayModelOptions
+
 
 class BiorbdSegment:
     """
@@ -34,9 +36,10 @@ class BiorbdModelNoMesh:
     A class to handle a biorbd model and its transformations
     """
 
-    def __init__(self, path):
+    def __init__(self, path, options=None):
         self.path = path
         self.model = biorbd.Model(path)
+        self.options = options if options is not None else DisplayModelOptions()
 
     @property
     def name(self):
@@ -147,8 +150,8 @@ class BiorbdModel(BiorbdModelNoMesh):
     It filters the segments to only include those that have a mesh.
     """
 
-    def __init__(self, path):
-        super().__init__(path)
+    def __init__(self, path, options=None):
+        super().__init__(path, options)
 
     @property
     def segments(self) -> tuple[BiorbdSegment, ...]:

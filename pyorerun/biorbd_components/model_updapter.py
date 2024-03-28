@@ -29,7 +29,9 @@ class ModelUpdater(Components):
         return MarkersUpdater(
             self.name,
             marker_properties=MarkerProperties(
-                markers_names=self.model.marker_names, color=np.array([0, 0, 255]), radius=0.01
+                markers_names=self.model.marker_names,
+                color=np.array(self.model.options.markers_color),
+                radius=self.model.options.markers_radius,
             ),
             callable_markers=self.model.markers,
         )
@@ -42,8 +44,8 @@ class ModelUpdater(Components):
             self.name,
             properties=LineStripProperties(
                 strip_names=self.model.ligament_names,
-                color=np.array([255, 255, 0]),
-                radius=0.01,
+                color=np.array(self.model.options.ligaments_color),
+                radius=self.model.options.ligaments_radius,
             ),
             update_callable=self.model.ligament_strips,
         )
@@ -58,11 +60,12 @@ class ModelUpdater(Components):
                 segment_index=segment.id,
             )
 
-            mesh = (
-                TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
-                if segment.has_mesh
-                else EmptyUpdater(segment_name + "/mesh")
-            )
+            if segment.has_mesh:
+                mesh = TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
+                mesh.set_color(self.model.options.mesh_color)
+            else:
+                mesh = EmptyUpdater(segment_name + "/mesh")
+
             segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, mesh=mesh))
         return segments
 
@@ -73,8 +76,8 @@ class ModelUpdater(Components):
             self.name,
             properties=LineStripProperties(
                 strip_names=self.model.muscle_names,
-                color=np.array([255, 0, 0]),
-                radius=0.004,
+                color=np.array(self.model.options.muscle_color),
+                radius=self.model.options.muscle_radius,
             ),
             update_callable=self.model.muscle_strips,
         )

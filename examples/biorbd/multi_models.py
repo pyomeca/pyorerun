@@ -40,7 +40,11 @@ def main():
 
     rerun_biorbd.add_phase(t_span=t_span0, phase=0, window="animation")
     rerun_biorbd.add_animated_model(biorbd_model, q0, phase=0, window="animation")
-    rerun_biorbd.add_animated_model(biorbd_model, q0 + 0.2, phase=0, window="animation")
+
+    black_model = BiorbdModel(biorbd_model_path)
+    black_model.options.mesh_color = (0, 0, 0)
+
+    rerun_biorbd.add_animated_model(black_model, q0 + 0.2, phase=0, window="animation")
 
     rerun_biorbd.add_phase(t_span=t_span0, phase=0, window="split_animation")
     rerun_biorbd.add_animated_model(biorbd_model, q0 + 0.2, phase=0, window="split_animation")

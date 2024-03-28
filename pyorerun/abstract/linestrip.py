@@ -90,4 +90,4 @@ class LineStripProperties:
         if self.color.ndim == 1:
             return np.tile(self.color, (self.nb_strips, 1))
         else:
-            return np.tile(self.color, (self.nb_strips, 1))
+            return self.color
