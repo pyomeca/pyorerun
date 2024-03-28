@@ -36,10 +36,14 @@ class BiorbdModelNoMesh:
     A class to handle a biorbd model and its transformations
     """
 
-    def __init__(self, path, options=None):
+    def __init__(self, path: str, options=None):
         self.path = path
         self.model = biorbd.Model(path)
-        self.options = options if options is not None else DisplayModelOptions()
+        self.options: DisplayModelOptions = options if options is not None else DisplayModelOptions()
+
+    @classmethod
+    def from_biorbd_object(cls, model: biorbd.Model, options=None):
+        return cls(model.path().absolutePath().to_string(), options)
 
     @property
     def name(self):
