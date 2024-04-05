@@ -7,7 +7,7 @@ import numpy as np
 from numpy import random
 from pyomeca import Markers
 
-from pyorerun import BiorbdModel, MultiPhaseRerun, DisplayModelOptions
+from pyorerun import BiorbdModel, MultiPhaseRerun
 
 
 def building_some_q_and_t_span(nb_frames: int, nb_seconds: int) -> tuple[np.ndarray, np.ndarray]:
@@ -28,12 +28,6 @@ def main():
     nb_seconds = 1
     q0, t_span0 = building_some_q_and_t_span(nb_frames, nb_seconds)
     q1, t_span1 = building_some_q_and_t_span(20, 0.5)
-
-    # Display options
-    display_options = DisplayModelOptions()
-    display_options.show_markers = False
-    display_options.show_marker_labels = False
-
 
     # loading biorbd model
     biorbd_model = BiorbdModel(biorbd_model_path)
