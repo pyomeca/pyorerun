@@ -76,8 +76,8 @@ class ModelUpdater(Components):
             self.name,
             properties=LineStripProperties(
                 strip_names=self.model.muscle_names,
-                color=np.array(self.model.options.muscle_color),
-                radius=self.model.options.muscle_radius,
+                color=np.array(self.model.options.muscles_color),
+                radius=self.model.options.muscles_radius,
             ),
             update_callable=self.model.muscle_strips,
         )
