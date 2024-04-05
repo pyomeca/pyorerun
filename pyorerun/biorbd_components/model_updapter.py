@@ -100,5 +100,13 @@ class ModelUpdater(Components):
         return [component.name for component in self.components]
 
     def to_rerun(self, q: np.ndarray) -> None:
+
+        if len(q.shape) == 1:
+            pass
+        elif len(q.shape) == 2 and q.shape[1] == 1:
+            q = np.reshape(q, (q.shape[0],))
+        else:
+            raise ValueError("q must be a vector.")
+
         for component in self.components:
             component.to_rerun(q)
