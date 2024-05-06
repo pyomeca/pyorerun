@@ -100,5 +100,13 @@ class ModelUpdater(Components):
         return [component.name for component in self.components]
 
     def to_rerun(self, q: np.ndarray) -> None:
+        """
+        This function logs the components to rerun.
+
+        Parameters
+        ----------
+        q: np.ndarray
+            The generalized coordinates of the model one-dimensional array, i.e., q.shape = (n_q,).
+        """
         for component in self.components:
             component.to_rerun(q)
