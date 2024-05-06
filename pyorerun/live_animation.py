@@ -10,9 +10,36 @@ from pyorerun import BiorbdModel, PhaseRerun
 class LiveModelAnimation:
     """
     A class to animate a biorbd model in rerun and update the joint angles in real-time.
-    """
 
-    def __init__(self, model_path: str):
+    Attributes
+    ----------
+    counter : int
+        A counter to keep track of the number of updates.
+    model : BiorbdModel
+        The biorbd model to animate.
+    biorbd_model : biorbd.Model
+        The underlying biorbd model.
+    q : np.ndarray
+        The current joint angles.
+    dof_sliders : list
+        The sliders for adjusting the joint angles.
+    dof_slider_values : list
+        The labels for displaying the current slider values.
+    update_functions : list
+        The functions for updating the model when a slider is moved.
+    with_q_charts : bool
+        Whether to plot q values when the joint angles are updated.
+    """
+    def __init__(self, model_path: str, with_q_charts: bool = False):
+        """
+        Parameters
+        ----------
+        model_path: str
+            The path to the bioMod file.
+        with_q_charts
+            If True, q values will be plotted when the joint angles are updated.
+        """
+
         self.counter = 0
         self.model = BiorbdModel(model_path)
         self.biorbd_model = self.model.model
@@ -20,6 +47,7 @@ class LiveModelAnimation:
         self.dof_sliders = []
         self.dof_slider_values = []
         self.update_functions = []
+        self.with_q_charts = with_q_charts
 
     def update_viewer(self, event, dof_index: int):
         the_dof_idx = dof_index
@@ -34,7 +62,8 @@ class LiveModelAnimation:
         # Update the model
         self.update_model(self.q)
         # Update the q trajectories
-        self.update_trajectories(self.q)
+        if self.with_q_charts:
+            self.update_trajectories(self.q)
 
     def update_model(self, q: np.ndarray):
         self.viz.biorbd_models.rerun_models[0].to_rerun(q)
