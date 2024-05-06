@@ -11,6 +11,7 @@ setup(
         "trimesh",
         "biorbd",
         "pyomeca",
+        "tkinter",
     ],
     author="Pierre Puchaud",
     author_email="puchaud.pierre@gmail.com",

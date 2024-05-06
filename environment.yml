@@ -9,3 +9,4 @@ dependencies:
 - biorbd>=1.10.5
 - trimesh
 - pyomeca
+- tkinter
