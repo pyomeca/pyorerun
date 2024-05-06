@@ -147,6 +147,10 @@ class BiorbdModelNoMesh:
             muscles.append(muscle_strip)
         return muscles
 
+    @property
+    def dof_names(self) -> tuple[str, ...]:
+        return tuple(s.to_string() for s in self.model.nameDof())
+
 
 class BiorbdModel(BiorbdModelNoMesh):
     """
