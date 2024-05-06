@@ -30,6 +30,7 @@ class LiveModelAnimation:
     with_q_charts : bool
         Whether to plot q values when the joint angles are updated.
     """
+
     def __init__(self, model_path: str, with_q_charts: bool = False):
         """
         Parameters
