@@ -4,7 +4,8 @@ from tkinter import ttk
 import numpy as np
 import rerun as rr
 
-from pyorerun import BiorbdModel, PhaseRerun
+from .biorbd_components.model_interface import BiorbdModel
+from .phase_rerun import PhaseRerun
 
 
 class LiveModelAnimation:
