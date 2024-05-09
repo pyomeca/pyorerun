@@ -23,6 +23,38 @@ class ModelUpdater(Components):
         self.segments = self.create_segments_updater()
         self.muscles = self.create_muscles_updater()
 
+    @classmethod
+    def from_file(cls, model_path: str):
+        """
+        This factory method is meant to be used with rerun easily. For example, to display a model in rerun,
+        and add its custom experimental data.
+
+        Parameters
+        ----------
+        model_path: str
+            The path to the bioMod file, such as "path/to/model.bioMod".
+
+        Returns
+        -------
+        ModelUpdater
+
+        Examples
+        --------
+        >>> import rerun as rr
+        >>> import numpy as np
+
+        >>> q = np.zeros(10)
+        >>> model = ModelUpdater.from_file("path/to/model.bioMod")
+
+        >>> rr.init("my_thing", spawn=True)
+        >>> rr.set_time_sequence(timeline="step", sequence=0)
+        >>> model.to_rerun(q)
+        >>> rr.log("anything", rr.Anything())
+
+        """
+        model = BiorbdModel(model_path)
+        return cls(model.name, model)
+
     def create_markers_updater(self):
         if self.model.nb_markers == 0:
             return EmptyUpdater(self.name + "/markers")
