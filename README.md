@@ -58,6 +58,16 @@ viz.rerun("msk_model")
     />
 </p>
 
+# play with joint DoFs q
+``` python3
+from pyorerun import LiveModelAnimation
+
+
+model_path = "models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
+animation = LiveModelAnimation(model_path, with_q_charts=True)
+animation.rerun()
+```
+
 # Contributing
 Contributions are welcome. I will be happy to review and help you to improve the code.
 
