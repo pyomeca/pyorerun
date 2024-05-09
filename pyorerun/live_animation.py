@@ -5,7 +5,7 @@ import numpy as np
 import rerun as rr
 
 from .biorbd_components.model_interface import BiorbdModel
-from .phase_rerun import PhaseRerun
+from .biorbd_components.model_updapter import ModelUpdater
 
 
 class LiveModelAnimation:
@@ -43,8 +43,10 @@ class LiveModelAnimation:
         """
 
         self.counter = 0
-        self.model = BiorbdModel(model_path)
+        self.model_updater = ModelUpdater.from_file(model_path)
+        self.model = self.model_updater.model
         self.biorbd_model = self.model.model
+
         self.q = np.zeros(self.biorbd_model.nbQ())
         self.dof_sliders = []
         self.dof_slider_values = []
@@ -52,11 +54,17 @@ class LiveModelAnimation:
         self.with_q_charts = with_q_charts
 
     def update_viewer(self, event, dof_index: int):
+        the_dof_idx, the_value = self.fetch_and_update_slider_value(event, dof_index)
+        self.update_rerun_components(the_dof_idx, the_value)
+
+    def fetch_and_update_slider_value(self, event, dof_index: int) -> tuple[int, float]:
         the_dof_idx = dof_index
         the_value = self.dof_sliders[the_dof_idx].get()
         # update the slider value q
         self.dof_slider_values[the_dof_idx].config(text=f"{the_value:.2f}")
-        # update joint angles q
+        return the_dof_idx, the_value
+
+    def update_rerun_components(self, the_dof_idx: int, the_value: float):
         self.q[the_dof_idx] = the_value
         # update counter
         self.counter += 1
@@ -68,7 +76,7 @@ class LiveModelAnimation:
             self.update_trajectories(self.q)
 
     def update_model(self, q: np.ndarray):
-        self.viz.biorbd_models.rerun_models[0].to_rerun(q)
+        self.model_updater.to_rerun(q)
 
     def update_trajectories(self, q: np.ndarray):
         q_ranges = [q_range for segment in self.biorbd_model.segments() for q_range in segment.QRanges()]
@@ -88,16 +96,9 @@ class LiveModelAnimation:
         rr.log(f"{name}/value", rr.Scalar(val))
 
     def rerun(self, name: str = None):
-        # Building a fake pyorerun animation
-        nb_frames = 1
-        nb_seconds = 0
-        t_span = np.linspace(0, nb_seconds, nb_frames)
-        q = np.zeros((self.model.model.nbQ(), nb_frames))
-        self.viz = PhaseRerun(t_span)
-        self.viz.add_animated_model(self.model, q)
-
         # update manually here
         rr.init(application_id=f"{self.model.name}" if name is None else name, spawn=True)
+        self.update_rerun_components(the_dof_idx=0, the_value=0.0)
         self.create_window_with_sliders()
 
     def create_window_with_sliders(self):

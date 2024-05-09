@@ -28,6 +28,6 @@ class LocalFrameUpdater(Component):
             rr.Transform3D(
                 # scale=self.scale,
                 translation=homogenous_matrices[:3, 3],
-                mat3x3=homogenous_matrices[:3, :3],
+                mat3x3=homogenous_matrices[:3, :3] * 0.25,
             ),
         )
