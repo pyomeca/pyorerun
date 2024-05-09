@@ -4,6 +4,7 @@ from pyomeca import Markers as PyoMarkers
 
 from .biorbd_components.model_interface import BiorbdModel
 from .biorbd_phase import BiorbdRerunPhase
+from .xp_components.depth_image import DepthImage
 from .xp_components.markers import MarkersXp
 from .xp_phase import XpRerunPhase
 
@@ -92,6 +93,25 @@ class PhaseRerun:
                 f"Current shapes are q: {markers.shape[1]} and tspan: {self.t_span.shape}."
             )
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
+
+    def add_depth_image(self, name, depth_image: np.ndarray) -> None:
+        """
+        Add an animated model to the phase.
+
+        Parameters
+        ----------
+        name: str
+            The name of the markers set.
+        markers: PyoMarkers
+            The experimental data to display.
+        """
+        if depth_image.shape[2] != self.t_span.shape[0]:
+            raise ValueError(
+                f"The shapes of q and tspan are inconsistent. "
+                f"They must have the same length."
+                f"Current shapes are: {depth_image.shape[2]} and tspan: {self.t_span.shape}."
+            )
+        self.xp_data.add_data(DepthImage(name=f"{self.name}/{name}", depth_image=depth_image))
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
         if init:

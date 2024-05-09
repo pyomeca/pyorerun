@@ -33,6 +33,9 @@ class MultiPhaseRerun:
     def add_xp_markers(self, name: str, markers: PyoMarkers, phase: int = 0, window: str = "animation") -> None:
         self.rerun_biorbd_phases[phase][window].add_xp_markers(name, markers)
 
+    def add_depth_image(self, name: str, depth_image: np.ndarray, phase: int = 0, window: str = "animation") -> None:
+        self.rerun_biorbd_phases[phase][window].add_depth_image(name, depth_image)
+
     @property
     def nb_phase(self) -> int:
         return len(self.rerun_biorbd_phases)
