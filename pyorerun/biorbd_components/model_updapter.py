@@ -42,6 +42,7 @@ class ModelUpdater(Components):
         --------
         >>> import rerun as rr
         >>> import numpy as np
+        >>> from pyorerun import ModelUpdater
 
         >>> q = np.zeros(10)
         >>> model = ModelUpdater.from_file("path/to/model.bioMod")
