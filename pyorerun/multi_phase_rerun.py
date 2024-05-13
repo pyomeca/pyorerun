@@ -1,5 +1,6 @@
 import numpy as np
 import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
+import rerun.blueprint as rrb
 from pyomeca import Markers as PyoMarkers
 
 from .biorbd_components.model_interface import BiorbdModel
@@ -12,7 +13,7 @@ class MultiPhaseRerun:
     """
 
     def __init__(self) -> None:
-        self.rerun_biorbd_phases: list[dict] = []
+        self.rerun_biorbd_phases: list[dict[str, PhaseRerun], ...] = []
 
     def add_phase(self, t_span: np.ndarray, phase: int = 0, window: str = "animation") -> None:
 
@@ -48,6 +49,12 @@ class MultiPhaseRerun:
     def rerun(self, server_name: str = "multi_phase_animation") -> None:
         rr.init(server_name, spawn=True)
         for i, phase in enumerate(self.rerun_biorbd_phases):
-            for j, rr_phase in enumerate(phase.values()):
+            for j, (window, rr_phase) in enumerate(phase.items()):
+
+                rrb.Spatial3DView(
+                    origin="/",
+                    contents=f"{window}/**",
+                )
+
                 more_phases_after_this_one = i < self.nb_phase - 1
                 rr_phase.rerun(init=False, clear_last_node=more_phases_after_this_one)
