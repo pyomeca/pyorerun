@@ -111,7 +111,7 @@ class LiveModelAnimation:
             dof_slider_label.grid(row=i, column=0, padx=10, pady=5, sticky="w")
 
             self.dof_sliders.append(
-                ttk.Scale(root, from_=-5, to=5, orient="horizontal", command=self.update_functions[i])
+                ttk.Scale(root, from_=-5, to=5, orient="horizontal", command=self.update_functions[i], length=200)
             )
             self.dof_sliders[i].grid(row=i, column=1, padx=30, pady=5)
             self.dof_slider_values.append(ttk.Label(root, text="0"))
