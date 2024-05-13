@@ -160,6 +160,10 @@ class BiorbdModelNoMesh:
         q_ranges = [q_range for segment in self.model.segments() for q_range in segment.QRanges()]
         return tuple((q_range.min(), q_range.max()) for q_range in q_ranges)
 
+    @property
+    def gravity(self) -> np.ndarray:
+        return self.model.getGravity().to_array()
+
 
 class BiorbdModel(BiorbdModelNoMesh):
     """

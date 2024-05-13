@@ -5,6 +5,8 @@ from pyomeca import Markers as PyoMarkers
 from .abstract.q import QProperties
 from .biorbd_components.model_interface import BiorbdModel
 from .biorbd_phase import BiorbdRerunPhase
+from .timeless.gravity import Gravity
+from .timeless_components import TimelessRerunPhase
 from .xp_components.markers import MarkersXp
 from .xp_components.timeseries_q import TimeSeriesQ
 from .xp_phase import XpRerunPhase
@@ -13,6 +15,22 @@ from .xp_phase import XpRerunPhase
 class PhaseRerun:
     """
     A class to animate a biorbd model in rerun.
+
+    Attributes
+    ----------
+    phase : int
+        The phase number of the animation.
+    name : str
+        The name of the animation.
+    t_span : np.ndarray
+        The time span of the animation, such as the time instant of each frame.
+    biorbd_models : BiorbdRerunPhase
+        The biorbd models to animate.
+    xp_data : XpRerunPhase
+        The experimental data to display.
+    timeless_components : list
+        The components to display at the begin of the phase but stay until the end of this phase.
+        This not a true timeless in the sens of rerun, as if a new phase is created, the timeless components will be cleared.
     """
 
     def __init__(self, t_span: np.ndarray, phase: int = 0, window: str = None):
@@ -34,6 +52,7 @@ class PhaseRerun:
 
         self.biorbd_models = BiorbdRerunPhase(name=self.name, phase=phase)
         self.xp_data = XpRerunPhase(name=self.name, phase=phase)
+        self.timeless_components = TimelessRerunPhase(name=self.name, phase=phase)
 
     def add_animated_model(
         self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: PyoMarkers = None, display_q: bool = False
@@ -72,6 +91,10 @@ class PhaseRerun:
                 q,
                 ranges=biomod.q_ranges,
                 dof_names=biomod.dof_names,
+            )
+        if biomod.options.show_gravity:
+            self.timeless_components.add_component(
+                Gravity(name=f"{self.name}/{self.biorbd_models.nb_models}_{biomod.name}", vector=biomod.gravity)
             )
 
     def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers) -> None:
@@ -138,11 +161,21 @@ class PhaseRerun:
         if init:
             rr.init(f"{name}_{self.phase}", spawn=True)
 
-        for frame, t in enumerate(self.t_span):
+        frame = 0
+        rr.set_time_seconds("stable_time", self.t_span[frame])
+        self.timeless_components.to_rerun()
+        self.biorbd_models.to_rerun(frame)
+        self.xp_data.to_rerun(frame)
+
+        for frame, t in enumerate(self.t_span[1:]):
             rr.set_time_seconds("stable_time", t)
-            self.biorbd_models.to_rerun(frame)
-            self.xp_data.to_rerun(frame)
+            self.biorbd_models.to_rerun(frame + 1)
+            self.xp_data.to_rerun(frame + 1)
 
         if clear_last_node:
-            for component in [*self.biorbd_models.component_names, *self.xp_data.component_names]:
+            for component in [
+                *self.biorbd_models.component_names,
+                *self.xp_data.component_names,
+                *self.timeless_components.component_names,
+            ]:
                 rr.log(component, rr.Clear(recursive=False))

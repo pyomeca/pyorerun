@@ -28,6 +28,7 @@ def main():
     nb_seconds = 1
     q0, t_span0 = building_some_q_and_t_span(nb_frames, nb_seconds)
     q1, t_span1 = building_some_q_and_t_span(20, 0.5)
+    time_offset = t_span0[-1]
 
     # loading biorbd model
     biorbd_model = BiorbdModel(biorbd_model_path)
@@ -43,16 +44,17 @@ def main():
 
     black_model = BiorbdModel(biorbd_model_path)
     black_model.options.mesh_color = (0, 0, 0)
+    black_model.options.show_gravity = True
 
     rerun_biorbd.add_animated_model(black_model, q0 + 0.2, phase=0, window="animation")
 
     rerun_biorbd.add_phase(t_span=t_span0, phase=0, window="split_animation")
     rerun_biorbd.add_animated_model(biorbd_model, q0 + 0.2, phase=0, window="split_animation")
 
-    rerun_biorbd.add_phase(t_span=t_span0[-1] + t_span1, phase=1)
+    rerun_biorbd.add_phase(t_span=time_offset + t_span1, phase=1)
     rerun_biorbd.add_animated_model(biorbd_model, q1, phase=1)
 
-    rerun_biorbd.add_phase(t_span=t_span0[-1] + t_span1, phase=1, window="split_animation")
+    rerun_biorbd.add_phase(t_span=time_offset + t_span1, phase=1, window="split_animation")
     rerun_biorbd.add_animated_model(biorbd_model, q1, phase=1, window="split_animation")
 
     markers = Markers(data=noisy_markers, channels=list(biorbd_model.marker_names))

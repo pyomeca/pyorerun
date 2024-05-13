@@ -3,6 +3,16 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
+class TimelessComponent(ABC):
+    @abstractmethod
+    def to_rerun(self):
+        pass
+
+    @abstractmethod
+    def nb_components(self):
+        pass
+
+
 class Component(ABC):
     @abstractmethod
     def to_rerun(self, q: np.ndarray):
