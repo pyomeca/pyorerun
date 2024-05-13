@@ -92,8 +92,10 @@ class PhaseRerun:
                 ranges=biomod.q_ranges,
                 dof_names=biomod.dof_names,
             )
-
-        self.timeless_components.add_component(Gravity(name=f"{self.name}/{biomod.name}", vector=biomod.gravity))
+        if biomod.options.show_gravity:
+            self.timeless_components.add_component(
+                Gravity(name=f"{self.name}/{self.biorbd_models.nb_models}_{biomod.name}", vector=biomod.gravity)
+            )
 
     def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers) -> None:
         """Add the tracked markers to the phase."""
