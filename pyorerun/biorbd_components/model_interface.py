@@ -148,8 +148,17 @@ class BiorbdModelNoMesh:
         return muscles
 
     @property
+    def nb_q(self) -> int:
+        return self.model.nbQ()
+
+    @property
     def dof_names(self) -> tuple[str, ...]:
         return tuple(s.to_string() for s in self.model.nameDof())
+
+    @property
+    def q_ranges(self) -> tuple[tuple[float, float], ...]:
+        q_ranges = [q_range for segment in self.model.segments() for q_range in segment.QRanges()]
+        return tuple((q_range.min(), q_range.max()) for q_range in q_ranges)
 
 
 class BiorbdModel(BiorbdModelNoMesh):

@@ -21,7 +21,7 @@ def main():
     q[15, :] = np.linspace(0, np.pi / 8, nb_frames)
 
     viz = PhaseRerun(t_span)
-    viz.add_animated_model(model, q)
+    viz.add_animated_model(model, q, display_q=True)
     viz.rerun("msk_model")
 
 
