@@ -23,15 +23,9 @@ import pyorerun as prr
 prr.c3d("example.c3d")
 ```
 
-<p align="center">
-    <img
-      src="docs/rerun-c3d-viewer.png"
-      alt="logo"
-      width="500"
-    />
-</p>
+https://github.com/pyomeca/pyorerun/assets/40755537/9f5c0263-2558-4ffb-ab80-dafa4b7ea068
 
-**NOTE**: Only handle markers for now
+**NOTE**: Only handle markers, force plates, floor for now
 
 # Rerun biorbd Models
 
