@@ -51,8 +51,8 @@ def floor_mesh(square_width: float, height_offset: float, subsquares: int) -> tu
         The faces of the floor.
     """
     x, y = np.meshgrid(
-        np.linspace(-square_width / 2, square_width / 2, subsquares),
-        np.linspace(-square_width / 2, square_width / 2, subsquares),
+        np.linspace(-square_width, square_width, subsquares),
+        np.linspace(-square_width, square_width, subsquares),
     )
 
     vertices = []
