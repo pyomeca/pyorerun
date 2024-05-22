@@ -13,7 +13,6 @@ def rrc3d(
     c3d_file: str,
     show_floor: bool = True,
     show_force_plates: bool = True,
-    show_camera: bool = True,
     marker_trajectories: bool = False,
 ) -> None:
     """
@@ -118,6 +117,11 @@ def get_force_plates(c3d_file, units) -> list[dict[str, np.ndarray]]:
 
 def get_lowest_corner(c3d_file, units) -> float:
     c3d_file = c3d_file_format(c3d_file)
+    corners = c3d_file["parameters"]["FORCE_PLATFORM"]["CORNERS"]["value"][2, :, :]
+
+    if corners.shape[1] == 0:
+        return 0
+
     return np.min(
         adjust_position_unit_to_meters(
             c3d_file["parameters"]["FORCE_PLATFORM"]["CORNERS"]["value"][2, :, :],
