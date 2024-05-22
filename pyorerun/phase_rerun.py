@@ -5,7 +5,7 @@ from pyomeca import Markers as PyoMarkers
 from .abstract.q import QProperties
 from .biorbd_components.model_interface import BiorbdModel
 from .biorbd_phase import BiorbdRerunPhase
-from .timeless.gravity import Gravity
+from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
 from .xp_components.markers import MarkersXp
 from .xp_components.timeseries_q import TimeSeriesQ
@@ -156,6 +156,16 @@ class PhaseRerun:
         self.xp_data.add_data(
             TimeSeriesQ(name=f"{self.name}/{name}", q=q, properties=QProperties(joint_names=dof_names, ranges=ranges))
         )
+
+    def add_floor(self, square_width: float = None, height_offset: float = None, subsquares: int = None) -> None:
+        """Add a floor to the phase."""
+        self.timeless_components.add_component(
+            Floor(name=f"{self.name}", square_width=square_width, height_offset=height_offset, subsquares=subsquares)
+        )
+
+    def add_force_plate(self, num: int, corners: np.ndarray) -> None:
+        """Add a force plate to the phase."""
+        self.timeless_components.add_component(ForcePlate(name=f"{self.name}", num=num, corners=corners))
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
         if init:
