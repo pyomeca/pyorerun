@@ -24,6 +24,13 @@ class MultiFrameRatePhaseRerun:
         self.phase_reruns = phase_reruns
 
     @property
+    def nb_phases(self) -> int:
+        """
+        Get the number of phases in parallel.
+        """
+        return len(self.phase_reruns)
+
+    @property
     def t_spans(self) -> list[np.ndarray]:
         """
         Get the time spans of the phases.
@@ -64,9 +71,13 @@ class MultiFrameRatePhaseRerun:
         Get the cumulative frames in the merged time span.
         """
         frame_t_span_idx = self.frame_t_span_idx
-        return [calculate_cumulative_frames(p, frame_t_span_idx) for p in range(len(self.phase_reruns))]
+        return [calculate_cumulative_frames(p, frame_t_span_idx) for p in range(self.nb_phases)]
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
+        if self.nb_phases == 1:
+            self.phase_reruns[0].rerun(name, init, clear_last_node)
+            return
+
         if init:
             rr.init(f"{name}_{0}", spawn=True)
 
@@ -95,7 +106,7 @@ class MultiFrameRatePhaseRerun:
                     rr.log(component, rr.Clear(recursive=False))
 
 
-def calculate_cumulative_frames(id, frame_t_span_idx):
+def calculate_cumulative_frames(id: int, frame_t_span_idx) -> list[int]:
     """
     Calculate the cumulative frames for a given id in the frame_t_span_idx list.
     Example output for frame_t_span_idx = [0, 0, 1, 1, 2, 2, 2, 3, 3]

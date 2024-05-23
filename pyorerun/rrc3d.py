@@ -15,6 +15,7 @@ def rrc3d(
     show_floor: bool = True,
     show_force_plates: bool = True,
     show_forces: bool = True,
+    down_sampled_forces: bool = False,
     marker_trajectories: bool = False,
 ) -> None:
     """
@@ -30,8 +31,9 @@ def rrc3d(
         If True, show the force plates.
     show_forces: bool
         If True, show the forces.
-    show_camera: bool
-        If True, show the camera.
+    down_sampled_forces: bool
+        If True, down sample the force data to align with the marker data.
+        If False, the force data will be displayed at their original frame rate, It may get slower when loading the data.
     marker_trajectories: bool
         If True, show the marker trajectories.
     """
@@ -57,25 +59,24 @@ def rrc3d(
 
     if show_forces:
         force_data = get_force_vector(c3d_file)
-        for i, force in enumerate(force_data):
-            if i == 0:
-                phase_rerun_plateform = PhaseRerun(force["time"])
-            # ratio = force["force"].shape[1] / t_span.shape[0]
-            # down_sampled_slice = slice(0, force["center_of_pressure"].shape[1], int(ratio))
-            # down_sampled_center_of_pressure = adjust_position_unit_to_meters(
-            #     force["center_of_pressure"][:, down_sampled_slice], unit=units
-            # )
-            # down_sampled_force = force["force"][:, down_sampled_slice]
-            # phase_rerun.add_force_data(
-            #     num=i, force_origin=down_sampled_center_of_pressure, force_vector=down_sampled_force
-            # )
-            phase_rerun_plateform.add_force_data(
-                num=i,
-                force_origin=adjust_position_unit_to_meters(force["center_of_pressure"], unit=units),
-                force_vector=force["force"],
-            )
+        if down_sampled_forces:
+            for i, force in enumerate(force_data):
+                force["center_of_pressure"], force["force"] = down_sample_force(force, t_span, units)
+                phase_rerun.add_force_data(
+                    num=i,
+                    force_origin=force["center_of_pressure"],
+                    force_vector=force["force"],
+                )
+        else:
+            phase_rerun_plateform = PhaseRerun(force_data[0]["time"])  # assuming the same time for all force data
+            for i, force in enumerate(force_data):
+                phase_rerun_plateform.add_force_data(
+                    num=i,
+                    force_origin=adjust_position_unit_to_meters(force["center_of_pressure"], unit=units),
+                    force_vector=force["force"],
+                )
 
-        phase_reruns.append(phase_rerun_plateform)
+            phase_reruns.append(phase_rerun_plateform)
 
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)
@@ -83,7 +84,6 @@ def rrc3d(
 
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
     multi_phase_rerun.rerun(filename)
-    # phase_rerun.rerun(filename)
 
     if marker_trajectories:
         # todo: find a better way to display curves but hacky way ok for now
@@ -180,3 +180,22 @@ def get_force_vector(c3d_file) -> list[dict[str, np.ndarray]]:
         plateforms_dict.append(plateform_dict)
 
     return plateforms_dict
+
+
+def down_sample_force(plateform, t_span, units) -> tuple[np.ndarray, np.ndarray]:
+    ratio = plateform["force"].shape[1] / t_span.shape[0]
+    ratio_is_a_integer = ratio.is_integer()
+
+    if not ratio_is_a_integer:
+        raise NotImplementedError(
+            "Set down_sampled_forces to False."
+            "The ratio between the force data and the marker data is not an integer."
+            "Interpolation is not implemented yet."
+        )
+
+    down_sampled_slice = slice(0, plateform["center_of_pressure"].shape[1], int(ratio))
+    down_sampled_center_of_pressure = adjust_position_unit_to_meters(
+        plateform["center_of_pressure"][:, down_sampled_slice], unit=units
+    )
+
+    return down_sampled_center_of_pressure, plateform["force"][:, down_sampled_slice]
