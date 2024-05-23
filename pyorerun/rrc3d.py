@@ -74,7 +74,8 @@ def rrc3d(
                 force_origin=adjust_position_unit_to_meters(force["center_of_pressure"], unit=units),
                 force_vector=force["force"],
             )
-            phase_reruns.append(phase_rerun_plateform)
+
+        phase_reruns.append(phase_rerun_plateform)
 
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)

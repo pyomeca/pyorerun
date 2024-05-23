@@ -16,6 +16,7 @@ class LocalFrameUpdater(Component):
         """
         self.name = name
         self.transform_callable = transform_callable
+        self.scale = 0.25
 
     @property
     def nb_components(self):
@@ -26,8 +27,7 @@ class LocalFrameUpdater(Component):
         rr.log(
             self.name,
             rr.Transform3D(
-                # scale=self.scale,
                 translation=homogenous_matrices[:3, 3],
-                mat3x3=homogenous_matrices[:3, :3] * 0.25,
+                mat3x3=homogenous_matrices[:3, :3] * self.scale,
             ),
         )
