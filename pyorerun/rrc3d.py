@@ -6,6 +6,7 @@ import numpy as np
 import rerun as rr
 from pyomeca import Markers as PyoMarkers
 
+from .multi_frame_rate_phase_rerun import MultiFrameRatePhaseRerun
 from .phase_rerun import PhaseRerun
 
 
@@ -45,7 +46,9 @@ def rrc3d(
     force_plates_corners = get_force_plates(c3d_file, units=units)
     lowest_corner = get_lowest_corner(c3d_file, units=units)
 
+    phase_reruns = []
     phase_rerun = PhaseRerun(t_span)
+    phase_reruns.append(phase_rerun)
     phase_rerun.add_xp_markers(filename, pyomarkers)
 
     if show_force_plates:
@@ -55,21 +58,31 @@ def rrc3d(
     if show_forces:
         force_data = get_force_vector(c3d_file)
         for i, force in enumerate(force_data):
-            ratio = force["force"].shape[1] / t_span.shape[0]
-            down_sampled_slice = slice(0, force["center_of_pressure"].shape[1], int(ratio))
-            down_sampled_center_of_pressure = adjust_position_unit_to_meters(
-                force["center_of_pressure"][:, down_sampled_slice], unit=units
+            if i == 0:
+                phase_rerun_plateform = PhaseRerun(force["time"])
+            # ratio = force["force"].shape[1] / t_span.shape[0]
+            # down_sampled_slice = slice(0, force["center_of_pressure"].shape[1], int(ratio))
+            # down_sampled_center_of_pressure = adjust_position_unit_to_meters(
+            #     force["center_of_pressure"][:, down_sampled_slice], unit=units
+            # )
+            # down_sampled_force = force["force"][:, down_sampled_slice]
+            # phase_rerun.add_force_data(
+            #     num=i, force_origin=down_sampled_center_of_pressure, force_vector=down_sampled_force
+            # )
+            phase_rerun_plateform.add_force_data(
+                num=i,
+                force_origin=adjust_position_unit_to_meters(force["center_of_pressure"], unit=units),
+                force_vector=force["force"],
             )
-            down_sampled_force = force["force"][:, down_sampled_slice]
-            phase_rerun.add_force_data(
-                num=i, force_origin=down_sampled_center_of_pressure, force_vector=down_sampled_force
-            )
+            phase_reruns.append(phase_rerun_plateform)
 
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)
         phase_rerun.add_floor(square_width, height_offset=lowest_corner)
 
-    phase_rerun.rerun(filename)
+    multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
+    multi_phase_rerun.rerun(filename)
+    # phase_rerun.rerun(filename)
 
     if marker_trajectories:
         # todo: find a better way to display curves but hacky way ok for now
@@ -148,4 +161,21 @@ def get_lowest_corner(c3d_file, units) -> float:
 
 def get_force_vector(c3d_file) -> list[dict[str, np.ndarray]]:
     c3d_file = c3d_file_format(c3d_file)
-    return c3d_file["data"]["platform"]
+    plateforms = c3d_file["data"]["platform"]
+
+    frame_rate = c3d_file["header"]["analogs"]["frame_rate"]
+    first_frame = c3d_file["header"]["analogs"]["first_frame"]
+    last_frame = c3d_file["header"]["analogs"]["last_frame"]
+    analog_time = (
+        np.linspace(0, last_frame - first_frame, last_frame - first_frame + 1)
+        / frame_rate
+        # + 1 / frame_rate * first_frame
+    )
+
+    plateforms_dict = []
+    for plateform in plateforms:
+        plateform_dict = {key: plateform[key] for key in plateform.keys()}
+        plateform_dict["time"] = analog_time
+        plateforms_dict.append(plateform_dict)
+
+    return plateforms_dict
