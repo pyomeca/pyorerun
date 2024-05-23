@@ -13,7 +13,7 @@ def test_local_frame():
     # Test initialization
     assert local_frame.name == "test"
     assert local_frame.transform_callable == dummy_callable_transform
-    assert local_frame.scale == 0.1
+    assert local_frame.scale == 0.25
 
     # Test nb_components property
     assert local_frame.nb_components == 1

@@ -34,6 +34,35 @@ class MultiPhaseRerun:
     def add_xp_markers(self, name: str, markers: PyoMarkers, phase: int = 0, window: str = "animation") -> None:
         self.rerun_biorbd_phases[phase][window].add_xp_markers(name, markers)
 
+    def add_q(
+        self,
+        name: str,
+        q: np.ndarray,
+        ranges: tuple[tuple[float, float], ...],
+        dof_names: tuple[str, ...],
+        phase: int = 0,
+        window: str = "animation",
+    ) -> None:
+        self.rerun_biorbd_phases[phase][window].add_q(name, q, ranges, dof_names)
+
+    def add_floor(
+        self,
+        square_width: float = None,
+        height_offset: float = None,
+        subsquares: int = None,
+        phase: int = 0,
+        window: str = "animation",
+    ) -> None:
+        self.rerun_biorbd_phases[phase][window].add_floor(square_width, height_offset, subsquares)
+
+    def add_force_plate(self, num: int, corners: np.ndarray, phase: int = 0, window: str = "animation") -> None:
+        self.rerun_biorbd_phases[phase][window].add_force_plate(num, corners)
+
+    def add_force_data(
+        self, num: int, force_origin: np.ndarray, force_vector: np.ndarray, phase: int = 0, window: str = "animation"
+    ) -> None:
+        self.rerun_biorbd_phases[phase][window].add_force_data(num, force_origin, force_vector)
+
     @property
     def nb_phase(self) -> int:
         return len(self.rerun_biorbd_phases)

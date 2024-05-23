@@ -7,8 +7,7 @@ from .biorbd_components.model_interface import BiorbdModel
 from .biorbd_phase import BiorbdRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components.markers import MarkersXp
-from .xp_components.timeseries_q import TimeSeriesQ
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector
 from .xp_phase import XpRerunPhase
 
 
@@ -166,6 +165,19 @@ class PhaseRerun:
     def add_force_plate(self, num: int, corners: np.ndarray) -> None:
         """Add a force plate to the phase."""
         self.timeless_components.add_component(ForcePlate(name=f"{self.name}", num=num, corners=corners))
+
+    def add_force_data(self, num: int, force_origin: np.ndarray, force_vector: np.ndarray) -> None:
+        """Add a force data to the phase."""
+        if force_origin.shape[1] != self.t_span.shape[0] or force_vector.shape[1] != self.t_span.shape[0]:
+            raise ValueError(
+                f"The shapes of force_origin/force_vector and tspan are inconsistent. "
+                f"They must have the same length."
+                f"Got force_origin: {force_origin.shape[1]}, force_vector: {force_vector.shape[1]} and tspan: {self.t_span.shape}."
+            )
+
+        self.xp_data.add_data(
+            ForceVector(name=f"{self.name}", num=num, vector_origins=force_origin, vector_magnitudes=force_vector)
+        )
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
         if init:
