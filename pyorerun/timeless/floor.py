@@ -24,7 +24,7 @@ class Floor(TimelessComponent):
             rr.Mesh3D(
                 vertex_positions=self.vertices,
                 vertex_normals=np.tile([0.0, 0.0, 1.0], reps=(self.vertices.shape[0], 1)),
-                vertex_colors=np.tile([150, 150, 150], reps=(self.vertices.shape[0], 1)),
+                vertex_colors=np.tile([144, 181, 198], reps=(self.vertices.shape[0], 1)),
                 indices=self.faces,
             ),
         )

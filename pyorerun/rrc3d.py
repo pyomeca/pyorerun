@@ -13,6 +13,7 @@ def rrc3d(
     c3d_file: str,
     show_floor: bool = True,
     show_force_plates: bool = True,
+    show_forces: bool = True,
     marker_trajectories: bool = False,
 ) -> None:
     """
@@ -26,6 +27,8 @@ def rrc3d(
         If True, show the floor.
     show_force_plates: bool
         If True, show the force plates.
+    show_forces: bool
+        If True, show the forces.
     show_camera: bool
         If True, show the camera.
     marker_trajectories: bool
@@ -47,7 +50,20 @@ def rrc3d(
 
     if show_force_plates:
         for i, corners in enumerate(force_plates_corners):
-            phase_rerun.add_force_plate(f"force_plate{i}", corners["corners"])
+            phase_rerun.add_force_plate(f"force_plate_{i}", corners["corners"])
+
+    if show_forces:
+        force_data = get_force_vector(c3d_file)
+        for i, force in enumerate(force_data):
+            ratio = force["force"].shape[1] / t_span.shape[0]
+            down_sampled_slice = slice(0, force["center_of_pressure"].shape[1], int(ratio))
+            down_sampled_center_of_pressure = adjust_position_unit_to_meters(
+                force["center_of_pressure"][:, down_sampled_slice], unit=units
+            )
+            down_sampled_force = force["force"][:, down_sampled_slice]
+            phase_rerun.add_force_data(
+                num=i, force_origin=down_sampled_center_of_pressure, force_vector=down_sampled_force
+            )
 
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)
@@ -75,7 +91,7 @@ def max_xy_coordinate_span_by_markers(pyomarkers: PyoMarkers) -> float:
 def c3d_file_format(cd3_file) -> ezc3d.c3d:
     """Return the c3d file in the format of ezc3d.c3d if it is a string path."""
     if isinstance(cd3_file, str):
-        return ezc3d.c3d(cd3_file)
+        return ezc3d.c3d(cd3_file, extract_forceplat_data=True)
 
     return cd3_file
 
@@ -87,7 +103,7 @@ def adjust_pyomarkers_unit_to_meters(pyomarkers: PyoMarkers, unit: str) -> PyoMa
     return pyomarkers
 
 
-def adjust_position_unit_to_meters(array: Any, unit: str) -> PyoMarkers:
+def adjust_position_unit_to_meters(array: Any, unit: str) -> Any:
     conversion_factors = {"mm": 1000, "cm": 100, "m": 1}
     for u, factor in conversion_factors.items():
         if u in unit:
@@ -130,3 +146,6 @@ def get_lowest_corner(c3d_file, units) -> float:
     )
 
 
+def get_force_vector(c3d_file) -> list[dict[str, np.ndarray]]:
+    c3d_file = c3d_file_format(c3d_file)
+    return c3d_file["data"]["platform"]
