@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import ezc3d
+import imageio
 import numpy as np
 import rerun as rr
 from pyomeca import Markers as PyoMarkers
@@ -16,6 +17,8 @@ def rrc3d(
     show_force_plates: bool = True,
     show_forces: bool = True,
     down_sampled_forces: bool = False,
+    video: str | tuple[str, ...] = None,
+    video_crop_mode: str = "from_c3d",
     marker_trajectories: bool = False,
 ) -> None:
     """
@@ -34,6 +37,11 @@ def rrc3d(
     down_sampled_forces: bool
         If True, down sample the force data to align with the marker data.
         If False, the force data will be displayed at their original frame rate, It may get slower when loading the data.
+    video: str or tuple
+        If str, the path to the video to display.
+        If tuple, the first element is the path to the video and the second element is the path to the time data of the video.
+    video_crop_mode: str
+        The mode to crop the video. If 'from_c3d', the video will be cropped to the same time span as the c3d file.
     marker_trajectories: bool
         If True, show the marker trajectories.
     """
@@ -59,6 +67,8 @@ def rrc3d(
 
     if show_forces:
         force_data = get_force_vector(c3d_file)
+        if len(force_data) == 0:
+            raise RuntimeError("No force data found in the c3d file. Set show_forces to False.")
         if down_sampled_forces:
             for i, force in enumerate(force_data):
                 force["center_of_pressure"], force["force"] = down_sample_force(force, t_span, units)
@@ -81,6 +91,21 @@ def rrc3d(
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)
         phase_rerun.add_floor(square_width, height_offset=lowest_corner)
+
+    if video is not None:
+        for i, vid in enumerate(video if isinstance(video, tuple) else [video]):
+            vid_name = Path(vid).name
+            vid, time = load_a_video(vid)
+            vid, time = crop_video(
+                vid,
+                time,
+                video_crop_mode,
+                first_frame_in_sec=pyomarkers.first_frame / pyomarkers.rate,
+                last_frame_in_sec=pyomarkers.last_frame / pyomarkers.rate,
+            )
+
+            phase_reruns.append(PhaseRerun(time))
+            phase_reruns[-1].add_video(vid_name, vid)
 
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
     multi_phase_rerun.rerun(filename)
@@ -199,3 +224,41 @@ def down_sample_force(plateform, t_span, units) -> tuple[np.ndarray, np.ndarray]
     )
 
     return down_sampled_center_of_pressure, plateform["force"][:, down_sampled_slice]
+
+
+def load_a_video(video_path: str) -> tuple[np.ndarray, np.ndarray]:
+    """Load a video from a path."""
+    # Load the video
+    video_reader = imageio.get_reader(video_path, "ffmpeg")
+
+    # Extract frames and convert to numpy ndarray
+    frames = []
+    for frame in video_reader:
+        frames.append(frame)
+
+    frame_rate = video_reader.get_meta_data()["fps"]
+    time = np.linspace(0, len(frames) / frame_rate, len(frames))
+
+    return np.array(frames, dtype=np.uint16), time
+
+
+def crop_video(
+    video: np.ndarray, time, video_crop_mode: str, first_frame_in_sec: float, last_frame_in_sec: float
+) -> tuple[np.ndarray, np.ndarray]:
+
+    if video_crop_mode == "from_c3d":
+        closest_time = lambda t: np.argmin(np.abs(t - time))
+        first_frame = closest_time(first_frame_in_sec)
+        last_frame = closest_time(last_frame_in_sec)
+        time = time[first_frame : last_frame + 1] - first_frame_in_sec
+        video = video[first_frame : last_frame + 1, :, :, :]
+
+        return video, time
+
+    elif video_crop_mode is not None:
+        raise NotImplementedError(
+            f"video_crop_mode={video_crop_mode} is not implemented yet."
+            "Please use video_crop_mode='from_c3d' or None if already cropped."
+        )
+
+    return video, time

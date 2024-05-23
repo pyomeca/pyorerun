@@ -12,6 +12,7 @@ setup(
         "biorbd",
         "pyomeca",
         "tkinter",
+        "imageio-ffmpeg",
     ],
     author="Pierre Puchaud",
     author_email="puchaud.pierre@gmail.com",
