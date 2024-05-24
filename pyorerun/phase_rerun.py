@@ -7,7 +7,7 @@ from .biorbd_components.model_interface import BiorbdModel
 from .biorbd_phase import BiorbdRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components import MarkersXp, TimeSeriesQ, ForceVector
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video
 from .xp_phase import XpRerunPhase
 
 
@@ -178,6 +178,13 @@ class PhaseRerun:
         self.xp_data.add_data(
             ForceVector(name=f"{self.name}", num=num, vector_origins=force_origin, vector_magnitudes=force_vector)
         )
+
+    def add_video(self, name, video_array: np.ndarray) -> None:
+        """Add a video to the phase."""
+        if video_array.shape[0] != self.t_span.shape[0]:
+            raise ValueError("The video array and tspan are inconsistent. They must have the same length.")
+
+        self.xp_data.add_data(Video(name=f"{self.name}/{name}", video_array=video_array))
 
     def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
         if init:

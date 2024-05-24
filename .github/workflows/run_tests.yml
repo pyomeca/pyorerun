@@ -34,14 +34,12 @@ jobs:
       - name: Install extra dependencies
         run: mamba install pytest-cov black pytest pytest-cov codecov -cconda-forge
 
+      - name: Install pyorerun with pip
+        run: pip install .
+
       - name: Run the actual tests
         run: pytest -v --color=yes --cov-report term-missing --cov=pyorerun tests
         
       - name: Upload coverage to Codecov
         run: codecov
         if: matrix.label == 'linux-64'
-
-      - name: Test installed version of spartacus
-        run: |
-          pip install -e . --no-deps
-          mamba list
