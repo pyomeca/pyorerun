@@ -10,4 +10,5 @@ dependencies:
 - trimesh
 - pyomeca
 - tk
+- imageio
 - imageio-ffmpeg

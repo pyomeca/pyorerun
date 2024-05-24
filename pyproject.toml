@@ -26,6 +26,7 @@ dependencies = [
     "trimesh",
     "pyomeca",
     "tk",
+    "imageio",
     "imageio-ffmpeg",
 #    "biorbd" # Not yet available on pypi, use `conda install -c conda-forge biorbd`
     ]
