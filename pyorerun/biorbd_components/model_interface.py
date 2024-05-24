@@ -164,6 +164,10 @@ class BiorbdModelNoMesh:
     def gravity(self) -> np.ndarray:
         return self.model.getGravity().to_array()
 
+    @property
+    def has_mesh(self) -> bool:
+        return any([s.has_mesh for s in self.segments])
+
 
 class BiorbdModel(BiorbdModelNoMesh):
     """
