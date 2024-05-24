@@ -29,7 +29,7 @@ class QProperties:
     def __init__(
         self,
         joint_names: list[str, ...] | tuple[str, ...],
-        ranges: tuple[tuple[float, float], ...],
+        ranges: tuple[tuple[float, float], ...] = None,
         width: float = None,
     ):
         """

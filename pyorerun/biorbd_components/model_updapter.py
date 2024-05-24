@@ -4,7 +4,7 @@ from typing import Any
 import numpy as np
 
 from .mesh import TransformableMeshUpdater
-from .model_interface import BiorbdModel
+from .model_interface import BiorbdModel, BiorbdModelNoMesh
 from .model_markers import MarkersUpdater
 from .segment import SegmentUpdater
 from ..abstract.abstract_class import Components
@@ -15,7 +15,7 @@ from ..biorbd_components.ligaments import LigamentsUpdater, MusclesUpdater
 
 
 class ModelUpdater(Components):
-    def __init__(self, name, model: BiorbdModel):
+    def __init__(self, name, model: BiorbdModelNoMesh):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
@@ -54,7 +54,10 @@ class ModelUpdater(Components):
 
         """
         model = BiorbdModel(model_path)
-        return cls(model.name, model)
+        if model.has_mesh:
+            return cls(model.name, model)
+
+        return cls(model.name, BiorbdModelNoMesh(model_path))
 
     def create_markers_updater(self):
         if self.model.nb_markers == 0:

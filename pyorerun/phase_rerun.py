@@ -129,7 +129,11 @@ class PhaseRerun:
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
 
     def add_q(
-        self, name: str, q: np.ndarray, ranges: tuple[tuple[float, float], ...], dof_names: tuple[str, ...]
+        self,
+        name: str,
+        q: np.ndarray,
+        dof_names: tuple[str, ...],
+        ranges: tuple[tuple[float, float], ...] = None,
     ) -> None:
         """
         Add the generalized coordinates to be displqyed.
@@ -140,10 +144,10 @@ class PhaseRerun:
             The name of the q set.
         q: np.ndarray
             The generalized coordinates to display of shape (nb_q, nb_frames).
-        ranges: tuple[tuple[float, float], ...]
-            The ranges of the q values, min and max.
         dof_names: tuple[str, ...]
             The names of the degrees of freedom.
+        ranges: tuple[tuple[float, float], ...]
+            The ranges of the q values, min and max.
         """
         if q.shape[1] != self.t_span.shape[0]:
             raise ValueError(
