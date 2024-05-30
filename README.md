@@ -23,11 +23,12 @@ import pyorerun as prr
 prr.c3d("example.c3d")
 ```
 
-https://github.com/pyomeca/pyorerun/assets/40755537/9f5c0263-2558-4ffb-ab80-dafa4b7ea068
+https://github.com/pyomeca/pyorerun/assets/40755537/3cdd39f6-d88d-4891-8ffd-d14c93a9c94e
+
 
 **NOTE**: Only handle markers, force plates, floor for now
 
-# Rerun biorbd Models
+# Rerun Biorbd Models
 
 ``` python3
 from pyorerun import BiorbdModel, PhaseRerun
@@ -44,15 +45,10 @@ viz.add_animated_model(model, q)
 viz.rerun("msk_model")
 ```
 
-<p align="center">
-    <img
-      src="docs/msk_example.png"
-      alt="logo"
-      width="500"
-    />
-</p>
 
-# play with joint DoFs q
+https://github.com/pyomeca/pyorerun/assets/40755537/9341707a-4f44-4dbd-8ece-9a16e1500e9a
+
+# Play with joint DoFs q, Live.
 ``` python3
 from pyorerun import LiveModelAnimation
 
