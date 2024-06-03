@@ -58,6 +58,20 @@ animation = LiveModelAnimation(model_path, with_q_charts=True)
 animation.rerun()
 ```
 
+# Citing
+```
+@software{pierre_puchaud_2024_11449215,
+  author       = {Pierre Puchaud, Mickael Begon},
+  title        = {pyomeca/pyorerun: CoffeeStain},
+  month        = jun,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {1.2.1},
+  doi          = {10.5281/zenodo.11449215},
+  url          = {https://doi.org/10.5281/zenodo.11449215}
+}
+```
+
 # Contributing
 Contributions are welcome. I will be happy to review and help you to improve the code.
 
