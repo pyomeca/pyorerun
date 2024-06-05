@@ -4,7 +4,7 @@ channels:
 - default
 dependencies:
 - ezc3d
-- rerun-sdk
+- rerun-sdkrerun-sdk=0.16.1
 - numpy
 - biorbd>=1.10.5
 - trimesh
