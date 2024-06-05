@@ -30,7 +30,7 @@ class TransformableMeshUpdater(Component):
             vertex_positions=self.__mesh.vertices,
             vertex_normals=transformed_trimesh.vertex_normals,
             vertex_colors=np.tile(self.__color, (self.__mesh.vertices.shape[0], 1)),
-            indices=self.__mesh.faces,
+            triangle_indices=self.__mesh.faces,
         )
 
     @classmethod
