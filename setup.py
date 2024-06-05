@@ -7,7 +7,7 @@ setup(
     install_requires=[
         "ezc3d",
         "numpy",
-        "rerun-sdk",
+        "rerun-sdk=0.16.1",
         "trimesh",
         "biorbd",
         "pyomeca",
