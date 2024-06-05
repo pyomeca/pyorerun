@@ -22,7 +22,7 @@ class ForcePlate(TimelessComponent):
                 vertex_positions=self.vertices,
                 vertex_normals=np.tile([0.0, 0.0, 1.0], reps=(self.vertices.shape[0], 1)),
                 vertex_colors=np.tile([44, 115, 148], reps=(self.vertices.shape[0], 1)),
-                indices=self.faces,
+                triangle_indices=self.faces,
             ),
         )
 
