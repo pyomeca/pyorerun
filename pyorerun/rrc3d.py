@@ -119,10 +119,10 @@ def rrc3d(
 
 def max_xy_coordinate_span_by_markers(pyomarkers: PyoMarkers) -> float:
     """Return the max span of the x and y coordinates of the markers."""
-    min_pyomarkers = np.min(np.min(pyomarkers.to_numpy(), axis=2), axis=1)
-    max_pyomarkers = np.max(np.max(pyomarkers.to_numpy(), axis=2), axis=1)
-    x_absolute_max = np.max(np.abs([min_pyomarkers[0], max_pyomarkers[0]]))
-    y_absolute_max = np.max(np.abs([min_pyomarkers[1], max_pyomarkers[1]]))
+    min_pyomarkers = np.nanmin(np.nanmin(pyomarkers.to_numpy(), axis=2), axis=1)
+    max_pyomarkers = np.nanmax(np.nanmax(pyomarkers.to_numpy(), axis=2), axis=1)
+    x_absolute_max = np.nanmax(np.abs([min_pyomarkers[0], max_pyomarkers[0]]))
+    y_absolute_max = np.nanmax(np.abs([min_pyomarkers[1], max_pyomarkers[1]]))
 
     return np.max([x_absolute_max, y_absolute_max])
 
