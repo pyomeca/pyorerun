@@ -7,15 +7,29 @@ from ..abstract.markers import Markers, MarkerProperties
 
 
 class MarkersXp(Markers, ExperimentalData):
+
+    _counter = 0  # counter for each instance of the class to change the color of the markers
+    _MARKERS_COLORS = [
+        np.array([255, 255, 255]),
+        np.array([245, 66, 53]),
+        np.array([232, 30, 99]),
+        np.array([33, 149, 245]),
+        np.array([76, 176, 79]),
+        np.array([103, 56, 182]),
+    ]
+
     def __init__(self, name, markers: PyoMarkers):
+
         self.name = name + "/markers"
         self.markers = markers
         self.markers_numpy = markers.to_numpy()
         self.markers_properties = MarkerProperties(
             markers_names=markers.channel.values.tolist(),
             radius=0.01,
-            color=np.array([255, 255, 255]),
+            color=MarkersXp._MARKERS_COLORS[MarkersXp._counter],
         )
+
+        MarkersXp._counter = (MarkersXp._counter + 1) % len(MarkersXp._MARKERS_COLORS)
 
     @property
     def nb_markers(self):
