@@ -20,6 +20,7 @@ def rrc3d(
     video: str | tuple[str, ...] = None,
     video_crop_mode: str = "from_c3d",
     marker_trajectories: bool = False,
+    notebook: bool = False,
 ) -> None:
     """
     Display a c3d file in rerun.
@@ -44,6 +45,8 @@ def rrc3d(
         The mode to crop the video. If 'from_c3d', the video will be cropped to the same time span as the c3d file.
     marker_trajectories: bool
         If True, show the marker trajectories.
+    notebook: bool
+        If True, display the animation in the notebook.
     """
 
     # Load a c3d file
@@ -108,7 +111,7 @@ def rrc3d(
             phase_reruns[-1].add_video(vid_name, vid)
 
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
-    multi_phase_rerun.rerun(filename)
+    multi_phase_rerun.rerun(filename, notebook=notebook)
 
     if marker_trajectories:
         # todo: find a better way to display curves but hacky way ok for now
