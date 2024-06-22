@@ -90,7 +90,7 @@ def rrc3d(
 
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)
-        phase_rerun.add_floor(square_width, height_offset=lowest_corner)
+        phase_rerun.add_floor(square_width, height_offset=lowest_corner - 0.0005)
 
     if video is not None:
         for i, vid in enumerate(video if isinstance(video, tuple) else [video]):
