@@ -73,13 +73,15 @@ class MultiFrameRatePhaseRerun:
         frame_t_span_idx = self.frame_t_span_idx
         return [calculate_cumulative_frames(p, frame_t_span_idx) for p in range(self.nb_phases)]
 
-    def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
+    def rerun(
+        self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
+    ) -> None:
         if self.nb_phases == 1:
-            self.phase_reruns[0].rerun(name, init, clear_last_node)
+            self.phase_reruns[0].rerun(name, init, clear_last_node, notebook)
             return
 
         if init:
-            rr.init(f"{name}_{0}", spawn=True)
+            rr.init(f"{name}_{0}", spawn=True if not notebook else False)
 
         for phase_rerun in self.phase_reruns:
             frame = 0

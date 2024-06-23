@@ -190,9 +190,11 @@ class PhaseRerun:
 
         self.xp_data.add_data(Video(name=f"{self.name}/{name}", video_array=video_array))
 
-    def rerun(self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False) -> None:
+    def rerun(
+        self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
+    ) -> None:
         if init:
-            rr.init(f"{name}_{self.phase}", spawn=True)
+            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
 
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
