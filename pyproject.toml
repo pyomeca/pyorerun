@@ -7,7 +7,7 @@ packages = ["pyorerun"]
 
 [project]
 name = "pyorerun"
-version = " 1.2.2"
+version = " 1.2.3"
 authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 description = "A Python package to rerun C3D files and pyomeca simulations."

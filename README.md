@@ -72,7 +72,7 @@ animation.rerun()
   month        = jun,
   year         = 2024,
   publisher    = {Zenodo},
-  version      = {1.2.1},
+  version      = {1.2.3},
   doi          = {10.5281/zenodo.11449215},
   url          = {https://doi.org/10.5281/zenodo.11449215}
 }
