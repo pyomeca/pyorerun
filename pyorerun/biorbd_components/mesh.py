@@ -18,7 +18,11 @@ class TransformableMeshUpdater(Component):
 
         self.transformed_mesh = mesh.copy()
         self.__color = np.array([0, 0, 0])
+        self.__transparency = False
         self.transform_callable = transform_callable
+
+    def set_transparency(self, transparency: bool) -> None:
+        self.__transparency = transparency
 
     def set_color(self, color: tuple[int, int, int]) -> None:
         self.__color = np.array(color)
@@ -26,12 +30,28 @@ class TransformableMeshUpdater(Component):
 
     def _set_rerun_mesh3d(self):
         transformed_trimesh = self.apply_transform(np.eye(4))
-        self.__rerun_mesh = rr.Mesh3D(
-            vertex_positions=self.__mesh.vertices,
-            vertex_normals=transformed_trimesh.vertex_normals,
-            vertex_colors=np.tile(self.__color, (self.__mesh.vertices.shape[0], 1)),
-            triangle_indices=self.__mesh.faces,
-        )
+        if self.__transparency:
+
+            # Create a list of line strips from the faces the fourth vertex is the first one to close the loop.
+            # Each triangle is a substrip
+            strips = [
+                [self.__mesh.vertices[element] for element in [face[0], face[1], face[2], face[0]]]
+                for face in self.__mesh.faces
+            ]
+
+            self.__rerun_mesh = rr.LineStrips3D(
+                strips=strips,
+                colors=[self.__color for _ in range(len(strips))],
+                radii=[0.0005 for _ in range(len(strips))],
+                # labels=
+            )
+        else:
+            self.__rerun_mesh = rr.Mesh3D(
+                vertex_positions=self.__mesh.vertices,
+                vertex_normals=transformed_trimesh.vertex_normals,
+                vertex_colors=np.tile(self.__color, (self.__mesh.vertices.shape[0], 1)),
+                triangle_indices=self.__mesh.faces,
+            )
 
     @classmethod
     def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMeshUpdater":

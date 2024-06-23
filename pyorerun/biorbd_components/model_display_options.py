@@ -19,4 +19,5 @@ class DisplayModelOptions:
     # NOTE : mesh_opacity doesnt exist in rerun yet
     # segment_frame_size: float = 0.1 not implemented yet
     mesh_color: tuple[int, int, int] = (255, 255, 255)
+    transparent_mesh: bool = False
     show_gravity: bool = False

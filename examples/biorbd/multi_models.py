@@ -45,6 +45,7 @@ def main():
     black_model = BiorbdModel(biorbd_model_path)
     black_model.options.mesh_color = (0, 0, 0)
     black_model.options.show_gravity = True
+    black_model.options.transparent_mesh = False
 
     rerun_biorbd.add_animated_model(black_model, q0 + 0.2, phase=0, window="animation")
 
