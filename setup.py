@@ -3,17 +3,16 @@ from setuptools import setup
 setup(
     name="pyorerun",
     version="1.2.2",
-    # packages=find_packages(),
     install_requires=[
-        "ezc3d",
+        "ezc3d",  # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
         "numpy",
         "rerun-sdk=0.16.1",
         "trimesh",
-        "biorbd",
         "pyomeca",
-        "tkinter",
+        "tk",
         "imageio",
         "imageio-ffmpeg",
+        "biorbd",  # Not yet available on pypi, use `conda install -c conda-forge biorbd`
     ],
     author="Pierre Puchaud",
     author_email="puchaud.pierre@gmail.com",
