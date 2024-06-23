@@ -6,8 +6,8 @@ build-backend = "hatchling.build"
 packages = ["pyorerun"]
 
 [project]
-name = "rerun-c3d"
-version = "0.2.1"
+name = "pyorerun"
+version = " 1.2.2"
 authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 description = "A Python package to rerun C3D files and pyomeca simulations."
