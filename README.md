@@ -25,8 +25,14 @@ prr.c3d("example.c3d")
 
 https://github.com/pyomeca/pyorerun/assets/40755537/3cdd39f6-d88d-4891-8ffd-d14c93a9c94e
 
-
 **NOTE**: Only handle markers, force plates, floor for now
+
+## Notebook demo
+
+
+https://github.com/pyomeca/pyorerun/assets/40755537/c9448d69-c891-4362-821b-68449684eb64
+
+
 
 # Rerun Biorbd Models
 
