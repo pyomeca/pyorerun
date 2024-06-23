@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pyorerun",
-    version="0.2.1",
+    version="1.2.2",
     # packages=find_packages(),
     install_requires=[
         "ezc3d",
@@ -22,7 +22,7 @@ setup(
     description="A Python package to rerun C3D files and pyomeca simulations.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    license="LICENSE",
+    license="LICENSE.md",
     keywords=["c3d", "motion capture", "rerun", "biorbd", "pyomeca"],
     url="http://github.com/Ipuch/pyorerun",
     classifiers=[
