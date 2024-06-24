@@ -1,19 +1,10 @@
 # Pyorerun
-[![Maintainability](https://api.codeclimate.com/v1/badges/7e8b7eb962759cf11f38/maintainability)](https://codeclimate.com/github/pyomeca/pyorerun/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7e8b7eb962759cf11f38/maintainability)](https://codeclimate.com/github/pyomeca/pyorerun/maintainability) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/pyorerun.svg)](https://anaconda.org/conda-forge/pyorerun)
 
 We can rerun c3d files and display their original content.
 And all also animate biorbd models from the pyomeca organization.
 
-# Installation prerequisites
-``` conda install -c conda-forge ezc3d rerun-sdk=0.16.1 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
-
-Then, ensure it is accessible in your Python environment by installing the package:
-
-``` pip install . ``` or ``` python setup.py install ```
-
-Conda install will come soon. Don't worry 😊.
-
-~~``` conda install -c conda-forge pyorerun ```~~
+``` conda install -c conda-forge pyorerun ```
 
 # Rerun .c3d - As simple as that
 
@@ -63,6 +54,14 @@ model_path = "models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
 animation = LiveModelAnimation(model_path, with_q_charts=True)
 animation.rerun()
 ```
+
+## From source
+```conda install -c conda-forge ezc3d rerun-sdk=0.16.1 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
+
+Then, ensure it is accessible in your Python environment by installing the package:
+
+``` pip install . ``` or ``` python setup.py install ```
+
 
 # Citing
 ```
