@@ -24,7 +24,10 @@ class BiorbdSegment:
 
     @property
     def has_mesh(self) -> bool:
-        return self.segment.characteristics().mesh().hasMesh()
+        has_mesh = self.segment.characteristics().mesh().hasMesh()
+        if has_mesh:
+            return not self.mesh_path.endswith("/")  # Avoid empty mesh path
+        return has_mesh
 
     @property
     def mesh_path(self) -> str:
