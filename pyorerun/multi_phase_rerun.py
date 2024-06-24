@@ -75,8 +75,8 @@ class MultiPhaseRerun:
     def all_windows(self) -> list[str]:
         return [windows for phase in self.rerun_biorbd_phases for windows in phase.keys()]
 
-    def rerun(self, server_name: str = "multi_phase_animation") -> None:
-        rr.init(server_name, spawn=True)
+    def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
+        rr.init(server_name, spawn=True if not notebook else False)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
 
