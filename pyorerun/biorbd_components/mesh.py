@@ -42,7 +42,7 @@ class TransformableMeshUpdater(Component):
             self.__rerun_mesh = rr.LineStrips3D(
                 strips=strips,
                 colors=[self.__color for _ in range(len(strips))],
-                radii=[0.0005 for _ in range(len(strips))],
+                radii=[0.0002 for _ in range(len(strips))],
                 # labels=
             )
         else:
