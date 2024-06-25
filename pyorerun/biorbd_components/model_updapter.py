@@ -98,6 +98,7 @@ class ModelUpdater(Components):
 
             if segment.has_mesh:
                 mesh = TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
+                mesh.set_transparency(self.model.options.transparent_mesh)
                 mesh.set_color(self.model.options.mesh_color)
             else:
                 mesh = EmptyUpdater(segment_name + "/mesh")

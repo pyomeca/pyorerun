@@ -10,6 +10,7 @@ def main():
     t_span = np.linspace(0, nb_seconds, nb_frames)
 
     model = BiorbdModel("models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod")
+    model.options.transparent_mesh = False
 
     # building some generalized coordinates
     q = np.zeros((model.model.nbQ(), nb_frames))
