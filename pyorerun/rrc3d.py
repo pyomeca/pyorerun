@@ -16,6 +16,7 @@ def rrc3d(
     show_floor: bool = True,
     show_force_plates: bool = True,
     show_forces: bool = True,
+    show_events: bool = True,
     down_sampled_forces: bool = False,
     video: str | tuple[str, ...] = None,
     video_crop_mode: str = "from_c3d",
@@ -35,6 +36,8 @@ def rrc3d(
         If True, show the force plates.
     show_forces: bool
         If True, show the forces.
+    show_events: bool
+        If True, show the events, as log entries.
     down_sampled_forces: bool
         If True, down sample the force data to align with the marker data.
         If False, the force data will be displayed at their original frame rate, It may get slower when loading the data.
@@ -113,11 +116,36 @@ def rrc3d(
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
     multi_phase_rerun.rerun(filename, notebook=notebook)
 
+    if show_events:
+        try:
+            set_event_as_log(c3d_file)
+        except:
+            raise NotImplementedError(
+                "The events feature is still experimental and may not work properly. " "Set show_events=False."
+            )
+
     if marker_trajectories:
         # todo: find a better way to display curves but hacky way ok for now
         for frame, t in enumerate(t_span):
             rr.set_time_seconds("stable_time", t)
             phase_rerun.xp_data.xp_data[0].to_rerun_curve(frame)
+
+
+def set_event_as_log(c3d_file: str) -> None:
+    c3d_file = c3d_file_format(c3d_file)
+    times = c3d_file["parameters"]["EVENT"]["TIMES"]["value"][1, :]
+    labels = c3d_file["parameters"]["EVENT"]["LABELS"]["value"]
+    descriptions = c3d_file["parameters"]["EVENT"]["DESCRIPTIONS"]["value"]
+    context = c3d_file["parameters"]["EVENT"]["CONTEXTS"]["value"]
+
+    for i, (time, label, description, context) in enumerate(zip(times, labels, descriptions, context)):
+        rr.set_time_seconds("stable_time", time)
+        rr.log(
+            f"events",
+            rr.TextLog(
+                f"{label}_{context} - {description}",
+            ),
+        )
 
 
 def max_xy_coordinate_span_by_markers(pyomarkers: PyoMarkers) -> float:
