@@ -113,11 +113,30 @@ def rrc3d(
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
     multi_phase_rerun.rerun(filename, notebook=notebook)
 
+    set_event_as_log(c3d_file)
+
     if marker_trajectories:
         # todo: find a better way to display curves but hacky way ok for now
         for frame, t in enumerate(t_span):
             rr.set_time_seconds("stable_time", t)
             phase_rerun.xp_data.xp_data[0].to_rerun_curve(frame)
+
+
+def set_event_as_log(c3d_file: str) -> None:
+    c3d_file = c3d_file_format(c3d_file)
+    times = c3d_file["parameters"]["EVENT"]["TIMES"]["value"][1, :]
+    labels = c3d_file["parameters"]["EVENT"]["LABELS"]["value"]
+    descriptions = c3d_file["parameters"]["EVENT"]["DESCRIPTIONS"]["value"]
+    context = c3d_file["parameters"]["EVENT"]["CONTEXTS"]["value"]
+
+    for i, (time, label, description, context) in enumerate(zip(times, labels, descriptions, context)):
+        rr.set_time_seconds("stable_time", time)
+        rr.log(
+            f"events",
+            rr.TextLog(
+                f"{label}_{context} - {description}",
+            ),
+        )
 
 
 def max_xy_coordinate_span_by_markers(pyomarkers: PyoMarkers) -> float:
