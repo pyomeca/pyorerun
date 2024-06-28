@@ -11,11 +11,11 @@ from ..abstract.abstract_class import Components
 from ..abstract.empty_updater import EmptyUpdater
 from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
-from ..biorbd_components.ligaments import LigamentsUpdater, MusclesUpdater
+from ..biorbd_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
 
 
 class ModelUpdater(Components):
-    def __init__(self, name, model: BiorbdModelNoMesh):
+    def __init__(self, name, model: BiorbdModelNoMesh | BiorbdModel):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
@@ -54,7 +54,7 @@ class ModelUpdater(Components):
 
         """
         model = BiorbdModel(model_path)
-        if model.has_mesh:
+        if model.has_mesh or model.has_meshlines:
             return cls(model.name, model)
 
         return cls(model.name, BiorbdModelNoMesh(model_path))
@@ -100,6 +100,18 @@ class ModelUpdater(Components):
                 mesh = TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
                 mesh.set_transparency(self.model.options.transparent_mesh)
                 mesh.set_color(self.model.options.mesh_color)
+
+            elif segment.has_meshlines:
+                mesh = LineStripUpdaterFromGlobalTransform(
+                    segment_name + "/meshlines",
+                    properties=LineStripProperties(
+                        strip_names=self.model.muscle_names,
+                        color=np.array((0, 0, 0)),
+                        radius=0.001,
+                    ),
+                    strips=self.model.meshlines[i],
+                    transform_callable=transform_callable,
+                )
             else:
                 mesh = EmptyUpdater(segment_name + "/mesh")
 

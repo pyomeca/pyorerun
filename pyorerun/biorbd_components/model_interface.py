@@ -30,6 +30,13 @@ class BiorbdSegment:
         return has_mesh
 
     @property
+    def has_meshlines(self) -> bool:
+        has_mesh = self.segment.characteristics().mesh().hasMesh()
+        if has_mesh:
+            return self.mesh_path.endswith("/")  # Avoid empty mesh path
+        return has_mesh
+
+    @property
     def mesh_path(self) -> str:
         return self.segment.characteristics().mesh().path().absolutePath().to_string()
 
@@ -171,6 +178,10 @@ class BiorbdModelNoMesh:
     def has_mesh(self) -> bool:
         return any([s.has_mesh for s in self.segments])
 
+    @property
+    def has_meshlines(self) -> bool:
+        return any([s.has_meshlines for s in self.segments])
+
 
 class BiorbdModel(BiorbdModelNoMesh):
     """
@@ -183,4 +194,14 @@ class BiorbdModel(BiorbdModelNoMesh):
 
     @property
     def segments(self) -> tuple[BiorbdSegment, ...]:
-        return tuple([s for s in super().segments if s.has_mesh])
+        return tuple([s for s in super().segments if s.has_mesh or s.has_meshlines])
+
+    @property
+    def meshlines(self) -> list[np.ndarray]:
+
+        meshes = []
+        for segment in self.segments:
+            segment_mesh = segment.segment.characteristics().mesh()
+            meshes += [np.array([segment_mesh.point(i).to_array() for i in range(segment_mesh.nbVertex())])]
+
+        return meshes
