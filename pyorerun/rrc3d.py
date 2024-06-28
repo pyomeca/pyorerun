@@ -16,6 +16,7 @@ def rrc3d(
     show_floor: bool = True,
     show_force_plates: bool = True,
     show_forces: bool = True,
+    show_events: bool = True,
     down_sampled_forces: bool = False,
     video: str | tuple[str, ...] = None,
     video_crop_mode: str = "from_c3d",
@@ -35,6 +36,8 @@ def rrc3d(
         If True, show the force plates.
     show_forces: bool
         If True, show the forces.
+    show_events: bool
+        If True, show the events, as log entries.
     down_sampled_forces: bool
         If True, down sample the force data to align with the marker data.
         If False, the force data will be displayed at their original frame rate, It may get slower when loading the data.
@@ -113,7 +116,13 @@ def rrc3d(
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
     multi_phase_rerun.rerun(filename, notebook=notebook)
 
-    set_event_as_log(c3d_file)
+    if show_events:
+        try:
+            set_event_as_log(c3d_file)
+        except:
+            raise NotImplementedError(
+                "The events feature is still experimental and may not work properly. " "Set show_events=False."
+            )
 
     if marker_trajectories:
         # todo: find a better way to display curves but hacky way ok for now
