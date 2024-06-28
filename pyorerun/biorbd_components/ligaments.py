@@ -79,3 +79,27 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
                 # labels=self.properties.strip_names,
             ),
         )
+
+
+class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
+    def __init__(self, name, properties: LineStripProperties, strips: np.ndarray, transform_callable: callable):
+        super(LineStripUpdaterFromGlobalTransform, self).__init__(name, properties, update_callable=transform_callable)
+        self.rerun_mesh = rr.LineStrips3D(
+            strips=strips,
+            radii=self.properties.radius_to_rerun(),
+            colors=self.properties.color_to_rerun(),
+        )
+
+    def to_rerun(self, q: np.ndarray) -> None:
+        homogenous_matrices = self.update_callable(q)
+        rr.log(
+            self.name,
+            rr.Transform3D(
+                translation=homogenous_matrices[:3, 3],
+                mat3x3=homogenous_matrices[:3, :3],
+            ),
+        )
+        rr.log(
+            self.name,
+            self.rerun_mesh,
+        )
