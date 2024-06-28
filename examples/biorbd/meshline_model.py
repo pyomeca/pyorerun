@@ -18,7 +18,7 @@ def main():
     # running the animation
     rerun_biorbd = PhaseRerun(t_span)
     np.random.seed(42)
-    q = np.linspace(np.array([0, 1, 0, -1]), np.array([2, 1, 1, 1.5]), nb_frames).T
+    q = np.linspace(np.array([0, 0, 0, -1]), np.array([0.35 * 2, -2, 1, 1.5]), nb_frames).T
     rerun_biorbd.add_animated_model(biorbd_model, q)
     rerun_biorbd.rerun("animation")
 
