@@ -67,11 +67,11 @@ Then, ensure it is accessible in your Python environment by installing the packa
 ```
 @software{pierre_puchaud_2024_11449215,
   author       = {Pierre Puchaud, Mickael Begon},
-  title        = {pyomeca/pyorerun: CoffeeStain},
+  title        = {pyomeca/pyorerun: CaffeineStrips},
   month        = jun,
   year         = 2024,
   publisher    = {Zenodo},
-  version      = {1.2.3},
+  version      = {1.2.4},
   doi          = {10.5281/zenodo.11449215},
   url          = {https://doi.org/10.5281/zenodo.11449215}
 }

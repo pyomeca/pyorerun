@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pyorerun",
-    version="1.2.3",
+    version="1.2.5",
     install_requires=[
         "ezc3d",  # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
         "numpy",
