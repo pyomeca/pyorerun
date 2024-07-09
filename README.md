@@ -66,7 +66,8 @@ Then, ensure it is accessible in your Python environment by installing the packa
 
 Rerun should work out-of-the-box on Mac and Windows, but on Linux, you need first to run:
 
-```sudo apt-get -y install \
+```
+sudo apt-get -y install \
     libclang-dev \
     libatk-bridge2.0 \
     libfontconfig1-dev \
