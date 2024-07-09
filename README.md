@@ -62,6 +62,24 @@ Then, ensure it is accessible in your Python environment by installing the packa
 
 ``` pip install . ``` or ``` python setup.py install ```
 
+## On Linux
+
+Rerun should work out-of-the-box on Mac and Windows, but on Linux, you need first to run:
+
+```sudo apt-get -y install \
+    libclang-dev \
+    libatk-bridge2.0 \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libglib2.0-dev \
+    libgtk-3-dev \
+    libssl-dev \
+    libxcb-render0-dev \
+    libxcb-shape0-dev \
+    libxcb-xfixes0-dev \
+    libxkbcommon-dev \
+    patchelf
+```
 
 # Citing
 ```
