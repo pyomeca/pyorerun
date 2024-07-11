@@ -205,3 +205,14 @@ class BiorbdModel(BiorbdModelNoMesh):
             meshes += [np.array([segment_mesh.point(i).to_array() for i in range(segment_mesh.nbVertex())])]
 
         return meshes
+
+    def mesh_homogenous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
+        """
+        Returns a list of homogeneous matrices of the mesh in the global reference frame
+        """
+        mesh_rt = (
+            super(BiorbdModel, self).segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
+        )
+        # mesh_rt = self.segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
+        segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)
+        return segment_rt @ mesh_rt

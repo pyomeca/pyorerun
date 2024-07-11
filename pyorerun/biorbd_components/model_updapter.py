@@ -97,7 +97,11 @@ class ModelUpdater(Components):
             )
 
             if segment.has_mesh:
-                mesh = TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, transform_callable)
+                mesh_transform_callable = partial(
+                    self.model.mesh_homogenous_matrices_in_global,
+                    segment_index=segment.id,
+                )
+                mesh = TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, mesh_transform_callable)
                 mesh.set_transparency(self.model.options.transparent_mesh)
                 mesh.set_color(self.model.options.mesh_color)
 
