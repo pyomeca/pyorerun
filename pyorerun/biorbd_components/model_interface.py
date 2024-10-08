@@ -182,6 +182,38 @@ class BiorbdModelNoMesh:
     def has_meshlines(self) -> bool:
         return any([s.has_meshlines for s in self.segments])
 
+    @property
+    def has_soft_contacts(self) -> bool:
+        return self.model.nbSoftContacts() > 0
+
+    def soft_contacts(self, q: np.ndarray) -> np.ndarray:
+        """
+        Returns the position of the soft contacts spheres in the global reference frame
+        """
+        soft_contacts = self.model.softContacts(q, True)
+        return np.array(
+            [soft_contacts[i].to_array() for i in range(self.model.nbSoftContacts())]
+        )
+
+    @property
+    def soft_contacts_names(self) -> tuple[str, ...]:
+        """
+        Returns the names of the soft contacts
+        """
+        return tuple([s.to_string() for s in self.model.softContactNames()])
+
+    @property
+    def soft_contact_radii(self) -> tuple[float, ...]:
+        """
+        Returns the radii of the soft contacts
+        """
+        radii = []
+        for i in range(self.model.nbSoftContacts()):
+            sc = self.model.softContact(i)
+            scs = biorbd.SoftContactSphere(sc)
+            radii.append(scs.radius())
+
+        return tuple(radii)
 
 class BiorbdModel(BiorbdModelNoMesh):
     """

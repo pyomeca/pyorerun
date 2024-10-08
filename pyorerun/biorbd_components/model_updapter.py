@@ -19,6 +19,7 @@ class ModelUpdater(Components):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
+        self.soft_contacts = self.create_soft_contacts_updater()
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
         self.muscles = self.create_muscles_updater()
@@ -71,6 +72,24 @@ class ModelUpdater(Components):
             ),
             callable_markers=self.model.markers,
         )
+
+    def create_soft_contacts_updater(self):
+        if not self.model.has_soft_contacts:
+            return EmptyUpdater(self.name + "/soft_contacts")
+        return MarkersUpdater(
+            self.name,
+            marker_properties=MarkerProperties(
+                markers_names=self.model.soft_contacts_names,
+                color=np.array(self.model.options.soft_contacts_color),
+
+                radius=self.model.soft_contact_radii,
+            ),
+            callable_markers=self.model.soft_contacts,
+        )
+
+        sc = self.model.model.softContact(0)
+        scs = biorbd.SoftContactSphere(sc)
+        scs.radius()
 
     def create_ligaments_updater(self):
         if self.model.nb_ligaments == 0:
@@ -146,7 +165,7 @@ class ModelUpdater(Components):
         all_segment_components = []
         for segment in self.segments:
             all_segment_components.extend(segment.components)
-        return [self.markers, *all_segment_components, self.ligaments, self.muscles]
+        return [self.markers, self.soft_contacts, *all_segment_components, self.ligaments, self.muscles]
 
     @property
     def component_names(self) -> list[str]:

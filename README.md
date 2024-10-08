@@ -56,7 +56,7 @@ animation.rerun()
 ```
 
 ## From source
-```conda install -c conda-forge ezc3d rerun-sdk=0.16.1 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
+```conda install -c conda-forge ezc3d rerun-sdk=0.18.2 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
 
 Then, ensure it is accessible in your Python environment by installing the package:
 

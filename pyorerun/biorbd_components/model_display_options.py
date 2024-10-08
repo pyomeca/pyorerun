@@ -21,3 +21,5 @@ class DisplayModelOptions:
     mesh_color: tuple[int, int, int] = (255, 255, 255)
     transparent_mesh: bool = False
     show_gravity: bool = False
+
+    soft_contacts_color: tuple[int, int, int] = (0, 255, 255)
