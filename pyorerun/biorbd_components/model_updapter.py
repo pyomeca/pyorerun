@@ -77,7 +77,7 @@ class ModelUpdater(Components):
         if not self.model.has_soft_contacts:
             return EmptyUpdater(self.name + "/soft_contacts")
         return MarkersUpdater(
-            self.name,
+            self.name + "/soft_contacts",
             marker_properties=MarkerProperties(
                 markers_names=self.model.soft_contacts_names,
                 color=np.array(self.model.options.soft_contacts_color),
@@ -86,10 +86,6 @@ class ModelUpdater(Components):
             ),
             callable_markers=self.model.soft_contacts,
         )
-
-        sc = self.model.model.softContact(0)
-        scs = biorbd.SoftContactSphere(sc)
-        scs.radius()
 
     def create_ligaments_updater(self):
         if self.model.nb_ligaments == 0:

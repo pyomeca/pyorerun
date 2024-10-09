@@ -1,8 +1,10 @@
+import biorbd
 import numpy as np
 import rerun as rr
 import time
 
 from .biorbd_components.model_updapter import ModelUpdater
+from .timeless.floor import Floor
 
 
 class LiveModelIntegration:
@@ -43,11 +45,13 @@ class LiveModelIntegration:
         # External forces (if any)
         self.tau = np.zeros(self.nb_q)  # Control torques (assuming zero for passive motion)
 
-    def simulate(self, q: np.ndarray, qdot: np.ndarray, tau: np.ndarray):
+    def simulate(self, q: np.ndarray, qdot: np.ndarray, tau: np.ndarray, force_set: biorbd.ExternalForceSet):
         """
         Simulate the model dynamics over time using RK1 integration.
         """
         rr.init(application_id=f"{self.model.name}_simulation", spawn=True)
+        Floor(name="floor", square_width=6, height_offset=0, subsquares=35).to_rerun()
+
 
         self.q[:, 0] = q
         self.qdot[:, 0] = qdot
@@ -55,7 +59,7 @@ class LiveModelIntegration:
 
         for i in range(0, len(self.time_vector) - 1):
             # Compute joint accelerations
-            self.qddot[:, i] = self.biorbd_model.ForwardDynamics(self.q[:, i], self.qdot[:, i], self.tau).to_array()
+            self.qddot[:, i] = self.biorbd_model.ForwardDynamics(self.q[:, i], self.qdot[:, i], self.tau, force_set).to_array()
 
             # Integrate using RK1 (Explicit Euler)
             self.qdot[:, i + 1] = self.qdot[:, i] + self.qddot[:, i] * self.dt
@@ -78,11 +82,19 @@ class LiveModelIntegration:
         """
         self.model_updater.to_rerun(q)
 
-    def run(self, q, qdot, tau):
+    def run(self, q=None, qdot=None, tau=None, force_set: biorbd.ExternalForceSet=None):
         """
         Run the simulation.
         """
-        self.simulate(q, qdot, tau)
+        if q is None:
+            q = np.zeros(self.nb_q)
+        if qdot is None:
+            qdot = np.zeros(self.nb_qdot)
+        if tau is None:
+            tau = np.zeros(self.nb_q)
+        if force_set is None:
+            force_set = self.model.model.externalForceSet()
+        self.simulate(q, qdot, tau, force_set)
 
 
 # Usage example
