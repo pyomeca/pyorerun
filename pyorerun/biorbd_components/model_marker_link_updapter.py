@@ -45,3 +45,6 @@ class ModelMarkerLinksUpdater(Components):
     def to_rerun(self, q: np.ndarray = None, markers: np.ndarray = None) -> None:
         for component in self.components:
             component.to_rerun(q, markers)
+
+    def to_component(self, q: np.ndarray, markers: np.ndarray) -> list:
+        return [component.to_component(q, markers) for component in self.components]

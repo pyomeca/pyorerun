@@ -34,12 +34,15 @@ class AxisUpdater(Component):
             return [0, 0, 255]
 
     def to_rerun(self, q: np.ndarray) -> None:
-        homogenous_matrices = self.transform_callable(q)
         rr.log(
             self.name,
-            rr.Arrows3D(
-                origins=homogenous_matrices[:3, 3],
-                vectors=homogenous_matrices[:3, self.axis] * self.scale,
-                colors=np.array(self.color),
-            ),
+            self.to_component(q),
+        )
+
+    def to_component(self, q: np.ndarray) -> rr.Arrows3D:
+        homogenous_matrices = self.transform_callable(q)
+        return rr.Arrows3D(
+            origins=homogenous_matrices[:3, 3],
+            vectors=homogenous_matrices[:3, self.axis] * self.scale,
+            colors=np.array(self.color),
         )

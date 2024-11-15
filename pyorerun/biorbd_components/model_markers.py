@@ -22,12 +22,15 @@ class MarkersUpdater(Component):
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
             self.name,
-            rr.Points3D(
-                positions=self.callable_markers(q),
-                radii=self.marker_properties.radius_to_rerun(),
-                colors=self.marker_properties.color_to_rerun(),
-                labels=self.marker_properties.markers_names,
-            ),
+            self.to_component(q),
+        )
+
+    def to_component(self, q: np.ndarray) -> rr.Points3D:
+        return rr.Points3D(
+            positions=self.callable_markers(q),
+            radii=self.marker_properties.radius_to_rerun(),
+            colors=self.marker_properties.color_to_rerun(),
+            labels=self.marker_properties.markers_names,
         )
 
 

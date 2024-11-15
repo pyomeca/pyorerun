@@ -178,3 +178,6 @@ class ModelUpdater(Components):
         """
         for component in self.components:
             component.to_rerun(q)
+
+    def to_component(self, q: np.ndarray) -> list:
+        return [component.to_component(q) for component in self.components]

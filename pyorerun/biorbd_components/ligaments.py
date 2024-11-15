@@ -21,12 +21,15 @@ class LineStripUpdater(LineStrips):
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
             self.name,
-            rr.LineStrips3D(
-                strips=self.update_callable(q),
-                radii=self.properties.radius_to_rerun(),
-                colors=self.properties.color_to_rerun(),
-                labels=self.properties.strip_names,
-            ),
+            self.to_component(q),
+        )
+
+    def to_component(self, q: np.ndarray) -> rr.LineStrips3D:
+        return rr.LineStrips3D(
+            strips=self.update_callable(q),
+            radii=self.properties.radius_to_rerun(),
+            colors=self.properties.color_to_rerun(),
+            labels=self.properties.strip_names,
         )
 
 

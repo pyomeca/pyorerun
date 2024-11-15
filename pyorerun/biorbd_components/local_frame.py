@@ -23,11 +23,14 @@ class LocalFrameUpdater(Component):
         return 1
 
     def to_rerun(self, q: np.ndarray) -> None:
-        homogenous_matrices = self.transform_callable(q)
         rr.log(
             self.name,
-            rr.Transform3D(
-                translation=homogenous_matrices[:3, 3],
-                mat3x3=homogenous_matrices[:3, :3] * self.scale,
-            ),
+            self.to_component(q),
+        )
+
+    def to_component(self, q: np.ndarray) -> rr.Transform3D:
+        homogenous_matrices = self.transform_callable(q)
+        return rr.Transform3D(
+            translation=homogenous_matrices[:3, 3],
+            mat3x3=homogenous_matrices[:3, :3] * self.scale,
         )
