@@ -125,11 +125,15 @@ def rrc3d(
             )
 
     if marker_trajectories:
-        # todo: find a better way to display curves but hacky way ok for now
-        for frame, t in enumerate(t_span):
-            rr.set_time_seconds("stable_time", t)
-            phase_rerun.xp_data.xp_data[0].to_rerun_curve(frame)
-
+        # # todo: find a better way to display curves but hacky way ok for now
+        markers_names = phase_rerun.xp_data.xp_data[0].markers_names
+        for m in markers_names:
+            for j, axis in enumerate(["X", "Y", "Z"]):
+                rr.send_columns(
+                    f"markers_graphs/{m}/{axis}",
+                    times=[rr.TimeSecondsColumn("stable_time", t_span)],
+                    components =[rr.components.ScalarBatch(phase_rerun.xp_data.xp_data[0].markers_numpy[j, markers_names.index(m), :])],
+                )
 
 def set_event_as_log(c3d_file: str) -> None:
     c3d_file = c3d_file_format(c3d_file)

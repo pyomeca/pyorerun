@@ -26,7 +26,16 @@ class Video(ExperimentalData):
     def to_rerun(self, frame: int) -> None:
         rr.log(
             self.name,
-            rr.Image(
-                self.video[frame, :, :, :],
-            ),
+            self.to_component(frame),
         )
+
+    def to_component(self, frame: int) -> rr.Image:
+        return rr.Image(
+            self.video[frame, :, :, :],
+        )
+
+    def to_chunk(self) -> list:
+        return [
+            rr.Image.indicator(),
+            rr.components.ImageBufferBatch(self.video),
+        ]

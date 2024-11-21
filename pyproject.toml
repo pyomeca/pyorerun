@@ -22,7 +22,7 @@ classifiers = [
 dependencies = [
 #    "ezc3d", # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
     "numpy",
-    "rerun-sdk==0.18.2",
+    "rerun-sdk==0.20.1",
     "trimesh",
     "pyomeca",
     "tk",

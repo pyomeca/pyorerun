@@ -214,3 +214,36 @@ class PhaseRerun:
                 *self.timeless_components.component_names,
             ]:
                 rr.log(component, rr.Clear(recursive=False))
+
+    def rerun_with_chunks(
+        self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
+    ) -> None:
+        if init:
+            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
+
+        frame = 0
+        rr.set_time_seconds("stable_time", self.t_span[frame])
+        self.timeless_components.to_rerun()
+
+        times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
+
+        for chunk in self.xp_data.to_chunk():
+            rr.send_columns(
+                chunk.name,
+                times=times,
+                components=chunk,
+            )
+
+
+        for frame, t in enumerate(self.t_span[0:]):
+            rr.set_time_seconds("stable_time", t)
+            self.biorbd_models.to_rerun(frame )
+
+        if clear_last_node:
+            for component in [
+                *self.biorbd_models.component_names,
+                *self.xp_data.component_names,
+                *self.timeless_components.component_names,
+            ]:
+                rr.log(component, rr.Clear(recursive=False))
+

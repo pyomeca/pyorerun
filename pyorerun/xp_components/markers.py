@@ -71,6 +71,24 @@ class MarkersXp(Markers, ExperimentalData):
                     ),
                 )
 
+    def to_component(self, frame: int) -> rr.Points3D:
+        rr.Points3D(
+            positions=from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame]),
+            radii=self.markers_properties.radius_to_rerun(),
+            colors=self.markers_properties.color_to_rerun(),
+            labels=self.markers_names,
+        )
+
+    def to_chunk(self) -> list:
+        # flatten the markers to 3 x (nb_markers * nb_frames)
+        flattened_markers = self.markers_numpy.reshape(3, -1)
+        return [
+            rr.Points3D.indicator(),
+            rr.components.Position3DBatch(flattened_markers).partition([self.nb_markers for _ in range(self.nb_frames)]),
+            rr.components.ColorBatch(self.markers_properties.color_to_rerun()),
+            rr.components.RadiusBatch(self.markers_properties.radius_to_rerun()),
+        ]
+
 
 def from_pyomeca_to_rerun(marker_positions: np.ndarray) -> np.ndarray:
     """

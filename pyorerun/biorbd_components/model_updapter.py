@@ -81,7 +81,6 @@ class ModelUpdater(Components):
             marker_properties=MarkerProperties(
                 markers_names=self.model.soft_contacts_names,
                 color=np.array(self.model.options.soft_contacts_color),
-
                 radius=self.model.soft_contact_radii,
             ),
             callable_markers=self.model.soft_contacts,
