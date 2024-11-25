@@ -34,3 +34,20 @@ class LocalFrameUpdater(Component):
             translation=homogenous_matrices[:3, 3],
             mat3x3=homogenous_matrices[:3, :3] * self.scale,
         )
+
+    def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        homogenous_matrices = np.zeros((4, 4, nb_frames))
+        for f in range(nb_frames):
+            homogenous_matrices[:, :, f] = self.transform_callable(q[:, f])
+
+        return homogenous_matrices
+
+    def to_chunk(self, q: np.ndarray) -> list:
+        homogenous_matrices = self.compute_all_transforms(q)
+
+        return [
+            rr.Transform3D.indicator(),
+            rr.components.Translation3DBatch(homogenous_matrices[:3, 3, :]),
+            rr.components.TransformMat3x3Batch(homogenous_matrices[:3, :3, :]),
+        ]

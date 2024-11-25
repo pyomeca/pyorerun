@@ -96,6 +96,12 @@ class TransformableMeshUpdater(Component):
     def nb_components(self):
         return 1
 
+    def initialize(self):
+        rr.log(
+            self.name,
+            self.rerun_mesh,
+        )
+
     def to_rerun(self, q: np.ndarray) -> None:
         homogenous_matrices = self.transform_callable(q)
         rr.log(
@@ -105,11 +111,26 @@ class TransformableMeshUpdater(Component):
                 mat3x3=homogenous_matrices[:3, :3],
             ),
         )
-        rr.log(
-            self.name,
-            self.rerun_mesh,
-        )
 
     @property
     def component_names(self):
         return [self.name]
+
+    def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        homogenous_matrices = np.zeros((4, 4, nb_frames))
+        for f in range(nb_frames):
+            homogenous_matrices[:, :, f] = self.transform_callable(q[:, f])
+
+        return homogenous_matrices
+
+    def to_chunk(self, q: np.ndarray) -> list:
+        homogenous_matrices = self.compute_all_transforms(q)
+
+        return [
+            rr.Transform3D.indicator(),
+            rr.components.Translation3DBatch(homogenous_matrices[:3, 3, :]),
+            rr.components.TransformMat3x3Batch(homogenous_matrices[:3, :3, :]),
+            self.rerun_mesh,
+        ]
+

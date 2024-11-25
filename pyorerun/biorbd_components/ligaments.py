@@ -32,6 +32,24 @@ class LineStripUpdater(LineStrips):
             labels=self.properties.strip_names,
         )
 
+    def compute_strips(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        strips = np.zeros((self.nb_strips, 2, 3, nb_frames))
+        for f in range(nb_frames):
+            strips[:, :, :, f] = self.update_callable(q[:, f])
+
+        return strips
+
+
+    def to_chunk(self, q: np.ndarray) -> list:
+        nb_frames = q.shape[1]
+        return [
+            rr.LineStrips3D.indicator(),
+            rr.components.LineStrip3DBatch(self.compute_strips(q)).partition([self.nb_strips for _ in range(nb_frames)]),
+            rr.components.ColorBatch(self.properties.color_to_rerun()),
+            rr.components.RadiusBatch(self.properties.radius_to_rerun()),
+        ]
+
 
 class LigamentsUpdater(LineStripUpdater):
     def __init__(self, name, properties: LineStripProperties, update_callable: callable):
@@ -82,6 +100,14 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
                 # labels=self.properties.strip_names,
             ),
         )
+
+    def compute_strips(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        strips = np.zeros((self.nb_strips, 2, 3, nb_frames))
+        for f in range(nb_frames):
+            strips[:, :, :, f] = self.line_strips(q[:, f],
+
+        return strips
 
 
 class LineStripUpdaterFromGlobalTransform(LineStripUpdater):

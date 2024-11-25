@@ -22,6 +22,10 @@ class Component(ABC):
     def nb_components(self):
         pass
 
+    @abstractmethod
+    def to_chunk(self, q: np.ndarray):
+        pass
+
 
 class Components(ABC):
     @abstractmethod

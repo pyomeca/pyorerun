@@ -180,3 +180,10 @@ class ModelUpdater(Components):
 
     def to_component(self, q: np.ndarray) -> list:
         return [component.to_component(q) for component in self.components]
+
+    def initialize(self):
+        for segment in self.segments:
+            segment.initialize()
+
+    def to_chunk(self, q: np.ndarray) -> list:
+        return [component.to_chunk(q) for component in self.components]

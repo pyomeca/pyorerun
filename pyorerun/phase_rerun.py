@@ -233,7 +233,14 @@ class PhaseRerun:
                 times=times,
                 components=chunk,
             )
-
+        for model in self.biorbd_models:
+            model.initialize()
+            for chunk in model.to_chunk():
+                rr.send_columns(
+                    chunk.name,
+                    times=times,
+                    components=chunk,
+                )
 
         for frame, t in enumerate(self.t_span[0:]):
             rr.set_time_seconds("stable_time", t)

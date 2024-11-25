@@ -33,6 +33,23 @@ class MarkersUpdater(Component):
             labels=self.marker_properties.markers_names,
         )
 
+    def compute_markers(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        markers = np.zeros((3, self.nb_markers, nb_frames))
+        for f in range(q.shape[1]):
+            markers[:, :, f] = self.callable_markers(q[:, f])
+
+        return markers
+
+    def to_chunk(self, q) -> list:
+        nb_frames = q.shape[1]
+        return [
+            rr.Points3D.indicator(),
+            rr.components.Position3DBatch(self.compute_markers(q)).partition([self.nb_markers for _ in range(nb_frames)]),
+            rr.components.ColorBatch(self.marker_properties.color_to_rerun()),
+            rr.components.RadiusBatch(self.marker_properties.radius_to_rerun()),
+        ]
+
 
 def from_pyo_to_rerun(maker_positions: np.ndarray) -> np.ndarray:
     """[3 x N] to [N x 3]"""
