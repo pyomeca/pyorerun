@@ -223,7 +223,8 @@ class PhaseRerun:
 
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
-        self.timeless_components.to_rerun()
+        # self.timeless_components.to_rerun()
+        self.biorbd_models.initialize()
 
         times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
 
@@ -233,18 +234,19 @@ class PhaseRerun:
                 times=times,
                 components=chunk,
             )
-        for model in self.biorbd_models:
-            model.initialize()
-            for chunk in model.to_chunk():
-                rr.send_columns(
-                    chunk.name,
-                    times=times,
-                    components=chunk,
-                )
+        import time
 
-        for frame, t in enumerate(self.t_span[0:]):
-            rr.set_time_seconds("stable_time", t)
-            self.biorbd_models.to_rerun(frame )
+        for name, chunk in self.biorbd_models.to_chunk().items():
+            print(name, chunk)
+            # make 0.1 sec pause with python lib
+            # time.sleep(0.1)
+
+
+            rr.send_columns(
+                name,
+                times=times,
+                components=chunk,
+            )
 
         if clear_last_node:
             for component in [

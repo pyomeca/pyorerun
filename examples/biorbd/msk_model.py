@@ -21,9 +21,20 @@ def main():
     q[14, :] = np.linspace(0, np.pi / 8, nb_frames)
     q[15, :] = np.linspace(0, np.pi / 8, nb_frames)
 
+    import time
+
     viz = PhaseRerun(t_span)
-    viz.add_animated_model(model, q, display_q=True)
+    # viz.add_animated_model(model, q, display_q=True)
+    viz.add_animated_model(model, q, display_q=False)
+    tic = time.time()
     viz.rerun("msk_model")
+    toc = time.time()
+    print(f"Time to run: {toc - tic}")
+
+    tic = time.time()
+    viz.rerun_with_chunks("msk_model with chunk")
+    toc = time.time()
+    print(f"Time to run with chunks: {toc - tic}")
 
 
 if __name__ == "__main__":

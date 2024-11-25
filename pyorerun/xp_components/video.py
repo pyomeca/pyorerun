@@ -34,8 +34,8 @@ class Video(ExperimentalData):
             self.video[frame, :, :, :],
         )
 
-    def to_chunk(self) -> list:
-        return [
+    def to_chunk(self, **kwargs) -> dict[str, list]:
+        return {self.name: [
             rr.Image.indicator(),
             rr.components.ImageBufferBatch(self.video),
-        ]
+        ]}

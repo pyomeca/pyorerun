@@ -7,3 +7,7 @@ class EmptyUpdater:
 
     def to_rerun(self, q: np.ndarray) -> None:
         pass
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        return {"empty" : None}
+

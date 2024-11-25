@@ -36,13 +36,14 @@ class Vector(ExperimentalData, ABC):
             self.to_component(frame),
         )
 
-    def to_chunk(self) -> list:
-        return [
+    def to_chunk(self, **kwargs) -> dict[str, list]:
+
+        return {self.name: [
             rr.Arrows3D.indicator(),
             rr.components.Vector3DBatch(self.vector_origins),
             rr.components.Position3DBatch(self.vector_magnitude),
             rr.components.ColorBatch(np.array([201, 219, 227])),
-        ]
+        ]}
 
 
 class ForceVector(Vector):

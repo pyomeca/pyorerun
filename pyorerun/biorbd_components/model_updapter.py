@@ -185,5 +185,10 @@ class ModelUpdater(Components):
         for segment in self.segments:
             segment.initialize()
 
-    def to_chunk(self, q: np.ndarray) -> list:
-        return [component.to_chunk(q) for component in self.components]
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        output = {}
+        for component in self.components:
+            output.update(component.to_chunk(q))
+        # remove all empty components, this is the "empty" field
+        output.pop("empty")
+        return output

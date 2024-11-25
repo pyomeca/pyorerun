@@ -45,3 +45,7 @@ class ExperimentalData(Component):
     @abstractmethod
     def nb_frames(self):
         pass
+
+    @abstractmethod
+    def to_chunk(self, **kwargs) -> dict[str, list]:
+        pass

@@ -69,10 +69,10 @@ class BiorbdRerunPhase:
         for link in self._rerun_links_without_none:
             link.initialize()
 
-    def to_chunk(self) -> list[list]:
-        all_chunks = []
+    def to_chunk(self) -> dict[str, list]:
+        all_chunks = {}
         for i, model in enumerate(self.rerun_models):
-            all_chunks.extend(model.to_chunk(self.q[i]))
+            all_chunks.update(model.to_chunk(self.q[i]))
         for i, rr_link in enumerate(self._rerun_links_without_none):
-            all_chunks.extend(rr_link.to_chunk(self.q[i]))
+            all_chunks.update(rr_link.to_chunk(self.q[i], self.tracked_markers[i]))
         return all_chunks

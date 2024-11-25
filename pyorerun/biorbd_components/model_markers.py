@@ -37,18 +37,19 @@ class MarkersUpdater(Component):
         nb_frames = q.shape[1]
         markers = np.zeros((3, self.nb_markers, nb_frames))
         for f in range(q.shape[1]):
-            markers[:, :, f] = self.callable_markers(q[:, f])
+            markers[:, :, f] = self.callable_markers(q[:, f]).T
 
         return markers
 
-    def to_chunk(self, q) -> list:
+    def to_chunk(self, q) -> dict[str, list]:
         nb_frames = q.shape[1]
-        return [
+        markers = self.compute_markers(q).transpose(2,1,0).reshape(-1, 3)
+        return {self.name: [
             rr.Points3D.indicator(),
-            rr.components.Position3DBatch(self.compute_markers(q)).partition([self.nb_markers for _ in range(nb_frames)]),
-            rr.components.ColorBatch(self.marker_properties.color_to_rerun()),
-            rr.components.RadiusBatch(self.marker_properties.radius_to_rerun()),
-        ]
+            rr.components.Position3DBatch(markers).partition([self.nb_markers for _ in range(nb_frames)]),
+            rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames)]),
+            rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames)]),
+        ]}
 
 
 def from_pyo_to_rerun(maker_positions: np.ndarray) -> np.ndarray:
