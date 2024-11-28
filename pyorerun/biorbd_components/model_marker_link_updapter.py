@@ -42,9 +42,15 @@ class ModelMarkerLinksUpdater(Components):
     def component_names(self) -> list[str]:
         return [component.name for component in self.components]
 
+    def initialize(self):
+        pass
+
     def to_rerun(self, q: np.ndarray = None, markers: np.ndarray = None) -> None:
         for component in self.components:
             component.to_rerun(q, markers)
 
     def to_chunk(self, q: np.ndarray, markers: np.ndarray) -> dict[str, list]:
-        return {component.name: component.to_chunk(q, markers) for component in self.components}
+        output = {}
+        for component in self.components:
+            output.update(component.to_chunk(q, markers))
+        return output

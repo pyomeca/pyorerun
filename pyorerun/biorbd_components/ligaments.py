@@ -112,13 +112,21 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
 
         return strips
 
-    def to_chunk(self, q: np.ndarray, markers: np.ndarray) -> list:
-        return [
+    def to_chunk(self, q: np.ndarray, markers: np.ndarray) -> dict[str, list]:
+        nb_frames = q.shape[1]
+        strips_by_frame = self.compute_all_strips(q, markers)
+
+        strips_output = {}
+        for s in range(self.nb_strips):
+            print(self.name, s)
+            strips_output.update({f"{self.name}_{s}": [
             rr.LineStrips3D.indicator(),
-            rr.components.LineStrip3DBatch(self.compute_all_strips(q, markers)),
-            rr.components.ColorBatch(self.properties.color_to_rerun()),
-            rr.components.RadiusBatch(self.properties.radius_to_rerun()),
-        ]
+            rr.components.LineStrip3DBatch([strips_by_frame[s,:,:,f] for f in range(nb_frames)]),
+            rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
+            rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
+        ]})
+
+        return strips_output
 
 class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
     def __init__(self, name, properties: LineStripProperties, strips: np.ndarray, transform_callable: callable):
