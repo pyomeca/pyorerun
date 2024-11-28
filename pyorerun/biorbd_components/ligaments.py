@@ -36,7 +36,6 @@ class LineStripUpdater(LineStrips):
         nb_frames = q.shape[1]
         return [self.update_callable(q[:, f]) for f in range(nb_frames)]
 
-
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
         nb_frames = q.shape[1]
         # partition = [self.nb_strips for _ in range(nb_frames)]
@@ -44,12 +43,16 @@ class LineStripUpdater(LineStrips):
         strips_by_frame = self.compute_strips(q)
         strips_output = {}
         for s in range(self.nb_strips):
-            strips_output.update({f"{self.name}_{s}": [
-            rr.LineStrips3D.indicator(),
-            rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
-            rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
-            rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
-        ]})
+            strips_output.update(
+                {
+                    f"{self.name}_{s}": [
+                        rr.LineStrips3D.indicator(),
+                        rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
+                        rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
+                        rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
+                    ]
+                }
+            )
 
         return strips_output
 
@@ -119,14 +122,19 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
         strips_output = {}
         for s in range(self.nb_strips):
             print(self.name, s)
-            strips_output.update({f"{self.name}_{s}": [
-            rr.LineStrips3D.indicator(),
-            rr.components.LineStrip3DBatch([strips_by_frame[s,:,:,f] for f in range(nb_frames)]),
-            rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
-            rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
-        ]})
+            strips_output.update(
+                {
+                    f"{self.name}_{s}": [
+                        rr.LineStrips3D.indicator(),
+                        rr.components.LineStrip3DBatch([strips_by_frame[s, :, :, f] for f in range(nb_frames)]),
+                        rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
+                        rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
+                    ]
+                }
+            )
 
         return strips_output
+
 
 class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
     def __init__(self, name, properties: LineStripProperties, strips: np.ndarray, transform_callable: callable):
@@ -168,9 +176,12 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
         homogenous_matrices = self.compute_all_transforms(q)
 
-        return {self.name: [
-            rr.InstancePoses3D.indicator(),
-            rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
-            rr.components.PoseTransformMat3x3Batch(
-                [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]),
-        ]}
+        return {
+            self.name: [
+                rr.InstancePoses3D.indicator(),
+                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
+                rr.components.PoseTransformMat3x3Batch(
+                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
+                ),
+            ]
+        }

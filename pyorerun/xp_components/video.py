@@ -7,7 +7,7 @@ from ..abstract.abstract_class import ExperimentalData
 class Video(ExperimentalData):
     def __init__(self, name: str, video_array: np.ndarray):
         self.name = name
-        if video_array.dtype !=  np.uint8:
+        if video_array.dtype != np.uint8:
             raise ValueError("Video array should be a np.uint8")
         self.video = video_array  # shape (nb_frames, nb_vertical_pixels, nb_horizontal_pixels, nb_components)
 
@@ -36,8 +36,7 @@ class Video(ExperimentalData):
             self.name,
             [format_static, rr.Image.indicator()],
             static=True,
-            )
-
+        )
 
     def to_rerun(self, frame: int) -> None:
         rr.log(
@@ -51,6 +50,8 @@ class Video(ExperimentalData):
         )
 
     def to_chunk(self, **kwargs) -> dict[str, list]:
-        return {self.name: [
-            rr.components.ImageBufferBatch(self.video.reshape(self.nb_frames, -1)),
-        ]}
+        return {
+            self.name: [
+                rr.components.ImageBufferBatch(self.video.reshape(self.nb_frames, -1)),
+            ]
+        }

@@ -35,7 +35,9 @@ class MarkerProperties:
         Returns a numpy array with the color of each marker.
     """
 
-    def __init__(self, markers_names: list[str, ...] | tuple[str, ...], radius: float | tuple[float, ...], color: np.ndarray):
+    def __init__(
+        self, markers_names: list[str, ...] | tuple[str, ...], radius: float | tuple[float, ...], color: np.ndarray
+    ):
         """
         Constructs all the necessary attributes for the MarkerProperties object.
 

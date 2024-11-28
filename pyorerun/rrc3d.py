@@ -133,8 +133,13 @@ def rrc3d(
                 rr.send_columns(
                     f"markers_graphs/{m}/{axis}",
                     times=[rr.TimeSecondsColumn("stable_time", t_span)],
-                    components =[rr.components.ScalarBatch(phase_rerun.xp_data.xp_data[0].markers_numpy[j, markers_names.index(m), :])],
+                    components=[
+                        rr.components.ScalarBatch(
+                            phase_rerun.xp_data.xp_data[0].markers_numpy[j, markers_names.index(m), :]
+                        )
+                    ],
                 )
+
 
 def set_event_as_log(c3d_file: str) -> None:
     c3d_file = c3d_file_format(c3d_file)

@@ -191,9 +191,7 @@ class BiorbdModelNoMesh:
         Returns the position of the soft contacts spheres in the global reference frame
         """
         soft_contacts = self.model.softContacts(q, True)
-        return np.array(
-            [soft_contacts[i].to_array() for i in range(self.model.nbSoftContacts())]
-        )
+        return np.array([soft_contacts[i].to_array() for i in range(self.model.nbSoftContacts())])
 
     @property
     def soft_contacts_names(self) -> tuple[str, ...]:
@@ -214,6 +212,7 @@ class BiorbdModelNoMesh:
             radii.append(scs.radius())
 
         return tuple(radii)
+
 
 class BiorbdModel(BiorbdModelNoMesh):
     """

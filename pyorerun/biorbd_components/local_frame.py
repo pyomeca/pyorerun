@@ -28,7 +28,7 @@ class LocalFrameUpdater(Component):
             rr.Transform3D(
                 translation=np.zeros(3),
                 mat3x3=np.eye(3),
-            )
+            ),
         )
 
     def to_rerun(self, q: np.ndarray) -> None:
@@ -55,8 +55,12 @@ class LocalFrameUpdater(Component):
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
         homogenous_matrices = self.compute_all_transforms(q)
 
-        return {self.name: [
-            rr.InstancePoses3D.indicator(),
-            rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
-            rr.components.PoseTransformMat3x3Batch([homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]),
-        ]}
+        return {
+            self.name: [
+                rr.InstancePoses3D.indicator(),
+                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
+                rr.components.PoseTransformMat3x3Batch(
+                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
+                ),
+            ]
+        }

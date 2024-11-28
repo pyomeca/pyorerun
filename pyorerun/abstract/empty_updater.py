@@ -9,8 +9,7 @@ class EmptyUpdater:
         pass
 
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
-        return {"empty" : None}
+        return {"empty": None}
 
     def initialize(self):
         pass
-

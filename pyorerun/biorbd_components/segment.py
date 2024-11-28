@@ -35,4 +35,4 @@ class SegmentUpdater(Component):
         self.mesh.initialize()
 
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
-        return {component.name : component.to_chunk(q) for component in self.components}
+        return {component.name: component.to_chunk(q) for component in self.components}

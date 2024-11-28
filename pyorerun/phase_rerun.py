@@ -250,4 +250,3 @@ class PhaseRerun:
                 *self.timeless_components.component_names,
             ]:
                 rr.log(component, rr.Clear(recursive=False))
-

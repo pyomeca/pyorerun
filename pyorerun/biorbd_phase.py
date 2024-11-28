@@ -41,14 +41,14 @@ class BiorbdRerunPhase:
         self.to_rerun_links(frame)
 
     def to_rerun_models(self, frame: int):
-        """ Update the models, meshes, ligaments, markers, muscles, etc... """
+        """Update the models, meshes, ligaments, markers, muscles, etc..."""
         for i, rr_model in enumerate(self.rerun_models):
             rr_model.to_rerun(
                 self.q[i][:, frame],
             )
 
     def to_rerun_links(self, frame: int):
-        """ Update the links between markers and models """
+        """Update the links between markers and models"""
         for i, rr_link in enumerate(self._rerun_links_without_none):
             rr_link.to_rerun(self.q[i][:, frame], self.tracked_markers[i][:, :, frame])
 

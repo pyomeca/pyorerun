@@ -52,14 +52,15 @@ class LiveModelIntegration:
         rr.init(application_id=f"{self.model.name}_simulation", spawn=True)
         Floor(name="floor", square_width=6, height_offset=0, subsquares=35).to_rerun()
 
-
         self.q[:, 0] = q
         self.qdot[:, 0] = qdot
         self.tau = tau
 
         for i in range(0, len(self.time_vector) - 1):
             # Compute joint accelerations
-            self.qddot[:, i] = self.biorbd_model.ForwardDynamics(self.q[:, i], self.qdot[:, i], self.tau, force_set).to_array()
+            self.qddot[:, i] = self.biorbd_model.ForwardDynamics(
+                self.q[:, i], self.qdot[:, i], self.tau, force_set
+            ).to_array()
 
             # Integrate using RK1 (Explicit Euler)
             self.qdot[:, i + 1] = self.qdot[:, i] + self.qddot[:, i] * self.dt
@@ -82,7 +83,7 @@ class LiveModelIntegration:
         """
         self.model_updater.to_rerun(q)
 
-    def run(self, q=None, qdot=None, tau=None, force_set: biorbd.ExternalForceSet=None):
+    def run(self, q=None, qdot=None, tau=None, force_set: biorbd.ExternalForceSet = None):
         """
         Run the simulation.
         """
@@ -101,4 +102,4 @@ class LiveModelIntegration:
 if __name__ == "__main__":
     model_path = "path_to_your_model.bioMod"  # Replace with your model path
     animation = LiveModelIntegration(model_path=model_path)
-    animation.run(q=np.array([0,.5, 0]), qdot=np.zeros(animation.nb_qdot), tau=np.zeros(animation.nb_q))
+    animation.run(q=np.array([0, 0.5, 0]), qdot=np.zeros(animation.nb_qdot), tau=np.zeros(animation.nb_q))
