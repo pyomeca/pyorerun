@@ -175,6 +175,9 @@ class ModelUpdater(Components):
         q: np.ndarray
             The generalized coordinates of the model one-dimensional array, i.e., q.shape = (n_q,).
         """
+        for segment in self.segments:
+            segment.mesh.initialize()
+
         for component in self.components:
             component.to_rerun(q)
 

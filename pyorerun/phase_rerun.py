@@ -234,14 +234,8 @@ class PhaseRerun:
                 times=times,
                 components=chunk,
             )
-        import time
 
         for name, chunk in self.biorbd_models.to_chunk().items():
-            print(name, chunk)
-            # make 0.1 sec pause with python lib
-            # time.sleep(0.1)
-
-
             rr.send_columns(
                 name,
                 times=times,
