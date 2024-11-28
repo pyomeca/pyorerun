@@ -60,6 +60,11 @@ class TransformableMeshUpdater(Component):
             return cls(name, mesh, transform_callable)
         if file_path.endswith(".vtp"):
             output = read_vtp_file(file_path)
+            is_not_a_trimesh = output["polygons"].shape[1] > 3
+            if is_not_a_trimesh:
+                raise ValueError(
+                    f"The file {file_path} is not a triangular-only mesh. It has polygons with more than 3 vertices."
+                )
             mesh = Trimesh(
                 vertices=output["nodes"],
                 faces=output["polygons"],
@@ -91,6 +96,12 @@ class TransformableMeshUpdater(Component):
     def nb_components(self):
         return 1
 
+    def initialize(self):
+        rr.log(
+            self.name,
+            self.rerun_mesh,
+        )
+
     def to_rerun(self, q: np.ndarray) -> None:
         homogenous_matrices = self.transform_callable(q)
         rr.log(
@@ -100,11 +111,39 @@ class TransformableMeshUpdater(Component):
                 mat3x3=homogenous_matrices[:3, :3],
             ),
         )
-        rr.log(
-            self.name,
-            self.rerun_mesh,
+
+    def to_component(self, q: np.ndarray) -> rr.Transform3D:
+        homogenous_matrices = self.transform_callable(q)
+        return self.to_component_from_homogenous_mat(homogenous_matrices)
+
+    @staticmethod
+    def to_component_from_homogenous_mat(mat: np.ndarray) -> rr.Transform3D:
+        return rr.Transform3D(
+            translation=mat[:3, 3],
+            mat3x3=mat[:3, :3],
         )
 
     @property
     def component_names(self):
         return [self.name]
+
+    def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        homogenous_matrices = np.zeros((4, 4, nb_frames))
+        for f in range(nb_frames):
+            homogenous_matrices[:, :, f] = self.transform_callable(q[:, f])
+
+        return homogenous_matrices
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        homogenous_matrices = self.compute_all_transforms(q)
+
+        return {
+            self.name: [
+                rr.InstancePoses3D.indicator(),
+                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
+                rr.components.PoseTransformMat3x3Batch(
+                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
+                ),
+            ]
+        }

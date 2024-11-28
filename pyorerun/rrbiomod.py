@@ -21,4 +21,4 @@ def rr_biorbd(biomod: str, q: np.ndarray, tspan: np.ndarray) -> None:
 
     phase_rerun = PhaseRerun(tspan)
     phase_rerun.add_animated_model(model, q)
-    phase_rerun.rerun()
+    phase_rerun.rerun_with_chunks()

@@ -29,3 +29,10 @@ class SegmentUpdater(Component):
     @property
     def component_names(self) -> list[str]:
         return [component.name for component in self.components]
+
+    def initialize(self):
+        self.local_frame.initialize()
+        self.mesh.initialize()
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        return {component.name: component.to_chunk(q) for component in self.components}

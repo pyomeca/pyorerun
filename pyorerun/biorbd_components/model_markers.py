@@ -22,13 +22,36 @@ class MarkersUpdater(Component):
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
             self.name,
-            rr.Points3D(
-                positions=self.callable_markers(q),
-                radii=self.marker_properties.radius_to_rerun(),
-                colors=self.marker_properties.color_to_rerun(),
-                labels=self.marker_properties.markers_names,
-            ),
+            self.to_component(q),
         )
+
+    def to_component(self, q: np.ndarray) -> rr.Points3D:
+        return rr.Points3D(
+            positions=self.callable_markers(q),
+            radii=self.marker_properties.radius_to_rerun(),
+            colors=self.marker_properties.color_to_rerun(),
+            labels=self.marker_properties.markers_names,
+        )
+
+    def compute_markers(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        markers = np.zeros((3, self.nb_markers, nb_frames))
+        for f in range(q.shape[1]):
+            markers[:, :, f] = self.callable_markers(q[:, f]).T
+
+        return markers
+
+    def to_chunk(self, q) -> dict[str, list]:
+        nb_frames = q.shape[1]
+        markers = self.compute_markers(q).transpose(2, 1, 0).reshape(-1, 3)
+        return {
+            self.name: [
+                rr.Points3D.indicator(),
+                rr.components.Position3DBatch(markers).partition([self.nb_markers for _ in range(nb_frames)]),
+                rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames)]),
+                rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames)]),
+            ]
+        }
 
 
 def from_pyo_to_rerun(maker_positions: np.ndarray) -> np.ndarray:

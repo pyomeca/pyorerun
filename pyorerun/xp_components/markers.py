@@ -41,11 +41,14 @@ class MarkersXp(Markers, ExperimentalData):
 
     @property
     def nb_frames(self):
-        return len(self.markers.shape[2])
+        return self.markers.shape[2]
 
     @property
     def nb_components(self):
         return 1
+
+    def initialize(self):
+        pass
 
     def to_rerun(self, frame: int) -> None:
         rr.log(
@@ -70,6 +73,29 @@ class MarkersXp(Markers, ExperimentalData):
                         positions_f[markers_names.index(m), j],
                     ),
                 )
+
+    def to_component(self, frame: int) -> rr.Points3D:
+        rr.Points3D(
+            positions=from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame]),
+            radii=self.markers_properties.radius_to_rerun(),
+            colors=self.markers_properties.color_to_rerun(),
+            labels=self.markers_names,
+        )
+
+    def to_chunk(self, **kwargs) -> dict[str, list]:
+        # flatten the markers to 3 x (nb_markers * nb_frames)
+        flattened_markers = self.markers_numpy[:3, :, :].transpose(2, 1, 0).reshape(-1, 3)
+
+        return {
+            self.name: [
+                rr.Points3D.indicator(),
+                rr.components.Position3DBatch(flattened_markers).partition(
+                    [self.nb_markers for _ in range(self.nb_frames)]
+                ),
+                rr.components.ColorBatch([self.markers_properties.color for _ in range(self.nb_frames)]),
+                rr.components.RadiusBatch([self.markers_properties.radius for _ in range(self.nb_frames)]),
+            ]
+        }
 
 
 def from_pyomeca_to_rerun(marker_positions: np.ndarray) -> np.ndarray:

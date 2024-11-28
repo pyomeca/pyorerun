@@ -22,12 +22,45 @@ class LocalFrameUpdater(Component):
     def nb_components(self):
         return 1
 
-    def to_rerun(self, q: np.ndarray) -> None:
-        homogenous_matrices = self.transform_callable(q)
+    def initialize(self):
         rr.log(
             self.name,
             rr.Transform3D(
-                translation=homogenous_matrices[:3, 3],
-                mat3x3=homogenous_matrices[:3, :3] * self.scale,
+                translation=np.zeros(3),
+                mat3x3=np.eye(3),
             ),
         )
+
+    def to_rerun(self, q: np.ndarray) -> None:
+        rr.log(
+            self.name,
+            self.to_component(q),
+        )
+
+    def to_component(self, q: np.ndarray) -> rr.Transform3D:
+        homogenous_matrices = self.transform_callable(q)
+        return rr.Transform3D(
+            translation=homogenous_matrices[:3, 3],
+            mat3x3=homogenous_matrices[:3, :3] * self.scale,
+        )
+
+    def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        homogenous_matrices = np.zeros((4, 4, nb_frames))
+        for f in range(nb_frames):
+            homogenous_matrices[:, :, f] = self.transform_callable(q[:, f])
+
+        return homogenous_matrices
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        homogenous_matrices = self.compute_all_transforms(q)
+
+        return {
+            self.name: [
+                rr.InstancePoses3D.indicator(),
+                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
+                rr.components.PoseTransformMat3x3Batch(
+                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
+                ),
+            ]
+        }

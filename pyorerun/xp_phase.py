@@ -10,9 +10,19 @@ class XpRerunPhase:
     def add_data(self, xp_data: ExperimentalData):
         self.xp_data.append(xp_data)
 
+    def initialize(self):
+        for data in self.xp_data:
+            data.initialize()
+
     def to_rerun(self, frame: int):
         for data in self.xp_data:
             data.to_rerun(frame)
+
+    def to_chunk(self) -> dict[str, list]:
+        output = {}
+        for data in self.xp_data:
+            output.update(data.to_chunk())
+        return output
 
     @property
     def component_names(self) -> list[str]:

@@ -21,17 +21,34 @@ class Vector(ExperimentalData, ABC):
 
     @property
     def nb_frames(self):
-        return len(self.vector_origins)
+        return self.vector_origins.shape[1]
+
+    def to_component(self, frame: int) -> np.ndarray:
+        return rr.Arrows3D(
+            origins=self.vector_origins[:, frame],
+            vectors=self.vector_magnitude[:, frame],
+            colors=np.array([201, 219, 227]),
+        )
+
+    def initialize(self):
+        pass
 
     def to_rerun(self, frame) -> None:
         rr.log(
             self.name,
-            rr.Arrows3D(
-                origins=self.vector_origins[:, frame],
-                vectors=self.vector_magnitude[:, frame],
-                colors=np.array([201, 219, 227]),
-            ),
+            self.to_component(frame),
         )
+
+    def to_chunk(self, **kwargs) -> dict[str, list]:
+
+        return {
+            self.name: [
+                rr.Arrows3D.indicator(),
+                rr.components.Position3DBatch(self.vector_origins.T),
+                rr.components.Vector3DBatch(self.vector_magnitude.T),
+                rr.components.ColorBatch([np.array([201, 219, 227]) for _ in range(self.nb_frames)]),
+            ]
+        }
 
 
 class ForceVector(Vector):

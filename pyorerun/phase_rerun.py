@@ -190,7 +190,7 @@ class PhaseRerun:
 
         self.xp_data.add_data(Video(name=f"{self.name}/{name}", video_array=video_array))
 
-    def rerun(
+    def rerun_by_frame(
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
@@ -206,6 +206,42 @@ class PhaseRerun:
             rr.set_time_seconds("stable_time", t)
             self.biorbd_models.to_rerun(frame + 1)
             self.xp_data.to_rerun(frame + 1)
+
+        if clear_last_node:
+            for component in [
+                *self.biorbd_models.component_names,
+                *self.xp_data.component_names,
+                *self.timeless_components.component_names,
+            ]:
+                rr.log(component, rr.Clear(recursive=False))
+
+    def rerun(
+        self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
+    ) -> None:
+        if init:
+            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
+
+        frame = 0
+        rr.set_time_seconds("stable_time", self.t_span[frame])
+        self.timeless_components.to_rerun()
+        self.biorbd_models.initialize()
+        self.xp_data.initialize()
+
+        times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
+
+        for name, chunk in self.xp_data.to_chunk().items():
+            rr.send_columns(
+                name,
+                times=times,
+                components=chunk,
+            )
+
+        for name, chunk in self.biorbd_models.to_chunk().items():
+            rr.send_columns(
+                name,
+                times=times,
+                components=chunk,
+            )
 
         if clear_last_node:
             for component in [

@@ -19,6 +19,7 @@ class ModelUpdater(Components):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
+        self.soft_contacts = self.create_soft_contacts_updater()
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
         self.muscles = self.create_muscles_updater()
@@ -70,6 +71,19 @@ class ModelUpdater(Components):
                 radius=self.model.options.markers_radius,
             ),
             callable_markers=self.model.markers,
+        )
+
+    def create_soft_contacts_updater(self):
+        if not self.model.has_soft_contacts:
+            return EmptyUpdater(self.name + "/soft_contacts")
+        return MarkersUpdater(
+            self.name + "/soft_contacts",
+            marker_properties=MarkerProperties(
+                markers_names=self.model.soft_contacts_names,
+                color=np.array(self.model.options.soft_contacts_color),
+                radius=self.model.soft_contact_radii,
+            ),
+            callable_markers=self.model.soft_contacts,
         )
 
     def create_ligaments_updater(self):
@@ -146,7 +160,7 @@ class ModelUpdater(Components):
         all_segment_components = []
         for segment in self.segments:
             all_segment_components.extend(segment.components)
-        return [self.markers, *all_segment_components, self.ligaments, self.muscles]
+        return [self.markers, self.soft_contacts, *all_segment_components, self.ligaments, self.muscles]
 
     @property
     def component_names(self) -> list[str]:
@@ -161,5 +175,23 @@ class ModelUpdater(Components):
         q: np.ndarray
             The generalized coordinates of the model one-dimensional array, i.e., q.shape = (n_q,).
         """
+        for segment in self.segments:
+            segment.mesh.initialize()
+
         for component in self.components:
             component.to_rerun(q)
+
+    def to_component(self, q: np.ndarray) -> list:
+        return [component.to_component(q) for component in self.components]
+
+    def initialize(self):
+        for segment in self.segments:
+            segment.initialize()
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        output = {}
+        for component in self.components:
+            output.update(component.to_chunk(q))
+        # remove all empty components, this is the "empty" field
+        output.pop("empty")
+        return output

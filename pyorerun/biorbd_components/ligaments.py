@@ -21,13 +21,40 @@ class LineStripUpdater(LineStrips):
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
             self.name,
-            rr.LineStrips3D(
-                strips=self.update_callable(q),
-                radii=self.properties.radius_to_rerun(),
-                colors=self.properties.color_to_rerun(),
-                labels=self.properties.strip_names,
-            ),
+            self.to_component(q),
         )
+
+    def to_component(self, q: np.ndarray) -> rr.LineStrips3D:
+        return rr.LineStrips3D(
+            strips=self.update_callable(q),
+            radii=self.properties.radius_to_rerun(),
+            colors=self.properties.color_to_rerun(),
+            labels=self.properties.strip_names,
+        )
+
+    def compute_strips(self, q: np.ndarray) -> list:
+        nb_frames = q.shape[1]
+        return [self.update_callable(q[:, f]) for f in range(nb_frames)]
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        nb_frames = q.shape[1]
+        # partition = [self.nb_strips for _ in range(nb_frames)]
+
+        strips_by_frame = self.compute_strips(q)
+        strips_output = {}
+        for s in range(self.nb_strips):
+            strips_output.update(
+                {
+                    f"{self.name}_{s}": [
+                        rr.LineStrips3D.indicator(),
+                        rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
+                        rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
+                        rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
+                    ]
+                }
+            )
+
+        return strips_output
 
 
 class LigamentsUpdater(LineStripUpdater):
@@ -80,6 +107,34 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
             ),
         )
 
+    def compute_all_strips(self, q: np.ndarray, markers: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        strips = np.zeros((self.nb_strips, 2, 3, nb_frames))
+        for f in range(nb_frames):
+            strips[:, :, :, f] = self.line_strips(q[:, f], markers[:, :, f])
+
+        return strips
+
+    def to_chunk(self, q: np.ndarray, markers: np.ndarray) -> dict[str, list]:
+        nb_frames = q.shape[1]
+        strips_by_frame = self.compute_all_strips(q, markers)
+
+        strips_output = {}
+        for s in range(self.nb_strips):
+            print(self.name, s)
+            strips_output.update(
+                {
+                    f"{self.name}_{s}": [
+                        rr.LineStrips3D.indicator(),
+                        rr.components.LineStrip3DBatch([strips_by_frame[s, :, :, f] for f in range(nb_frames)]),
+                        rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
+                        rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
+                    ]
+                }
+            )
+
+        return strips_output
+
 
 class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
     def __init__(self, name, properties: LineStripProperties, strips: np.ndarray, transform_callable: callable):
@@ -88,6 +143,12 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
             strips=strips,
             radii=self.properties.radius_to_rerun(),
             colors=self.properties.color_to_rerun(),
+        )
+
+    def initialize(self):
+        rr.log(
+            self.name,
+            self.rerun_mesh,
         )
 
     def to_rerun(self, q: np.ndarray) -> None:
@@ -103,3 +164,24 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
             self.name,
             self.rerun_mesh,
         )
+
+    def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
+        nb_frames = q.shape[1]
+        homogenous_matrices = np.zeros((4, 4, nb_frames))
+        for f in range(nb_frames):
+            homogenous_matrices[:, :, f] = self.update_callable(q[:, f])
+
+        return homogenous_matrices
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        homogenous_matrices = self.compute_all_transforms(q)
+
+        return {
+            self.name: [
+                rr.InstancePoses3D.indicator(),
+                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
+                rr.components.PoseTransformMat3x3Batch(
+                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
+                ),
+            ]
+        }

@@ -22,6 +22,10 @@ class Component(ABC):
     def nb_components(self):
         pass
 
+    @abstractmethod
+    def to_chunk(self, q: np.ndarray):
+        pass
+
 
 class Components(ABC):
     @abstractmethod
@@ -40,4 +44,8 @@ class Components(ABC):
 class ExperimentalData(Component):
     @abstractmethod
     def nb_frames(self):
+        pass
+
+    @abstractmethod
+    def to_chunk(self, **kwargs) -> dict[str, list]:
         pass

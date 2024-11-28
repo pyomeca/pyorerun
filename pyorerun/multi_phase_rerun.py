@@ -29,7 +29,12 @@ class MultiPhaseRerun:
         self.rerun_biorbd_phases[phase][window] = rerun_biorbd
 
     def add_animated_model(
-        self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: np.ndarray, phase: int = 0, window: str = "animation"
+        self,
+        biomod: BiorbdModel,
+        q: np.ndarray,
+        tracked_markers: np.ndarray = None,
+        phase: int = 0,
+        window: str = "animation",
     ) -> None:
         self.rerun_biorbd_phases[phase][window].add_animated_model(biomod, q, tracked_markers)
 
@@ -76,6 +81,19 @@ class MultiPhaseRerun:
     @property
     def all_windows(self) -> list[str]:
         return [windows for phase in self.rerun_biorbd_phases for windows in phase.keys()]
+
+    def rerun_by_frame(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
+        rr.init(server_name, spawn=True if not notebook else False)
+        for i, phase in enumerate(self.rerun_biorbd_phases):
+            for j, (window, rr_phase) in enumerate(phase.items()):
+
+                rrb.Spatial3DView(
+                    origin="/",
+                    contents=f"{window}/**",
+                )
+
+                more_phases_after_this_one = i < self.nb_phase - 1
+                rr_phase.rerun_by_frame(init=False, clear_last_node=more_phases_after_this_one)
 
     def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
         rr.init(server_name, spawn=True if not notebook else False)
