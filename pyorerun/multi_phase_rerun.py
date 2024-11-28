@@ -88,7 +88,7 @@ class MultiPhaseRerun:
                 )
 
                 more_phases_after_this_one = i < self.nb_phase - 1
-                rr_phase.rerun(init=False, clear_last_node=more_phases_after_this_one)
+                rr_phase.rerun_by_frame(init=False, clear_last_node=more_phases_after_this_one)
 
     def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
         rr.init(server_name, spawn=True if not notebook else False)
@@ -101,4 +101,4 @@ class MultiPhaseRerun:
                 )
 
                 more_phases_after_this_one = i < self.nb_phase - 1
-                rr_phase.rerun_with_chunks(init=False, clear_last_node=more_phases_after_this_one)
+                rr_phase.rerun(init=False, clear_last_node=more_phases_after_this_one)
