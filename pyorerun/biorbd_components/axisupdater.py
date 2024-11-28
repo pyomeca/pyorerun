@@ -46,3 +46,6 @@ class AxisUpdater(Component):
             vectors=homogenous_matrices[:3, self.axis] * self.scale,
             colors=np.array(self.color),
         )
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        pass
