@@ -14,8 +14,11 @@ class XpRerunPhase:
         for data in self.xp_data:
             data.to_rerun(frame)
 
-    def to_chunk(self) -> list:
-        return [data.to_chunk() for data in self.xp_data]
+    def to_chunk(self) -> dict[str, list]:
+        output = {}
+        for data in self.xp_data:
+            output.update(data.to_chunk())
+        return output
 
     @property
     def component_names(self) -> list[str]:

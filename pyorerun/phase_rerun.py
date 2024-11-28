@@ -228,9 +228,9 @@ class PhaseRerun:
 
         times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
 
-        for chunk in self.xp_data.to_chunk():
+        for name, chunk in self.xp_data.to_chunk().items():
             rr.send_columns(
-                chunk.name,
+                name,
                 times=times,
                 components=chunk,
             )
