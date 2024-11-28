@@ -73,7 +73,7 @@ class MultiFrameRatePhaseRerun:
         frame_t_span_idx = self.frame_t_span_idx
         return [calculate_cumulative_frames(p, frame_t_span_idx) for p in range(self.nb_phases)]
 
-    def rerun(
+    def rerun_by_frame(
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if self.nb_phases == 1:
@@ -107,7 +107,7 @@ class MultiFrameRatePhaseRerun:
                 ]:
                     rr.log(component, rr.Clear(recursive=False))
 
-    def rerun_with_chunks(
+    def rerun(
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if self.nb_phases == 1:

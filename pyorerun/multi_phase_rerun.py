@@ -77,7 +77,7 @@ class MultiPhaseRerun:
     def all_windows(self) -> list[str]:
         return [windows for phase in self.rerun_biorbd_phases for windows in phase.keys()]
 
-    def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
+    def rerun_by_frame(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
         rr.init(server_name, spawn=True if not notebook else False)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
@@ -90,7 +90,7 @@ class MultiPhaseRerun:
                 more_phases_after_this_one = i < self.nb_phase - 1
                 rr_phase.rerun(init=False, clear_last_node=more_phases_after_this_one)
 
-    def rerun_with_chunks(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
+    def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
         rr.init(server_name, spawn=True if not notebook else False)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):

@@ -190,7 +190,7 @@ class PhaseRerun:
 
         self.xp_data.add_data(Video(name=f"{self.name}/{name}", video_array=video_array))
 
-    def rerun(
+    def rerun_by_frame(
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
@@ -215,7 +215,7 @@ class PhaseRerun:
             ]:
                 rr.log(component, rr.Clear(recursive=False))
 
-    def rerun_with_chunks(
+    def rerun(
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
