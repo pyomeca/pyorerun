@@ -47,6 +47,9 @@ class MarkersXp(Markers, ExperimentalData):
     def nb_components(self):
         return 1
 
+    def initialize(self):
+        pass
+
     def to_rerun(self, frame: int) -> None:
         rr.log(
             self.name,

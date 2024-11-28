@@ -111,10 +111,11 @@ def rrc3d(
             )
 
             phase_reruns.append(PhaseRerun(time))
-            phase_reruns[-1].add_video(vid_name, vid)
+            phase_reruns[-1].add_video(vid_name, np.array(vid, dtype=np.uint8))
 
     multi_phase_rerun = MultiFrameRatePhaseRerun(phase_reruns)
-    multi_phase_rerun.rerun(filename, notebook=notebook)
+    # multi_phase_rerun.rerun(filename, notebook=notebook)
+    multi_phase_rerun.rerun_with_chunks(filename, notebook=notebook)
 
     if show_events:
         try:

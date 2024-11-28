@@ -223,8 +223,9 @@ class PhaseRerun:
 
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
-        # self.timeless_components.to_rerun()
+        self.timeless_components.to_rerun()
         self.biorbd_models.initialize()
+        self.xp_data.initialize()
 
         times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
 

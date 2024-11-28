@@ -107,6 +107,56 @@ class MultiFrameRatePhaseRerun:
                 ]:
                     rr.log(component, rr.Clear(recursive=False))
 
+    def rerun_with_chunks(
+        self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
+    ) -> None:
+        if self.nb_phases == 1:
+            self.phase_reruns[0].rerun_with_chunks(name, init, clear_last_node, notebook)
+            return
+
+        if init:
+            rr.init(f"{name}_{0}", spawn=True if not notebook else False)
+
+        for phase_rerun in self.phase_reruns:
+            frame = 0
+            rr.set_time_seconds("stable_time", phase_rerun.t_span[frame])
+            phase_rerun.timeless_components.to_rerun()
+            phase_rerun.biorbd_models.initialize()
+            phase_rerun.xp_data.initialize()
+
+            times = [rr.TimeSecondsColumn("stable_time", phase_rerun.t_span)]
+
+            for name, chunk in phase_rerun.xp_data.to_chunk().items():
+                rr.send_columns(
+                    name,
+                    times=times,
+                    components=chunk,
+                )
+
+            for name, chunk in phase_rerun.biorbd_models.to_chunk().items():
+                rr.send_columns(
+                    name,
+                    times=times,
+                    components=chunk,
+                )
+
+        # cumulative_frames_in_merged_t_span = self.cumulative_frames_in_merged_t_span
+        # for frame, (t, idx) in enumerate(zip(self.merged_t_span[1:], self.frame_t_span_idx[1:])):
+        #     rr.set_time_seconds("stable_time", t)
+        #     for i in idx:
+        #         frame_i = cumulative_frames_in_merged_t_span[i][frame + 1]
+        #         self.phase_reruns[i].biorbd_models.to_rerun(frame_i)
+        #         self.phase_reruns[i].xp_data.to_rerun(frame_i)
+        #
+        # if clear_last_node:
+        #     for phase_rerun in self.phase_reruns:
+        #         for component in [
+        #             *phase_rerun.biorbd_models.component_names,
+        #             *phase_rerun.xp_data.component_names,
+        #             *phase_rerun.timeless_components.component_names,
+        #         ]:
+        #             rr.log(component, rr.Clear(recursive=False))
+
 
 def calculate_cumulative_frames(id: int, frame_t_span_idx) -> list[int]:
     """

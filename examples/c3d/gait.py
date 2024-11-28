@@ -5,6 +5,6 @@ prr.c3d(
     show_floor=True,
     show_force_plates=True,
     show_forces=True,
-    down_sampled_forces=False,
+    down_sampled_forces=True,
     show_events=False,
 )

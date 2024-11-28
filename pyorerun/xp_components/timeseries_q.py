@@ -28,6 +28,9 @@ class TimeSeriesQ(ExperimentalData):
     def nb_components(self):
         return 1
 
+    def initialize(self):
+        pass
+
     def to_rerun(self, frame: int) -> None:
         if self.properties.ranges is None:
             for joint_idx in range(self.nb_q):
