@@ -139,17 +139,8 @@ class TransformableMeshUpdater(Component):
         homogenous_matrices = self.compute_all_transforms(q)
 
         return {self.name: [
-            # rr.Transform3D.indicator(),
-            # rr.components.Translation3DBatch(homogenous_matrices[:3, 3, :].T),
-            # rr.components.TransformMat3x3Batch(
-            #     [self.to_component_from_homogenous_mat(homogenous_matrices[:, :, f]) for f in range(homogenous_matrices.shape[2])]
-            # )
-            #     homogenous_matrices[:3, :3, :].transpose(2, 0, 1).reshape(-1)),
-            #     homogenous_matrices[:3, :3, :].transpose(2, 0, 1).reshape(-1, 3)
-            # ).partition(9 for _ in range(homogenous_matrices.shape[2])),
             rr.InstancePoses3D.indicator(),
             rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
             rr.components.PoseTransformMat3x3Batch([homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]),
-            # rr.components.PoseTransformMat3x3Batch(homogenous_matrices[:3, :3, :].transpose(2, 0, 1).reshape(-1, 3)),
         ]}
 

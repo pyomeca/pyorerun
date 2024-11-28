@@ -22,6 +22,15 @@ class LocalFrameUpdater(Component):
     def nb_components(self):
         return 1
 
+    def initialize(self):
+        rr.log(
+            self.name,
+            rr.Transform3D(
+                translation=np.zeros(3),
+                mat3x3=np.eye(3),
+            )
+        )
+
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
             self.name,
