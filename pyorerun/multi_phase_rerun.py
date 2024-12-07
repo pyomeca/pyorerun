@@ -25,8 +25,7 @@ class MultiPhaseRerun:
         if self.nb_phase - phase == 0:
             self.rerun_biorbd_phases.append(dict())
 
-        rerun_biorbd = PhaseRerun(t_span, phase, window)
-        self.rerun_biorbd_phases[phase][window] = rerun_biorbd
+        self.rerun_biorbd_phases[phase][window] = PhaseRerun(t_span, phase, window)
 
     def add_animated_model(
         self,
