@@ -111,7 +111,7 @@ class MultiFrameRatePhaseRerun:
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if self.nb_phases == 1:
-            self.phase_reruns[0].rerun_with_chunks(name, init, clear_last_node, notebook)
+            self.phase_reruns[0].rerun(name, init, clear_last_node, notebook)
             return
 
         if init:
