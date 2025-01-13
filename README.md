@@ -2,7 +2,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/7e8b7eb962759cf11f38/maintainability)](https://codeclimate.com/github/pyomeca/pyorerun/maintainability) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/pyorerun.svg)](https://anaconda.org/conda-forge/pyorerun)
 
 We can rerun c3d files and display their original content.
-And all also animate biorbd models from the pyomeca organization.
+And also animate biorbd models from the pyomeca organization.
 
 ``` conda install -c conda-forge pyorerun ```
 
