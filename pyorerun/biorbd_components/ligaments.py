@@ -50,6 +50,7 @@ class LineStripUpdater(LineStrips):
                         rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
                         rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
                         rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
+                        rr.components.TextBatch([self.properties.strip_names[s] for _ in range(nb_frames)]),
                     ]
                 }
             )
