@@ -20,7 +20,6 @@ jobs:
       - name: Setup environment
         uses: conda-incubator/setup-miniconda@v2
         with:
-          miniforge-variant: Mambaforge
           miniforge-version: latest
           use-mamba: true
           activate-environment: pyorerun
@@ -28,11 +27,11 @@ jobs:
         
       - name: Print mamba info
         run: | 
-          mamba info
-          mamba list
+          conda info
+          conda list
 
       - name: Install extra dependencies
-        run: mamba install pytest-cov black pytest pytest-cov codecov -cconda-forge
+        run: conda install pytest-cov black pytest pytest-cov codecov -cconda-forge
 
       - name: Install pyorerun with pip
         run: pip install .
