@@ -16,7 +16,7 @@ class LocalFrameUpdater(Component):
         """
         self.name = name
         self.transform_callable = transform_callable
-        self.scale = 0.25
+        self.scale = 0.1
 
     @property
     def nb_components(self):
@@ -41,7 +41,8 @@ class LocalFrameUpdater(Component):
         homogenous_matrices = self.transform_callable(q)
         return rr.Transform3D(
             translation=homogenous_matrices[:3, 3],
-            mat3x3=homogenous_matrices[:3, :3] * self.scale,
+            mat3x3=homogenous_matrices[:3, :3],
+            axis_length=self.scale,
         )
 
     def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
@@ -62,5 +63,6 @@ class LocalFrameUpdater(Component):
                 rr.components.PoseTransformMat3x3Batch(
                     [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
                 ),
+                rr.components.AxisLengthBatch([self.scale] * homogenous_matrices.shape[2]),
             ]
         }
