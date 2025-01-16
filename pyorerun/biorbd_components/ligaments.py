@@ -38,24 +38,20 @@ class LineStripUpdater(LineStrips):
 
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
         nb_frames = q.shape[1]
-        # partition = [self.nb_strips for _ in range(nb_frames)]
 
         strips_by_frame = self.compute_strips(q)
-        strips_output = {}
-        for s in range(self.nb_strips):
-            strips_output.update(
-                {
-                    f"{self.name}_{s}": [
-                        rr.LineStrips3D.indicator(),
-                        rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
-                        rr.components.ColorBatch([self.properties.color for _ in range(nb_frames)]),
-                        rr.components.RadiusBatch([self.properties.radius for _ in range(nb_frames)]),
-                        rr.components.TextBatch([self.properties.strip_names[s] for _ in range(nb_frames)]),
-                    ]
-                }
-            )
-
-        return strips_output
+        colors = [self.properties.color for _ in range(nb_frames)]
+        radii = [self.properties.radius for _ in range(nb_frames)]
+        return {
+            f"{self.name}_{s}": [
+                rr.LineStrips3D.indicator(),
+                rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
+                rr.components.ColorBatch(colors),
+                rr.components.RadiusBatch(radii),
+                rr.components.TextBatch([self.properties.strip_names[s] for _ in range(nb_frames)]),
+            ]
+            for s in range(self.nb_strips)
+        }
 
 
 class LigamentsUpdater(LineStripUpdater):
@@ -122,7 +118,6 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
 
         strips_output = {}
         for s in range(self.nb_strips):
-            print(self.name, s)
             strips_output.update(
                 {
                     f"{self.name}_{s}": [
