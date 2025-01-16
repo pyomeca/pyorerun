@@ -27,12 +27,12 @@ def main():
     # viz.add_animated_model(model, q, display_q=True)
     viz.add_animated_model(model, q, display_q=False)
     tic = time.time()
-    viz.rerun("msk_model")
+    viz.rerun("msk_model with chunks")
     toc = time.time()
     print(f"Time to run: {toc - tic}")
 
     tic = time.time()
-    viz.rerun_by_frame("msk_model with chunk")
+    # viz.rerun_by_frame("msk_model frame by frame")
     toc = time.time()
     print(f"Time to run with chunks: {toc - tic}")
 
