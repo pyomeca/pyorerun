@@ -105,4 +105,4 @@ class MultiPhaseRerun:
                 )
 
                 more_phases_after_this_one = i < self.nb_phase - 1
-                rr_phase.rerun(init=False, clear_last_node=False)
+                rr_phase.rerun(init=False, clear_last_node=True)

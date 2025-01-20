@@ -244,6 +244,7 @@ class PhaseRerun:
             )
 
         if clear_last_node:
+            rr.set_time_seconds("stable_time", self.t_span[-1])
             for component in [
                 *self.biorbd_models.component_names,
                 *self.xp_data.component_names,
