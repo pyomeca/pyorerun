@@ -47,18 +47,36 @@ class LineStripUpdater(LineStrips):
         nb_frames = q.shape[1]
 
         strips_by_frame = self.compute_strips(q)
-        colors = [self.properties.color for _ in range(nb_frames)]
-        radii = [self.properties.radius for _ in range(nb_frames)]
+        # keep it for now
+        # colors = [self.properties.color for _ in range(nb_frames)]
+        # radii = [self.properties.radius for _ in range(nb_frames)]
+        # return {
+        #     f"{self.name}_{s}": [
+        #         rr.LineStrips3D.indicator(),
+        #         rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
+        #         rr.components.ColorBatch(colors),
+        #         rr.components.RadiusBatch(radii),
+        #         rr.components.TextBatch([self.properties.strip_names[s] for _ in range(nb_frames)]),
+        #         rr.components.ShowLabelsBatch([False for _ in range(nb_frames)]),
+        #     ]
+        #     for s in range(self.nb_strips)
+        # }
+        # lets try a more advanced approach
+        colors = [self.properties.color for _ in range(nb_frames * self.nb_strips)]
+        radii = [self.properties.radius for _ in range(nb_frames * self.nb_strips)]
+        labels = [self.properties.strip_names[s] for _ in range(nb_frames) for s in range(self.nb_strips)]
+        partition = [self.nb_strips for _ in range(nb_frames)]
         return {
-            f"{self.name}_{s}": [
+            self.name: [
                 rr.LineStrips3D.indicator(),
-                rr.components.LineStrip3DBatch([strips_by_frame[f][s] for f in range(nb_frames)]),
-                rr.components.ColorBatch(colors),
-                rr.components.RadiusBatch(radii),
-                rr.components.TextBatch([self.properties.strip_names[s] for _ in range(nb_frames)]),
-                rr.components.ShowLabelsBatch([False for _ in range(nb_frames)]),
+                rr.components.LineStrip3DBatch(
+                    [strips_by_frame[f][s] for f in range(nb_frames) for s in range(self.nb_strips)]
+                ).partition(partition),
+                rr.components.ColorBatch(colors).partition(partition),
+                rr.components.RadiusBatch(radii).partition(partition),
+                rr.components.TextBatch(labels).partition(partition),
+                rr.components.ShowLabelsBatch([False for _ in range(nb_frames * self.nb_strips)]).partition(partition),
             ]
-            for s in range(self.nb_strips)
         }
 
 
@@ -124,17 +142,35 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
         nb_frames = q.shape[1]
         strips_by_frame = self.compute_all_strips(q, markers)
 
-        colors = [self.properties.color for _ in range(nb_frames)]
-        radii = [self.properties.radius for _ in range(nb_frames)]
+        # colors = [self.properties.color for _ in range(nb_frames)]
+        # radii = [self.properties.radius for _ in range(nb_frames)]
+        #
+        # return {
+        #     f"{self.name}_{s}": [
+        #         rr.LineStrips3D.indicator(),
+        #         rr.components.LineStrip3DBatch([strips_by_frame[s, :, :, f] for f in range(nb_frames)]),
+        #         rr.components.ColorBatch(colors),
+        #         rr.components.RadiusBatch(radii),
+        #     ]
+        #     for s in range(self.nb_strips)
+        # }
+
+        colors = [self.properties.color for _ in range(nb_frames * self.nb_strips)]
+        radii = [self.properties.radius for _ in range(nb_frames * self.nb_strips)]
+        labels = [self.properties.strip_names[s] for _ in range(nb_frames) for s in range(self.nb_strips)]
+        partition = [self.nb_strips for _ in range(nb_frames)]
 
         return {
-            f"{self.name}_{s}": [
+            self.name: [
                 rr.LineStrips3D.indicator(),
-                rr.components.LineStrip3DBatch([strips_by_frame[s, :, :, f] for f in range(nb_frames)]),
-                rr.components.ColorBatch(colors),
-                rr.components.RadiusBatch(radii),
+                rr.components.LineStrip3DBatch(
+                    [strips_by_frame[s, :, :, f] for f in range(nb_frames) for s in range(self.nb_strips)]
+                ).partition(partition),
+                rr.components.ColorBatch(colors).partition(partition),
+                rr.components.RadiusBatch(radii).partition(partition),
+                rr.components.TextBatch(labels).partition(partition),
+                rr.components.ShowLabelsBatch([False for _ in range(nb_frames * self.nb_strips)]).partition(partition),
             ]
-            for s in range(self.nb_strips)
         }
 
 
@@ -160,7 +196,7 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
             rr.Transform3D(
                 translation=homogenous_matrices[:3, 3],
                 mat3x3=homogenous_matrices[:3, :3],
-                axis_length=1,
+                # axis_length=1,
             ),
         )
         rr.log(
@@ -186,6 +222,6 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
                 rr.components.PoseTransformMat3x3Batch(
                     [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
                 ),
-                rr.components.AxisLengthBatch([1] * homogenous_matrices.shape[2]),
+                # rr.components.AxisLengthBatch([1] * homogenous_matrices.shape[2]),
             ]
         }
