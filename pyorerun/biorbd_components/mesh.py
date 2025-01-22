@@ -13,7 +13,8 @@ class TransformableMeshUpdater(Component):
     """
 
     def __init__(self, name: str, mesh: Trimesh, transform_callable: callable):
-        self.__name = name + "/" + mesh.metadata["file_name"]
+        filename = mesh.metadata["file_name"] if "file_name" in mesh.metadata else mesh.metadata["header"]
+        self.__name = name + "/" + filename
         self.__mesh = mesh
 
         self.transformed_mesh = mesh.copy()
