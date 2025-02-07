@@ -38,7 +38,7 @@ class MarkersUpdater(Component):
         nb_frames = q.shape[1]
         markers = np.zeros((3, self.nb_markers, nb_frames))
         for f in range(q.shape[1]):
-            markers[:, :, f] = self.callable_markers(q[:, f]).T
+            markers[:, :, f] = self.callable_markers(q[:, f]).squeeze().T
 
         return markers
 
