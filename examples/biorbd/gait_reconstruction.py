@@ -29,15 +29,15 @@ def main():
     markers = PyoMarkers(data=markers_reduced, channels=list(model.marker_names))
 
     # Add force plates to the animation
-    viz.add_force_plate(num=1, corners=force_plate_1_corners)
-    viz.add_force_plate(num=2, corners=force_plate_2_corners)
+    viz.add_force_plate(num=0, corners=force_plate_1_corners)
+    viz.add_force_plate(num=1, corners=force_plate_2_corners)
     viz.add_force_data(
-        num=1,
+        num=0,
         force_origin=f_ext_reduced_1[:3, :],
         force_vector=f_ext_reduced_1[6:9, :],
     )
     viz.add_force_data(
-        num=2,
+        num=1,
         force_origin=f_ext_reduced_2[:3, :],
         force_vector=f_ext_reduced_2[6:9, :],
     )
@@ -46,7 +46,7 @@ def main():
     viz.add_animated_model(model, q_reduced, tracked_markers=markers)
 
     # Play
-    viz.rerun_by_frame("Experimental data with kinematics reconstruction")
+    viz.rerun("Experimental data with kinematics reconstruction")
 
 
 if __name__ == "__main__":
