@@ -23,3 +23,4 @@ class DisplayModelOptions:
     show_gravity: bool = False
 
     soft_contacts_color: tuple[int, int, int] = (0, 255, 255)
+    rigid_contacts_color: tuple[int, int, int] = (255, 0, 255)

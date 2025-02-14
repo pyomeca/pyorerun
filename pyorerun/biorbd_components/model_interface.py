@@ -186,6 +186,10 @@ class BiorbdModelNoMesh:
     def has_soft_contacts(self) -> bool:
         return self.model.nbSoftContacts() > 0
 
+    @property
+    def has_rigid_contacts(self) -> bool:
+        return self.model.nbRigidContacts() > 0
+
     def soft_contacts(self, q: np.ndarray) -> np.ndarray:
         """
         Returns the position of the soft contacts spheres in the global reference frame
@@ -193,12 +197,26 @@ class BiorbdModelNoMesh:
         soft_contacts = self.model.softContacts(q, True)
         return np.array([soft_contacts[i].to_array() for i in range(self.model.nbSoftContacts())])
 
+    def rigid_contacts(self, q: np.ndarray) -> np.ndarray:
+        """
+        Returns the position of the rigid contacts in the global reference frame
+        """
+        rigid_contacts = self.model.rigidContacts(q, True)
+        return np.array([rigid_contacts[i].to_array() for i in range(self.model.nbRigidContacts())])
+
     @property
     def soft_contacts_names(self) -> tuple[str, ...]:
         """
         Returns the names of the soft contacts
         """
         return tuple([s.to_string() for s in self.model.softContactNames()])
+
+    @property
+    def rigid_contacts_names(self) -> tuple[str, ...]:
+        """
+        Returns the names of the soft contacts
+        """
+        return tuple([s.to_string() for s in self.model.contactNames()])
 
     @property
     def soft_contact_radii(self) -> tuple[float, ...]:
