@@ -19,6 +19,7 @@ class ModelUpdater(Components):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
+        self.centers_of_mass = self.create_centers_of_mass_updater()
         self.soft_contacts = self.create_soft_contacts_updater()
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
@@ -71,6 +72,17 @@ class ModelUpdater(Components):
                 radius=self.model.options.markers_radius,
             ),
             callable_markers=self.model.markers,
+        )
+
+    def create_centers_of_mass_updater(self):
+        return MarkersUpdater(
+            self.name + "/centers_of_mass",
+            marker_properties=MarkerProperties(
+                markers_names=self.model.segment_names_with_mass,
+                color=np.array(self.model.options.centers_of_mass_color),
+                radius=self.model.options.centers_of_mass_radius,
+            ),
+            callable_markers=self.model.centers_of_mass,
         )
 
     def create_soft_contacts_updater(self):
@@ -160,7 +172,14 @@ class ModelUpdater(Components):
         all_segment_components = []
         for segment in self.segments:
             all_segment_components.extend(segment.components)
-        return [self.markers, self.soft_contacts, *all_segment_components, self.ligaments, self.muscles]
+        return [
+            self.markers,
+            self.centers_of_mass,
+            self.soft_contacts,
+            *all_segment_components,
+            self.ligaments,
+            self.muscles,
+        ]
 
     @property
     def component_names(self) -> list[str]:
