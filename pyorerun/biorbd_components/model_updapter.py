@@ -174,7 +174,14 @@ class ModelUpdater(Components):
         all_segment_components = []
         for segment in self.segments:
             all_segment_components.extend(segment.components)
-        return [self.markers, self.soft_contacts, self.rigid_contacts, *all_segment_components, self.ligaments, self.muscles]
+        return [
+            self.markers,
+            self.soft_contacts,
+            self.rigid_contacts,
+            *all_segment_components,
+            self.ligaments,
+            self.muscles,
+        ]
 
     @property
     def component_names(self) -> list[str]:
