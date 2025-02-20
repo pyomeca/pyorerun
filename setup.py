@@ -5,8 +5,8 @@ setup(
     version="1.2.5",
     install_requires=[
         "ezc3d",  # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
-        "numpy",
-        "rerun-sdk>=0.20.1",
+        "numpy=1.26.4",
+        "rerun-sdk=0.21.0",
         "trimesh",
         "pyomeca",
         "tk",
