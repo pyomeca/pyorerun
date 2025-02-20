@@ -17,7 +17,6 @@ def main():
         f_ext_reduced_2 = data["f_ext_reduced_2"]
         markers_reduced = data["markers_reduced"]
 
-
     # --- Create the visualization --- #
     # Add the model
     biorbd_model_path = "models/walker.bioMod"
