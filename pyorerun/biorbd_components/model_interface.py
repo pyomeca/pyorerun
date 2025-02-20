@@ -1,8 +1,12 @@
+from functools import cached_property
+
 import biorbd
 import numpy as np
-from biorbd import GeneralizedCoordinates, segment_index
+from biorbd import GeneralizedCoordinates
 
 from .model_display_options import DisplayModelOptions
+
+MINIMAL_SEGMENT_MASS = 1e-08
 
 
 class BiorbdSegment:
@@ -14,31 +18,35 @@ class BiorbdSegment:
         self.segment = segment
         self._index: int = index
 
-    @property
+    @cached_property
     def name(self) -> str:
         return self.segment.name().to_string()
 
-    @property
+    @cached_property
     def id(self) -> int:
         return self._index
 
-    @property
+    @cached_property
     def has_mesh(self) -> bool:
         has_mesh = self.segment.characteristics().mesh().hasMesh()
         if has_mesh:
             return not self.mesh_path.endswith("/")  # Avoid empty mesh path
         return has_mesh
 
-    @property
+    @cached_property
     def has_meshlines(self) -> bool:
         has_mesh = self.segment.characteristics().mesh().hasMesh()
         if has_mesh:
             return self.mesh_path.endswith("/")  # Avoid empty mesh path
         return has_mesh
 
-    @property
+    @cached_property
     def mesh_path(self) -> str:
         return self.segment.characteristics().mesh().path().absolutePath().to_string()
+
+    @cached_property
+    def mass(self) -> float:
+        return self.segment.characteristics().mass()
 
 
 class BiorbdModelNoMesh:
@@ -55,29 +63,37 @@ class BiorbdModelNoMesh:
     def from_biorbd_object(cls, model: biorbd.Model, options=None):
         return cls(model.path().absolutePath().to_string(), options)
 
-    @property
+    @cached_property
     def name(self):
         return self.path.split("/")[-1].split(".")[0]
 
-    @property
+    @cached_property
     def marker_names(self) -> tuple[str, ...]:
         return tuple([s.to_string() for s in self.model.markerNames()])
 
-    @property
+    @cached_property
     def nb_markers(self) -> int:
         return self.model.nbMarkers()
 
-    @property
+    @cached_property
     def segment_names(self) -> tuple[str, ...]:
         return tuple([s.name().to_string() for s in self.model.segments()])
 
-    @property
+    @cached_property
     def nb_segments(self) -> int:
         return self.model.nbSegment()
 
-    @property
+    @cached_property
     def segments(self) -> tuple[BiorbdSegment, ...]:
         return tuple(BiorbdSegment(s, i) for i, s in enumerate(self.model.segments()))
+
+    @cached_property
+    def segments_with_mass(self) -> tuple[BiorbdSegment, ...]:
+        return tuple([s for s in self.segments if s.mass > MINIMAL_SEGMENT_MASS])
+
+    @cached_property
+    def segment_names_with_mass(self) -> tuple[str, ...]:
+        return tuple([s.name for s in self.segments_with_mass])
 
     def segment_homogeneous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
         """
@@ -91,24 +107,27 @@ class BiorbdModelNoMesh:
         """
         Returns a [N_markers x 3] array containing the position of each marker in the global reference frame
         """
-        return np.array(
-            [self.model.markers(GeneralizedCoordinates(q))[i].to_array() for i in range(self.model.nbMarkers())]
-        )
+        return np.array([self.model.markers(GeneralizedCoordinates(q))[i].to_array() for i in range(self.nb_markers)])
 
-    def center_of_mass(self, q: np.ndarray) -> np.ndarray:
+    def centers_of_mass(self, q: np.ndarray) -> np.ndarray:
         """
-        Returns the position of the center of mass in the global reference frame
+        Returns the position of the centers of mass in the global reference frame
         """
-        return self.model.CoM(GeneralizedCoordinates(q)).to_array()
+        all_com = np.array([com.to_array() for com in self.model.CoMbySegment(GeneralizedCoordinates(q))])
+        all_com_with_mass = np.zeros((len(self.segments_with_mass), 3))
+        for i, segment in enumerate(self.segments_with_mass):
+            all_com_with_mass[i, :] = all_com[segment.id, :]
 
-    @property
+        return all_com_with_mass
+
+    @cached_property
     def nb_ligaments(self) -> int:
         """
         Returns the number of ligaments
         """
         return self.model.nbLigaments()
 
-    @property
+    @cached_property
     def ligament_names(self) -> tuple[str, ...]:
         """
         Returns the names of the ligaments
@@ -129,14 +148,14 @@ class BiorbdModelNoMesh:
             ligaments.append(ligament_strip)
         return ligaments
 
-    @property
+    @cached_property
     def nb_muscles(self) -> int:
         """
         Returns the number of ligaments
         """
         return self.model.nbMuscles()
 
-    @property
+    @cached_property
     def muscle_names(self) -> tuple[str, ...]:
         """
         Returns the names of the ligaments
@@ -157,32 +176,32 @@ class BiorbdModelNoMesh:
             muscles.append(muscle_strip)
         return muscles
 
-    @property
+    @cached_property
     def nb_q(self) -> int:
         return self.model.nbQ()
 
-    @property
+    @cached_property
     def dof_names(self) -> tuple[str, ...]:
         return tuple(s.to_string() for s in self.model.nameDof())
 
-    @property
+    @cached_property
     def q_ranges(self) -> tuple[tuple[float, float], ...]:
         q_ranges = [q_range for segment in self.model.segments() for q_range in segment.QRanges()]
         return tuple((q_range.min(), q_range.max()) for q_range in q_ranges)
 
-    @property
+    @cached_property
     def gravity(self) -> np.ndarray:
         return self.model.getGravity().to_array()
 
-    @property
+    @cached_property
     def has_mesh(self) -> bool:
         return any([s.has_mesh for s in self.segments])
 
-    @property
+    @cached_property
     def has_meshlines(self) -> bool:
         return any([s.has_meshlines for s in self.segments])
 
-    @property
+    @cached_property
     def has_soft_contacts(self) -> bool:
         return self.model.nbSoftContacts() > 0
 
@@ -204,21 +223,21 @@ class BiorbdModelNoMesh:
         rigid_contacts = self.model.rigidContacts(q, True)
         return np.array([rigid_contacts[i].to_array() for i in range(self.model.nbRigidContacts())])
 
-    @property
+    @cached_property
     def soft_contacts_names(self) -> tuple[str, ...]:
         """
         Returns the names of the soft contacts
         """
         return tuple([s.to_string() for s in self.model.softContactNames()])
 
-    @property
+    @cached_property
     def rigid_contacts_names(self) -> tuple[str, ...]:
         """
         Returns the names of the soft contacts
         """
         return tuple([f"contact_{s}" for s in range(self.model.nbRigidContacts())])
 
-    @property
+    @cached_property
     def soft_contact_radii(self) -> tuple[float, ...]:
         """
         Returns the radii of the soft contacts
@@ -245,7 +264,7 @@ class BiorbdModel(BiorbdModelNoMesh):
     def segments(self) -> tuple[BiorbdSegment, ...]:
         return tuple([s for s in super().segments if s.has_mesh or s.has_meshlines])
 
-    @property
+    @cached_property
     def meshlines(self) -> list[np.ndarray]:
 
         meshes = []

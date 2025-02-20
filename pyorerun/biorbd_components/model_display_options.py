@@ -10,6 +10,9 @@ class DisplayModelOptions:
     markers_color: tuple[int, int, int] = (0, 0, 255)
     markers_radius: float = 0.01
 
+    centers_of_mass_color: tuple[int, int, int] = (0, 0, 0)
+    centers_of_mass_radius: float = 0.01
+
     ligaments_color: tuple[int, int, int] = (255, 255, 0)
     ligaments_radius: float = 0.01
 
