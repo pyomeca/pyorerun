@@ -1,0 +1,3303 @@
+version 4
+
+gravity	0 -9.8066499999999994 0
+
+// SEGMENT DEFINITION
+
+// Information about ground segment
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment ground
+		parent base 
+		RTinMatrix	0
+		RT	0	 0	 0	xyz	0	 0	 0
+	endsegment
+
+	// Markers
+
+// Information about pelvis segment
+	// Segment
+	segment pelvis_parent_offset
+		parent ground 
+		RTinMatrix	0
+		RT	1.57079633 1.57079633 0	xyz	0 0 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment pelvis_translation
+		parent pelvis_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+		translations xyz
+		ranges
+				-3 3
+				-3 3
+				-3 3
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment pelvis_rotation_transform
+		parent pelvis_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-0.7853981633974483 0.7853981633974483
+				-0.7853981633974483 0.7853981633974483
+				-3.1415999999999999 3.1415999999999999
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment pelvis_reset_axis
+		parent pelvis_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment pelvis
+		parent pelvis_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	6.8910207781938588
+		inertia
+			0.046969938084415144	0	0
+			0	0.039796513688254466	0
+			0	0	0.026454858123420594
+		com	-0.062475308327668538 0 0
+		meshfile	Geometry_cleaned/sacrum.vtp
+		meshcolor	1 1 1
+		meshscale	0.88366772740691002 0.88366772740691002 0.88366772740691002
+	endsegment
+	// Segment
+	segment pelvis_geom_2
+		parent pelvis 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/pelvis.vtp
+		meshcolor	1 1 1
+		meshscale	0.88366772740691002 0.88366772740691002 0.88366772740691002
+	endsegment
+
+	// Segment
+	segment pelvis_geom_3
+		parent pelvis 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/l_pelvis.vtp
+		meshcolor	1 1 1
+		meshscale	0.88366772740691002 0.88366772740691002 0.88366772740691002
+	endsegment
+
+
+	// Markers
+
+	marker	RASIS
+		parent	pelvis
+		position	-0.0043071394421841935 0.027282611107847909 0.13542773268040081
+	endmarker
+
+	marker	LASIS
+		parent	pelvis
+		position	0.0020786697472610083 0.036772098232877193 -0.12024430913586309
+	endmarker
+
+	marker	LPSIS
+		parent	pelvis
+		position	-0.19331143924701855 0.039698292292185133 -0.023051609100587345
+	endmarker
+
+	marker	RPSIS
+		parent	pelvis
+		position	-0.19096215057613963 0.0388749135280686 0.03827577983798236
+	endmarker
+
+// Information about femur_r segment
+	// Segment
+	segment femur_r_parent_offset
+		parent pelvis 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.062475308327668538 -0.058410436781596756 0.073786255238476997
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment femur_r_translation
+		parent femur_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment femur_r_rotation_transform
+		parent femur_r_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-0.6981317007977318 2.0943951023931953
+				-1.0471975511965976 0.5235987755982988
+				-0.5235987755982988 0.5235987755982988
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment femur_r_reset_axis
+		parent femur_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment femur_r
+		parent femur_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	10.714196912254414
+		inertia
+			0.18918127452807212	0	0
+			0	0.049591207885999494	0
+			0	0	0.19949511548441962
+		com	0 -0.18827473938204328 0
+		meshfile	Geometry_cleaned/femur_r.vtp
+		meshcolor	1 1 1
+		meshscale	1.1074984669531958 1.1074984669531958 1.1074984669531958
+	endsegment
+
+	// Markers
+
+	marker	RLFE
+		parent	femur_r
+		position	0.0049012152241131868 -0.43343532546254893 0.065670683714613265
+	endmarker
+
+	marker	RMFE
+		parent	femur_r
+		position	0.0016018009493986018 -0.44563967799458926 -0.050455778969224263
+	endmarker
+
+	marker	RGT
+		parent	femur_r
+		position	0.012096050251915513 -0.0055172610544109713 0.11887849003725603
+	endmarker
+
+// Information about tibia_r segment
+	// Segment
+	segment tibia_r_parent_offset
+		parent femur_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0 -0.43192440211174637 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment tibia_r_translation
+		parent tibia_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment tibia_r_rotation_transform
+		parent tibia_r_translation 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			0.0		1.0		0.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations x
+		ranges
+				-2.6179938779914944 0.0
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment tibia_r_reset_axis
+		parent tibia_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			0.0		1.0		0.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment tibia_r
+		parent tibia_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	3.177203928774432
+		inertia
+			0.043495983395833007	0	0
+			0	0.0044013792721973883	0
+			0	0	0.044100094276330687
+		com	0 -0.18735774955050136 0
+		meshfile	Geometry_cleaned/tibia_r.vtp
+		meshcolor	1 1 1
+		meshscale	1.0035230291939012 1.0035230291939012 1.0035230291939012
+	endsegment
+	// Segment
+	segment tibia_r_geom_2
+		parent tibia_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/fibula_r.vtp
+		meshcolor	1 1 1
+		meshscale	1.0035230291939012 1.0035230291939012 1.0035230291939012
+	endsegment
+
+
+	// Markers
+
+	marker	RATT
+		parent	tibia_r
+		position	0.046755862053315278 -0.06439652449214206 0.03363106788113579
+	endmarker
+
+	marker	RLM
+		parent	tibia_r
+		position	-0.018371364250021782 -0.44466198008189939 0.037959425087586096
+	endmarker
+
+	marker	RSPH
+		parent	tibia_r
+		position	0.016842222963333486 -0.4316434234067274 -0.036935931067701988
+	endmarker
+
+// Information about talus_r segment
+	// Segment
+	segment talus_r_parent_offset
+		parent tibia_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0 -0.43151490255337754 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment talus_r_translation
+		parent talus_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment talus_r_ankle_angle_r
+		parent talus_r_translation 
+		RTinMatrix	1
+		RT
+			-0.10501354951145875		0.9847739147196384		-0.13853696729307666		0
+			-0.17402244919041737		0.11896060682707867		0.97752982624629		0
+			0.9791263154449344		0.12676241915919637		0.158880292963398		0
+			0		0		0		1
+		rotations x
+		ranges
+				-0.8726646259971648 0.5235987755982988
+	endsegment
+
+	// Segment
+	segment talus_r_rotation_1
+		parent talus_r_ankle_angle_r 
+		RTinMatrix	1
+		RT
+			0.17229775386542742		-0.1740224491904173		0.9695512731107607		0
+			0.9810418517756039		0.11896060682707862		-0.15298777430901747		0
+			-0.0887151006177767		0.9775298262462898		0.19121995115906684		0
+			0		0		0		1
+		ranges
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+	// Segment
+	segment talus_r_rotation_2
+		parent talus_r_rotation_1 
+		RTinMatrix	1
+		RT
+			-0.07486170776001419		0.15814340840361363		0.9845742161410393		0
+			0.9038446703433983		0.42786073889974224		-3.0572434757230086e-17		0
+			-0.42126065161973975		0.8899021578166076		-0.1749674624330419		0
+			0		0		0		1
+		ranges
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment talus_r_reset_axis
+		parent talus_r_rotation_2 
+		RTinMatrix	1
+		RT
+			0.045627371674901725		0.9038446703433985		-0.4254209149135404		0
+			-0.09638663462365679		0.4278607388997424		0.8986906057003667		0
+			0.994297621248269		2.5134356286976218e-17		0.10664070695580546		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment talus_r
+		parent talus_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.075418534070597773
+		inertia
+			0.00069749678507117867	0	0
+			0	0.00069749678507117867	0
+			0	0	0.00069749678507117867
+		com	0 0 0
+		meshfile	Geometry_cleaned/talus_rv.vtp
+		meshcolor	1 1 1
+		meshscale	0.96168327196968129 0.96168327196968129 0.96168327196968129
+	endsegment
+
+	// Markers
+
+// Information about calcn_r segment
+	// Segment
+	segment calcn_r_parent_offset
+		parent talus_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.046901293173961356 -0.040342613259128128 0.0076165315139998758
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment calcn_r_translation
+		parent calcn_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment calcn_r_subtalar_angle_r
+		parent calcn_r_translation 
+		RTinMatrix	1
+		RT
+			0.7871796068877029		0.035452488397563306		0.615703977221637		0
+			0.6047474576089907		0.15141940092100942		-0.7818904511120369		0
+			-0.12094948952179817		0.9878336328001509		0.09775446226783302		0
+			0		0		0		1
+		rotations x
+		ranges
+				-0.2617993877991494 0.2617993877991494
+	endsegment
+
+	// Segment
+	segment calcn_r_rotation_1
+		parent calcn_r_subtalar_angle_r 
+		RTinMatrix	1
+		RT
+			0.6383460610511442		0.6047474576089906		-0.4762297962706144		0
+			0.4949006906321582		0.15141940092100942		0.8556549955656984		0
+			0.5895656136108192		-0.7818904511120369		-0.2026319562840809		0
+			0		0		0		1
+		ranges
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+	// Segment
+	segment calcn_r_rotation_2
+		parent calcn_r_rotation_1 
+		RTinMatrix	1
+		RT
+			-0.6168379954976114		0.5118091009824591		-0.5979651590703391		0
+			0.6385464658664823		0.7695832709521595		-6.824797362199446e-17		0
+			0.4601839830327799		-0.38182853903565395		-0.8015220948532763		0
+			0		0		0		1
+		ranges
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment calcn_r_reset_axis
+		parent calcn_r_rotation_2 
+		RTinMatrix	1
+		RT
+			-0.7606568293217763		0.6385464658664827		0.11687428688795162		0
+			0.6311399278465063		0.7695832709521597		-0.09697412308694296		0
+			-0.1518669795710996		6.33374044313553e-17		-0.9884009411751645		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment calcn_r
+		parent calcn_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	1.2590216853608056
+		inertia
+			0.0015815348411061532	0	0
+			0	0.0044057042002242832	0
+			0	0	0.0046316377489537342
+		com	0.10590434178809197 0.031771302536427584 0
+		meshfile	Geometry_cleaned/foot.vtp
+		meshcolor	1 1 1
+		meshscale	1.0590434178809196 1.0590434178809196 1.0590434178809196
+	endsegment
+
+	// Markers
+
+	marker	RCAL
+		parent	calcn_r
+		position	-0.0040100734579341935 -0.019201090968243018 -0.034154135523492557
+	endmarker
+
+	marker	RMFH1
+		parent	calcn_r
+		position	0.19758721647817479 0.016613944171815359 -0.040223603207871661
+	endmarker
+
+	marker	RMFH5
+		parent	calcn_r
+		position	0.16375018207460745 -0.024271901094703424 0.060078672653888998
+	endmarker
+
+// Information about toes_r segment
+	// Segment
+	segment toes_r_parent_offset
+		parent calcn_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0.18935696311710842 -0.0021180868357618394 0.0011437668913113932
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment toes_r_translation
+		parent toes_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment toes_r_rotation_transform
+		parent toes_r_translation 
+		RTinMatrix	1
+		RT
+			-0.5809544		0.0		0.81393611		0
+			0.0		1.0		-0.0		0
+			0.81393611		0.0		0.5809544		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment toes_r_reset_axis
+		parent toes_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			-0.5809543964902848		0.0		0.8139361050827741		0
+			0.0		1.0		0.0		0
+			0.8139361050827743		0.0		0.5809543964902848		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment toes_r
+		parent toes_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.18325572941735324
+		inertia
+			8.4478056619837223e-05	0	0
+			0	0.00016895611323967445	0
+			0	0	0.0008447805661983722
+		com	0.034573910341345937 0.0059954757817362895 -0.017486804363397512
+		meshfile	Geometry_cleaned/bofoot.vtp
+		meshcolor	1 1 1
+		meshscale	0.99924596362271489 0.99924596362271489 0.99924596362271489
+	endsegment
+
+	// Markers
+
+	marker	RTT2
+		parent	toes_r
+		position	0.056658709503625726 0.012193245327719843 0.017401414069957821
+	endmarker
+
+// Information about femur_l segment
+	// Segment
+	segment femur_l_parent_offset
+		parent pelvis 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.062475308327668538 -0.058410436781596756 -0.073786255238476997
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment femur_l_translation
+		parent femur_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment femur_l_rotation_transform
+		parent femur_l_translation 
+		RTinMatrix	1
+		RT
+			0.0		-1.0		0.0		0
+			0.0		0.0		-1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-0.6981317007977318 2.0943951023931953
+				-1.0471975511965976 0.5235987755982988
+				-0.5235987755982988 0.5235987755982988
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment femur_l_reset_axis
+		parent femur_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			-1.0		-0.0		-0.0		0
+			-0.0		-1.0		-0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment femur_l
+		parent femur_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	9.6883781173655148
+		inertia
+			0.15996706405061906	0	0
+			0	0.041933113877346745	0
+			0	0	0.16868819599661997
+		com	0 -0.18206335458914077 0
+		meshfile	Geometry_cleaned/femur_l.vtp
+		meshcolor	1 1 1
+		meshscale	1.0709609093478869 1.0709609093478869 1.0709609093478869
+	endsegment
+
+	// Markers
+
+	marker	LGT
+		parent	femur_l
+		position	0.011623956265812918 -0.02636961783644276 -0.12085766158958122
+	endmarker
+
+	marker	LLFE
+		parent	femur_l
+		position	0.009762788814760337 -0.41599047041210119 -0.066119044643169311
+	endmarker
+
+	marker	LMFE
+		parent	femur_l
+		position	-0.0033295081521638181 -0.44456374668681964 0.049958455912106903
+	endmarker
+
+// Information about tibia_l segment
+	// Segment
+	segment tibia_l_parent_offset
+		parent femur_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0 -0.41767475464567588 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment tibia_l_translation
+		parent tibia_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment tibia_l_rotation_transform
+		parent tibia_l_translation 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			0.0		1.0		0.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations x
+		ranges
+				-2.6179938779914944 0.0
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment tibia_l_reset_axis
+		parent tibia_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			0.0		1.0		0.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment tibia_l
+		parent tibia_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	3.2235125944506389
+		inertia
+			0.044557719477283958	0	0
+			0	0.0045088168518680194	0
+			0	0	0.045176576692246236
+		com	0 -0.18826362701336652 0
+		meshfile	Geometry_cleaned/tibia_l.vtp
+		meshcolor	1 1 1
+		meshscale	1.0083750777362963 1.0083750777362963 1.0083750777362963
+	endsegment
+	// Segment
+	segment tibia_l_geom_2
+		parent tibia_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/fibula_l.vtp
+		meshcolor	1 1 1
+		meshscale	1.0083750777362963 1.0083750777362963 1.0083750777362963
+	endsegment
+
+
+	// Markers
+
+	marker	LATT
+		parent	tibia_l
+		position	0.044081988321841958 -0.07894712541278015 -0.028363947374550502
+	endmarker
+
+	marker	LLM
+		parent	tibia_l
+		position	-0.011623063711327486 -0.46500154110700209 -0.037559119539384067
+	endmarker
+
+	marker	LSPH
+		parent	tibia_l
+		position	0.01340717012509518 -0.43682488268621894 0.040870904222472193
+	endmarker
+
+// Information about talus_l segment
+	// Segment
+	segment talus_l_parent_offset
+		parent tibia_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0 -0.43360128342660742 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment talus_l_translation
+		parent talus_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment talus_l_ankle_angle_l
+		parent talus_l_translation 
+		RTinMatrix	1
+		RT
+			0.10501354951145875		0.8448160126244049		-0.5246504162129347		0
+			0.17402244919041737		0.5038162649652023		0.8461000876576492		0
+			0.9791263154449344		-0.18015292384503287		-0.09410941734658		0
+			0		0		0		1
+		rotations x
+		ranges
+				-1.0471975499999999 1.0471975499999999
+	endsegment
+
+	// Segment
+	segment talus_l_rotation_1
+		parent talus_l_ankle_angle_l 
+		RTinMatrix	1
+		RT
+			0.7376848848131995		0.17402244919041737		0.6523321223854494		0
+			0.5024784560806844		0.5038162649652025		-0.7026269083455922		0
+			-0.4509283888744512		0.8461000876576491		0.28421511179529146		0
+			0		0		0		1
+		ranges
+				-1.0471975499999999 1.0471975499999999
+	endsegment
+
+	// Segment
+	segment talus_l_rotation_2
+		parent talus_l_rotation_1 
+		RTinMatrix	1
+		RT
+			-0.6180189901002832		0.4233509055399527		0.6624398377618367		0
+			0.5651346433490423		0.8249986878091085		-9.650234551095355e-17		0
+			-0.546511996905994		0.37436770145373294		-0.7491151188876591		0
+			0		0		0		1
+		ranges
+				-1.0471975499999999 1.0471975499999999
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment talus_l_reset_axis
+		parent talus_l_rotation_2 
+		RTinMatrix	1
+		RT
+			-0.087978443305575		0.5651346433490424		-0.8202942328215396		0
+			0.06026635789195874		0.8249986878091086		0.5619120315669416		0
+			0.9942976212482688		-2.8459673257678197e-17		-0.1066407069558054		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment talus_l
+		parent talus_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.08075801823244276
+		inertia
+			0.00078172647526179298	0	0
+			0	0.00078172647526179298	0
+			0	0	0.00078172647526179298
+		com	0 0 0
+		meshfile	Geometry_cleaned/talus_lv.vtp
+		meshcolor	1 1 1
+		meshscale	0.98386289907852109 0.98386289907852109 0.98386289907852109
+	endsegment
+
+	// Markers
+
+// Information about calcn_l segment
+	// Segment
+	segment calcn_l_parent_offset
+		parent talus_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.047982993588059478 -0.041273048616343962 -0.0077921941607018872
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment calcn_l_translation
+		parent calcn_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment calcn_l_subtalar_angle_l
+		parent calcn_l_translation 
+		RTinMatrix	1
+		RT
+			-0.7871796068877029		0.1109500122469734		-0.6066616530509557		0
+			-0.6047474576089907		-0.3317817171012387		0.7240175444785958		0
+			-0.12094948952179817		0.9368089383538941		0.32826853946832363		0
+			0		0		0		1
+		rotations x
+		ranges
+				-0.2617993877991494 0.2617993877991494
+	endsegment
+
+	// Segment
+	segment calcn_l_rotation_1
+		parent calcn_l_subtalar_angle_l 
+		RTinMatrix	1
+		RT
+			-0.796211001045607		-0.6047474576089907		0.018126067676541627		0
+			0.2725586976792618		-0.33178171710123866		0.9031238278977798		0
+			-0.5401479409692657		0.7240175444785959		0.42899743257255873		0
+			0		0		0		1
+		ranges
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+	// Segment
+	segment calcn_l_rotation_2
+		parent calcn_l_rotation_1 
+		RTinMatrix	1
+		RT
+			0.08619966465652526		0.9960178826231688		0.0227595102750856		0
+			-0.9962759491803695		0.08622199884457328		-5.0625651386273154e-17		0
+			-0.001962370468641498		-0.022674752702191176		0.9997409687974372		0
+			0		0		0		1
+		ranges
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment calcn_l_reset_axis
+		parent calcn_l_rotation_2 
+		RTinMatrix	1
+		RT
+			0.08522190480798043		-0.9962759491803697		0.013094274537108066		0
+			0.9847200858400577		0.08622199884457331		0.15130141922135296		0
+			-0.15186697957109963		-1.430033591828682e-17		0.9884009411751643		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment calcn_l
+		parent calcn_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	1.2282999026891168
+		inertia
+			0.0015177402168615511	0	0
+			0	0.0042279906041143211	0
+			0	0	0.0044448106350945434
+		com	0.10503583711263645 0.031510751133790933 0
+		meshfile	Geometry_cleaned/l_foot.vtp
+		meshcolor	1 1 1
+		meshscale	1.0503583711263644 1.0503583711263644 1.0503583711263644
+	endsegment
+
+	// Markers
+
+	marker	LCAL
+		parent	calcn_l
+		position	-0.00077285090517764665 -0.034604642632248786 0.023924517729975281
+	endmarker
+
+	marker	LMFH1
+		parent	calcn_l
+		position	0.20329428986547027 0.015567584710926591 0.043429162973798063
+	endmarker
+
+	marker	LMFH5
+		parent	calcn_l
+		position	0.16396129454408004 -0.032953298932533195 -0.059395166574269576
+	endmarker
+
+// Information about toes_l segment
+	// Segment
+	segment toes_l_parent_offset
+		parent calcn_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0.18780407675739394 -0.0021007167422527288 -0.0011343870408164736
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment toes_l_translation
+		parent toes_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment toes_l_rotation_transform
+		parent toes_l_translation 
+		RTinMatrix	1
+		RT
+			0.5809544		0.0		0.81393611		0
+			0.0		1.0		0.0		0
+			0.81393611		0.0		-0.5809544		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment toes_l_reset_axis
+		parent toes_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.5809543964902848		0.0		0.8139361050827741		0
+			0.0		1.0		0.0		0
+			0.8139361050827743		0.0		-0.5809543964902848		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment toes_l
+		parent toes_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.19766592522604137
+		inertia
+			9.5837246601236038e-05	0	0
+			0	0.00019167449320247208	0
+			0	0	0.00095837246601236041
+		com	0.035457375292826214 0.0061486777964438518 0.017933643572961237
+		meshfile	Geometry_cleaned/l_bofoot.vtp
+		meshcolor	1 1 1
+		meshscale	1.024779632740642 1.024779632740642 1.024779632740642
+	endsegment
+
+	// Markers
+
+	marker	LTT2
+		parent	toes_l
+		position	0.057227179869217104 0.013445993506510046 -0.024593351515389994
+	endmarker
+
+// Information about torso segment
+	// Segment
+	segment torso_parent_offset
+		parent pelvis 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.088985340149875844 0.072018919783663163 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment torso_translation
+		parent torso_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment torso_rotation_transform
+		parent torso_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-1.5707963267948966 0.7853981633974483
+				-0.6108652381980153 0.6108652381980153
+				-0.7853981633974483 0.7853981633974483
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment torso_reset_axis
+		parent torso_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment torso
+		parent torso_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	20.35317860731281
+		inertia
+			0.65031854265495548	0	0
+			0	0.65031854265495548	0
+			0	0	0.87633439188325069
+		com	0.0031228238985075494 0.25607155967761902 0
+		meshfile	Geometry_cleaned/hat_spine.vtp
+		meshcolor	1 1 1
+		meshscale	1.0409412995025165 1.0409412995025165 1.0409412995025165
+	endsegment
+	// Segment
+	segment torso_geom_2
+		parent torso 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/hat_ribs_scap.vtp
+		meshcolor	1 1 1
+		meshscale	1.0409412995025165 1.0409412995025165 1.0409412995025165
+	endsegment
+
+
+	// Markers
+
+	marker	STR
+		parent	torso
+		position	0.12025177541507626 0.27451877015680926 0.003708139161113122
+	endmarker
+
+	marker	RA
+		parent	torso
+		position	-0.045742131785202811 0.45615275890822304 0.17345974245484319
+	endmarker
+
+	marker	LA
+		parent	torso
+		position	-0.04301323916211186 0.46029862327948923 -0.17387538236446187
+	endmarker
+
+	marker	C7
+		parent	torso
+		position	-0.075859983985170576 0.47590735838765053 -0.001539224929882288
+	endmarker
+
+	marker	T10
+		parent	torso
+		position	-0.10219628809002423 0.26405613143042284 0.00042165082167094914
+	endmarker
+
+	marker	SUP
+		parent	torso
+		position	0.06394965410378961 0.43532174954945058 -0.0024039768754496871
+	endmarker
+
+// Information about head_and_neck segment
+	// Segment
+	segment head_and_neck_parent_offset
+		parent torso 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.010409412995025165 0.46321887827861985 -0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment head_and_neck_translation
+		parent head_and_neck_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment head_and_neck_rotation_transform
+		parent head_and_neck_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-0.8726646259971648 0.7853981633974483
+				-0.59999999999999998 0.59999999999999998
+				-1.2217 1.2217
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment head_and_neck_reset_axis
+		parent head_and_neck_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment head_and_neck
+		parent head_and_neck_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	4.2876396778956565
+		inertia
+			0.02579270165063547	0.00021739925335685653	0.00024155461915025098
+			0.00021739925335685653	0.016774666380557999	0.00010735824932209392
+			0.00024155461915025098	0.00010735824932209392	0.025888823281329437
+		com	-0.0061523225471619564 0.15278267658785524 0
+		meshfile	Geometry_cleaned/jaw.vtp
+		meshcolor	1 1 1
+		meshscale	1.0253870911936593 1.0253870911936593 1.0253870911936593
+	endsegment
+	// Segment
+	segment head_and_neck_geom_2
+		parent head_and_neck 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.06152322547161956
+			0		0		1		0.0
+			0		0		0		1
+		meshfile	Geometry_cleaned/skull.vtp
+		meshcolor	1 1 1
+		meshscale	1.0253870911936593 1.0253870911936593 1.0253870911936593
+	endsegment
+
+
+	// Markers
+
+	marker	SEL
+		parent	head_and_neck
+		position	0.13831270245964256 0.21910226147653322 0.00016369234742580341
+	endmarker
+
+	marker	OCC
+		parent	head_and_neck
+		position	-0.083968105395422321 0.14417036072510392 -0.0090433366871778276
+	endmarker
+
+	marker	RTEMP
+		parent	head_and_neck
+		position	0.027747995899044309 0.19634608727603675 0.090761784172013416
+	endmarker
+
+	marker	LTEMP
+		parent	head_and_neck
+		position	0.021666372797748523 0.19572389074870289 -0.089929196145861756
+	endmarker
+
+	marker	HV
+		parent	head_and_neck
+		position	0.0022667849603161816 0.29702735383832302 0.0090627595273590766
+	endmarker
+
+// Information about humerus_r segment
+	// Segment
+	segment humerus_r_parent_offset
+		parent torso 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0.0032841697999304391 0.38670969276518485 0.17696002091542781
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment humerus_r_translation
+		parent humerus_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment humerus_r_rotation_transform
+		parent humerus_r_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-1.5707963300000001 3.1415999999999999
+				-3.8397000000000001 1.5707963300000001
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment humerus_r_reset_axis
+		parent humerus_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment humerus_r
+		parent humerus_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	1.7504004146279784
+		inertia
+			0.010394716878688154	0	0
+			0	0.0035858553705904799	0
+			0	0	0.011667734691639835
+		com	0 -0.16535328720444586 0
+		meshfile	Geometry_cleaned/humerus_rv.vtp
+		meshcolor	1 1 1
+		meshscale	1.0051749352861719 1.0051749352861719 1.0051749352861719
+	endsegment
+
+	// Markers
+
+	marker	RLHE
+		parent	humerus_r
+		position	0.012631858723368472 -0.29058709488282686 0.031677054116939163
+	endmarker
+
+	marker	RMHE
+		parent	humerus_r
+		position	-0.016143937057888191 -0.29470290014935829 -0.044134745683465648
+	endmarker
+
+// Information about ulna_r segment
+	// Segment
+	segment ulna_r_parent_offset
+		parent humerus_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0.013212019349401442 -0.28775444424917829 -0.0096446535040708176
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment ulna_r_translation
+		parent ulna_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment ulna_r_elbow_flex_r
+		parent ulna_r_translation 
+		RTinMatrix	1
+		RT
+			0.22604695995284768		0.9483342751266074		-0.2226317015075965		0
+			0.022268999995354796		0.2234567752465642		0.9744594200045548		0
+			0.9738618297968572		-0.22523137484928324		0.02939326875696336		0
+			0		0		0		1
+		rotations x
+		ranges
+				0 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment ulna_r_rotation_1
+		parent ulna_r_elbow_flex_r 
+		RTinMatrix	1
+		RT
+			0.9571339445383312		0.022268999995354793		0.2887883374579056		0
+			0.27678692615176737		0.22345677524656427		-0.9345887154828388		0
+			-0.08534406671790619		0.974459420004555		0.2077142966683715		0
+			0		0		0		1
+		ranges
+				0 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment ulna_r_rotation_2
+		parent ulna_r_rotation_1 
+		RTinMatrix	1
+		RT
+			-0.8434353865648472		0.45296431007748866		0.2888599703770521		0
+			0.47313334182688493		0.8809908290395104		2.920392493068777e-17		0
+			-0.25448298477880754		0.13666928310450968		-0.9573713582062964		0
+			0		0		0		1
+		ranges
+				0 3.1415999999999999
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment ulna_r_reset_axis
+		parent ulna_r_rotation_2 
+		RTinMatrix	1
+		RT
+			-0.19919469593318054		0.4731333418268849		-0.85817615555538		0
+			0.10697688222680608		0.8809908290395104		0.4608807935001286		0
+			0.9741033927572166		4.7638346354094145e-17		-0.22610303009663574		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment ulna_r
+		parent ulna_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.73586414006059131
+		inertia
+			0.0045507472503169798	0	0
+			0	0.00094948068895877571	0
+			0	0	0.0049363777566740234
+		com	0 -0.13573763938912334 0
+		meshfile	Geometry_cleaned/ulna_rv.vtp
+		meshcolor	1 1 1
+		meshscale	1.1262197833571737 1.1262197833571737 1.1262197833571737
+	endsegment
+
+	// Markers
+
+// Information about radius_r segment
+	// Segment
+	segment radius_r_parent_offset
+		parent ulna_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.0075760804826437078 -0.014648740722126756 0.029375190609305157
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment radius_r_translation
+		parent radius_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment radius_r_pro_sup_r
+		parent radius_r_translation 
+		RTinMatrix	1
+		RT
+			0.05639802978958989		0.16890533265556223		0.9840174037263603		0
+			0.9984064562751391		-0.011468026750642365		-0.05525425260163771		0
+			0.0019519999927174664		0.9855655599517267		-0.1692829487369239		0
+			0		0		0		1
+		rotations x
+		ranges
+				-3.1415999999999999 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment radius_r_rotation_1
+		parent radius_r_pro_sup_r 
+		RTinMatrix	1
+		RT
+			0.056088201021399824		0.9984064562751388		-0.006217859302209843		0
+			0.3095514162659622		-0.011468432670738183		0.9508135441503838		0
+			0.9492270720928263		-0.0552541683513179		-0.3097013763060865		0
+			0		0		0		1
+		// ranges
+				// -3.1415999999999999 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment radius_r_rotation_2
+		parent radius_r_rotation_1 
+		RTinMatrix	1
+		RT
+			-0.800664026312427		0.5888944639490921		-0.11018360721670417		0
+			0.592502060924963		0.8055689342319945		-3.796453062415955e-18		0
+			0.0887604910353971		-0.06528401435604388		-0.9939112499115376		0
+			0		0		0		1
+		// ranges
+				// -3.1415999999999999 3.1415999999999999
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment radius_r_reset_axis
+		parent radius_r_rotation_2 
+		RTinMatrix	1
+		RT
+			-0.8050866464586526		0.5925020609236874		-0.027871122961651403		0
+			0.5921473524129917		0.805568934232826		0.020498908001964702		0
+			0.03459775605793869		-4.1457115261388933e-07		-0.9994013184279795		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment radius_r
+		parent radius_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.59337576641592837
+		inertia
+			0.0031790912393762374	0	0
+			0	0.00066329452597384015	0
+			0	0	0.0034484875597960334
+		com	0 -0.12634101089391447 0
+		meshfile	Geometry_cleaned/radius_rv.vtp
+		meshcolor	1 1 1
+		meshscale	1.0482556390285376 1.0482556390285376 1.0482556390285376
+	endsegment
+
+	// Markers
+
+	marker	RUS
+		parent	radius_r
+		position	-0.030845851413612013 -0.25449428950193187 -0.017546940318753368
+	endmarker
+
+	marker	RRS
+		parent	radius_r
+		position	0.0048244826181506051 -0.25131006305244175 0.051561630180626095
+	endmarker
+
+// Information about lunate_r segment
+	// Segment
+	segment lunate_r_parent_offset
+		parent radius_r 
+		RTinMatrix	0
+		RT	0.10000000000000001 0 0	xyz	-0.0092215048565340435 -0.24722165816412933 0.014266759247178396
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment lunate_r_translation
+		parent lunate_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment lunate_r_rotation_transform
+		parent lunate_r_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment lunate_r_reset_axis
+		parent lunate_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment lunate_r
+		parent lunate_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.012179841509421408
+		inertia
+			1.5505345962334089e-05	0	0
+			0	1.5505345962334089e-05	0
+			0	0	1.5505345962334089e-05
+		com	0 0 0
+		meshfile	Geometry_cleaned/lunate_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.95904467347763667 0.95904467347763667 0.95904467347763667
+	endsegment
+
+	// Markers
+
+// Information about hand_r segment
+	// Segment
+	segment hand_r_parent_offset
+		parent lunate_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0 0 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment hand_r_translation
+		parent hand_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment hand_r_rotation_transform
+		parent hand_r_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment hand_r_reset_axis
+		parent hand_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment hand_r
+		parent hand_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.65299021466808882
+		inertia
+			0.0018015080683554342	0	0
+			0	0.0011047364499892629	0
+			0	0	0.0027063013582917963
+		com	0 -0.081001510086072051 0
+		meshfile	Geometry_cleaned/pisiform_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+	// Segment
+	segment hand_r_geom_2
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/scaphoid_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_3
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/triquetrum_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_4
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/hamate_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_5
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/capitate_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_6
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/trapezoid_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_7
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/trapezium_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_8
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal2_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_9
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal3_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_10
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal4_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_11
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal5_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_12
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal1_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_13
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/thumb_proximal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+	// Segment
+	segment hand_r_geom_14
+		parent hand_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/thumb_distal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0111063010964276 1.0111063010964276 1.0111063010964276
+	endsegment
+
+
+	// Markers
+
+	marker	RHMH5
+		parent	hand_r
+		position	0.0049410307619242033 -0.093645323905320654 -0.052769691008108799
+	endmarker
+
+	marker	RHMH2
+		parent	hand_r
+		position	-0.0049247972578642663 -0.11251939447038595 0.041412183690318516
+	endmarker
+
+// Information about fingers_r segment
+	// Segment
+	segment fingers_r_parent_offset
+		parent hand_r 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0 -0.091594335511088143 -0.011895368248193266
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment fingers_r_translation
+		parent fingers_r_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment fingers_r_rotation_transform
+		parent fingers_r_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment fingers_r_reset_axis
+		parent fingers_r_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment fingers_r
+		parent fingers_r_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.17095166782350579
+		inertia
+			0.0027281461737230671	0	0
+			0	0.0027281461737230671	0
+			0	0	0.0027281461737230671
+		com	0 -0.086022561643346207 0
+		meshfile	Geometry_cleaned/index_proximal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+	// Segment
+	segment fingers_r_geom_2
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/index_medial_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_3
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/index_distal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_4
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/middle_proximal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_5
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/middle_medial_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_6
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/middle_distal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_7
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/ring_proximal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_8
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/ring_medial_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_9
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/ring_distal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_10
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/little_proximal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_11
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/little_medial_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+	// Segment
+	segment fingers_r_geom_12
+		parent fingers_r 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.1136945524326479
+			0		0		1		0.012632728048071988
+			0		0		0		1
+		meshfile	Geometry_cleaned/little_distal_rvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
+	endsegment
+
+
+	// Markers
+
+	marker	RFT3
+		parent	fingers_r
+		position	0.044848553787107448 -0.10530222170374187 -0.0052458895261944249
+	endmarker
+
+// Information about humerus_l segment
+	// Segment
+	segment humerus_l_parent_offset
+		parent torso 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0.0032841697999304391 0.38670969276518485 -0.17696002091542781
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment humerus_l_translation
+		parent humerus_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment humerus_l_rotation_transform
+		parent humerus_l_translation 
+		RTinMatrix	1
+		RT
+			0.0		-1.0		0.0		0
+			0.0		0.0		-1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+		rotations xyz
+		ranges
+				-1.5707963300000001 3.1415999999999999
+				-3.8397000000000001 1.5707963300000001
+				-1.5707963300000001 1.5707963300000001
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment humerus_l_reset_axis
+		parent humerus_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			-1.0		-0.0		-0.0		0
+			-0.0		-1.0		-0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment humerus_l
+		parent humerus_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	1.748056709652128
+		inertia
+			0.010371530493650749	0	0
+			0	0.0035778567858977674	0
+			0	0	0.011641708721694533
+		com	0 -0.16527945411397918 0
+		meshfile	Geometry_cleaned/humerus_lv.vtp
+		meshcolor	1 1 1
+		meshscale	1.0047261073663492 1.0047261073663492 1.0047261073663492
+	endsegment
+
+	// Markers
+
+	marker	LLHE
+		parent	humerus_l
+		position	0.014834839487918527 -0.29044108543352609 -0.031700981278962481
+	endmarker
+
+	marker	LMHE
+		parent	humerus_l
+		position	-0.013155327073078205 -0.28951569742000838 0.040551805679285069
+	endmarker
+
+// Information about ulna_l segment
+	// Segment
+	segment ulna_l_parent_offset
+		parent humerus_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0.013206119955223293 -0.28762595693408688 0.0096403470001801203
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment ulna_l_translation
+		parent ulna_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment ulna_l_elbow_flex_l
+		parent ulna_l_translation 
+		RTinMatrix	1
+		RT
+			-0.22604695995284768		0.9557961042005201		-0.1880334520535757		0
+			-0.022268999995354796		0.18790890124735524		0.9819339776539046		0
+			0.9738618297968572		0.22615050746598014		-0.021191612435043007		0
+			0		0		0		1
+		rotations x
+		ranges
+				0 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment ulna_l_rotation_1
+		parent ulna_l_elbow_flex_l 
+		RTinMatrix	1
+		RT
+			0.6055550573836646		-0.02226899999535478		0.7954917750148478		0
+			0.78404318777421		0.18790890124735524		-0.5915796857033435		0
+			-0.13630609737616867		0.9819339776539044		0.1312490432226454		0
+			0		0		0		1
+		ranges
+				0 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment ulna_l_rotation_2
+		parent ulna_l_rotation_1 
+		RTinMatrix	1
+		RT
+			-0.5651430020645527		0.21792717370111714		0.795689093918038		0
+			0.35979078762520333		0.9330330053862166		1.8076455048236468e-17		0
+			-0.7424041866513826		0.28628160580555534		-0.6057052631601378		0
+			0		0		0		1
+		ranges
+				0 3.1415999999999999
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment ulna_l_reset_axis
+		parent ulna_l_rotation_2 
+		RTinMatrix	1
+		RT
+			0.2109615896979942		0.35979078762520345		-0.9088706161011757		0
+			-0.08134978728291362		0.9330330053862167		0.3504734269085017		0
+			0.9741033927572164		-2.5226227110019423e-17		0.22610303009663563		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment ulna_l
+		parent ulna_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.78220368069270085
+		inertia
+			0.0050383276647649172	0	0
+			0	0.0010512108362001075	0
+			0	0	0.0054652757551957049
+		com	0 -0.13852910573719229 0
+		meshfile	Geometry_cleaned/ulna_lv.vtp
+		meshcolor	1 1 1
+		meshscale	1.1493806740277313 1.1493806740277313 1.1493806740277313
+	endsegment
+
+	// Markers
+
+// Information about radius_l segment
+	// Segment
+	segment radius_l_parent_offset
+		parent ulna_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.0077318837941845481 -0.0149499944270787 -0.029979296120665314
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment radius_l_translation
+		parent radius_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+	// Segment
+	segment radius_l_pro_sup_l
+		parent radius_l_translation 
+		RTinMatrix	1
+		RT
+			-0.05639802978958989		0.7640617300286616		-0.6426732723098583		0
+			-0.9984064562751391		-0.0419016879587797		0.03779942611104159		0
+			0.0019519999927174664		0.6437809575094728		0.7652073368991013		0
+			0		0		0		1
+		rotations x
+		// ranges
+				-3.1415999999999999 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment radius_l_rotation_1
+		parent radius_l_pro_sup_l 
+		RTinMatrix	1
+		RT
+			-0.028977983393702913		-0.9984064562751388		0.048423388424947214		0
+			0.9554472793877956		-0.041901687958779694		-0.292172457388893		0
+			0.2937358895145328		0.03779942611104158		0.9551389587891294		0
+			0		0		0		1
+		// ranges
+				// -3.1415999999999999 3.1415999999999999
+	endsegment
+
+	// Segment
+	segment radius_l_rotation_2
+		parent radius_l_rotation_1 
+		RTinMatrix	1
+		RT
+			0.26223516859347296		0.44149698664455905		0.858086899525058		0
+			-0.8597723788595123		0.5106774486407789		3.9643046356277044e-18		0
+			-0.43820562856153317		-0.7377594148728426		0.513504501307898		0
+			0		0		0		1
+		// ranges
+				// -3.1415999999999999 3.1415999999999999
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment radius_l_reset_axis
+		parent radius_l_rotation_2 
+		RTinMatrix	1
+		RT
+			0.5103718450410406		-0.8597723788595122		-0.017664550366743442		0
+			0.8592578671366347		0.510677448640779		-0.029739892628354306		0
+			0.03459042574478182		3.1226003388773944e-17		0.9994015721654609		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment radius_l
+		parent radius_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.62449788045801524
+		inertia
+			0.0034618235713678829	0	0
+			0	0.00072228459389107077	0
+			0	0	0.0037551786410550338
+		com	0 -0.12851231151188794 0
+		meshfile	Geometry_cleaned/radius_lv.vtp
+		meshcolor	1 1 1
+		meshscale	1.0662709936684336 1.0662709936684336 1.0662709936684336
+	endsegment
+
+	// Markers
+
+	marker	LUS
+		parent	radius_l
+		position	-0.030673429338164637 -0.25796671844344254 0.01529420175355245
+	endmarker
+
+	marker	LRS
+		parent	radius_l
+		position	0.0079874683737828911 -0.2495533866157208 -0.050318368709409089
+	endmarker
+
+// Information about lunate_l segment
+	// Segment
+	segment lunate_l_parent_offset
+		parent radius_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0.0093799859313012102 -0.25147041741775705 -0.014511948223827382
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment lunate_l_translation
+		parent lunate_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment lunate_l_rotation_transform
+		parent lunate_l_translation 
+		RTinMatrix	1
+		RT
+			0.0		-1.0		0.0		0
+			0.0		0.0		-1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment lunate_l_reset_axis
+		parent lunate_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			-1.0		-0.0		-0.0		0
+			-0.0		-1.0		-0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment lunate_l
+		parent lunate_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.011609738860002029
+		inertia
+			1.4314718688385861e-05	0	0
+			0	1.4314718688385861e-05	0
+			0	0	1.4314718688385861e-05
+		com	0 0 0
+		meshfile	Geometry_cleaned/lunate_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.94384158683730535 0.94384158683730535 0.94384158683730535
+	endsegment
+
+	// Markers
+
+// Information about hand_l segment
+	// Segment
+	segment hand_l_parent_offset
+		parent lunate_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	0 0 0
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment hand_l_translation
+		parent hand_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment hand_l_rotation_transform
+		parent hand_l_translation 
+		RTinMatrix	1
+		RT
+			0.0		-1.0		0.0		0
+			0.0		0.0		-1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment hand_l_reset_axis
+		parent hand_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			-1.0		-0.0		-0.0		0
+			-0.0		-1.0		-0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment hand_l
+		parent hand_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.61482815387421408
+		inertia
+			0.0016294761186259926	0	0
+			0	0.00099924152117535645	0
+			0	0	0.0024478677118372539
+		com	0 -0.079391767918395126 0
+		meshfile	Geometry_cleaned/pisiform_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+	// Segment
+	segment hand_l_geom_2
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/scaphoid_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_3
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/triquetrum_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_4
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/hamate_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_5
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/capitate_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_6
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/trapezoid_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_7
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/trapezium_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_8
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal2_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_9
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal3_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_10
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal4_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_11
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal5_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_12
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/metacarpal1_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_13
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/thumb_proximal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+	// Segment
+	segment hand_l_geom_14
+		parent hand_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0
+			0		1		0		0
+			0		0		1		0
+			0		0		0		1
+		meshfile	Geometry_cleaned/thumb_distal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	0.99101259608834502 0.99101259608834502 0.99101259608834502
+	endsegment
+
+
+	// Markers
+
+	marker	LHMH2
+		parent	hand_l
+		position	-0.0075120187726385179 -0.10764313667820424 -0.036089025381351059
+	endmarker
+
+	marker	LHMH5
+		parent	hand_l
+		position	0.0062658240436414547 -0.091557868518645558 0.056894670659642044
+	endmarker
+
+// Information about fingers_l segment
+	// Segment
+	segment fingers_l_parent_offset
+		parent hand_l 
+		RTinMatrix	0
+		RT	0 0 0	xyz	-0 -0.089774082233885374 0.011658971718686413
+	endsegment
+
+	// Segments to define transformation axis.
+	// Segment
+	segment fingers_l_translation
+		parent fingers_l_parent_offset 
+		RTinMatrix	1
+		RT
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			0		0		0		1
+	endsegment
+
+// Rotation transform was initially an orthogonal basis
+	// Segment
+	segment fingers_l_rotation_transform
+		parent fingers_l_translation 
+		RTinMatrix	1
+		RT
+			0.0		1.0		0.0		0
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    // Segment to cancel transformation bases effect.
+	// Segment
+	segment fingers_l_reset_axis
+		parent fingers_l_rotation_transform 
+		RTinMatrix	1
+		RT
+			0.0		0.0		1.0		0
+			1.0		0.0		0.0		0
+			0.0		1.0		0.0		0
+			0		0		0		1
+	endsegment
+
+
+    //True segment where are applied inertial values.
+	// Segment
+	segment fingers_l
+		parent fingers_l_reset_axis 
+		RTinMatrix	0
+		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
+		mass	0.14349138011374196
+		inertia
+			0.0020376132384009571	0	0
+			0	0.0020376132384009571	0
+			0	0	0.0020376132384009571
+		com	0 -0.081145267199174823 0
+		meshfile	Geometry_cleaned/index_proximal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+	// Segment
+	segment fingers_l_geom_2
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/index_medial_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_3
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/index_distal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_4
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/middle_proximal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_5
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/middle_medial_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_6
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/middle_distal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_7
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/ring_proximal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_8
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/ring_medial_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_9
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/ring_distal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_10
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/little_proximal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_11
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/little_medial_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+	// Segment
+	segment fingers_l_geom_12
+		parent fingers_l 
+		RTinMatrix	1
+		RT
+			1		0		0		0.0
+			0		1		0		0.10724831555805468
+			0		0		1		-0.011916479506450521
+			0		0		0		1
+		meshfile	Geometry_cleaned/little_distal_lvs.vtp
+		meshcolor	1 1 1
+		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
+	endsegment
+
+
+	// Markers
+
+	marker	LFT3
+		parent	fingers_l
+		position	0.040770849855960689 -0.098019241639296206 0.00031474862357949718
+	endmarker
+
+// MUSCLE DEFINIION
+
+// femur_r > calcn_r
+musclegroup femur_r_to_calcn_r
+	OriginParent	femur_r
+	InsertionParent	calcn_r
+endmusclegroup
+
+	muscle	med_gas_r
+		type	hill
+		statetype	degroote
+		musclegroup	femur_r_to_calcn_r
+		OriginPosition	-0.021042470872110718 -0.43513614766591063 -0.0260262139734001
+		InsertionPosition	0 0.032830345954308504 -0.0056129301147688736
+		optimalLength	0.059770554863977372
+		maximalForce	1558
+		tendonSlackLength	0.38850860661585296
+		pennationAngle	0.29670596999999999
+	endmuscle
+
+	muscle	lat_gas_r
+		type	hill
+		statetype	degroote
+		musclegroup	femur_r_to_calcn_r
+		OriginPosition	-0.024364966272970304 -0.43701889505973107 0.030123958301126921
+		InsertionPosition	0 0.032830345954308504 -0.0056129301147688736
+		optimalLength	0.063710111976221673
+		maximalForce	683
+		tendonSlackLength	0.37827878985881619
+		pennationAngle	0.13962633999999999
+	endmuscle
+
+// tibia_r > calcn_r
+musclegroup tibia_r_to_calcn_r
+	OriginParent	tibia_r
+	InsertionParent	calcn_r
+endmusclegroup
+
+	muscle	soleus_r
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_r_to_calcn_r
+		OriginPosition	-0.0024084552700653628 -0.15384008037542504 0.0071250135072766993
+		InsertionPosition	0 0.032830345954308504 -0.0056129301147688736
+		optimalLength	0.049534043388614502
+		maximalForce	3549
+		tendonSlackLength	0.24767021694307251
+		pennationAngle	0.43633231
+	endmuscle
+
+	muscle	tib_post_r
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_r_to_calcn_r
+		OriginPosition	-0.0094331164744226714 -0.1352749043353379 0.0019066937554684123
+		InsertionPosition	0.081758151860406997 0.016838790344306624 -0.029759120042453839
+		optimalLength	0.031102817255246131
+		maximalForce	1588
+		tendonSlackLength	0.31102817255246135
+		pennationAngle	0.20943951
+	endmuscle
+
+		viapoint	tib_post_r-P2
+			parent	tibia_r
+			muscle	tib_post_r
+			musclegroup	tibia_r_to_calcn_r
+			position	-0.014450731620392178 -0.40652717912644942 -0.022980677368540339
+		endviapoint
+
+		viapoint	tib_post_r-P3
+			parent	calcn_r
+			muscle	tib_post_r
+			musclegroup	tibia_r_to_calcn_r
+			position	0.044162110525634346 0.035372050157222716 -0.030288641751394303
+		endviapoint
+
+	muscle	tib_ant_r
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_r_to_calcn_r
+		OriginPosition	0.017963062222570832 -0.16297213994108956 0.011540514835729864
+		InsertionPosition	0.12348446252491523 0.018850972838280369 -0.032300824245368044
+		optimalLength	0.09920657017007227
+		maximalForce	905
+		tendonSlackLength	0.22574556273393998
+		pennationAngle	0.087266460000000004
+	endmuscle
+
+		viapoint	tib_ant_r-P2
+			parent	tibia_r
+			muscle	tib_ant_r
+			musclegroup	tibia_r_to_calcn_r
+			position	0.033015907660479349 -0.39649194883451039 -0.017762357616732054
+		endviapoint
+
+	muscle	per_long_r
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_r_to_calcn_r
+		OriginPosition	0.00050176151459695065 -0.15735241097760372 0.036327533656819226
+		InsertionPosition	0.12740292317107463 0.0090018690519878177 -0.019486398889008921
+		optimalLength	0.049935457834035732
+		maximalForce	943
+		tendonSlackLength	0.35158638679065968
+		pennationAngle	0.17453293
+	endmuscle
+
+		viapoint	per_long_r-P2
+			parent	tibia_r
+			muscle	per_long_r
+			musclegroup	tibia_r_to_calcn_r
+			position	-0.020772926704313754 -0.42198143377603547 0.028700758634945575
+		endviapoint
+
+		viapoint	per_long_r-P3
+			parent	tibia_r
+			muscle	per_long_r
+			musclegroup	tibia_r_to_calcn_r
+			position	-0.016257073072941199 -0.43342159630884597 0.029001815543703745
+		endviapoint
+
+		viapoint	per_long_r-P4
+			parent	calcn_r
+			muscle	per_long_r
+			musclegroup	tibia_r_to_calcn_r
+			position	0.046386101703184274 0.024357998611261152 0.023404859535168326
+		endviapoint
+
+		viapoint	per_long_r-P5
+			parent	calcn_r
+			muscle	per_long_r
+			musclegroup	tibia_r_to_calcn_r
+			position	0.072120856757690616 0.011225860229537747 0.03007683306781812
+		endviapoint
+
+		viapoint	per_long_r-P6
+			parent	calcn_r
+			muscle	per_long_r
+			musclegroup	tibia_r_to_calcn_r
+			position	0.090230499203454342 0.0073073995833783448 0.012496712330994851
+		endviapoint
+
+// femur_l > calcn_l
+musclegroup femur_l_to_calcn_l
+	OriginParent	femur_l
+	InsertionParent	calcn_l
+endmusclegroup
+
+	muscle	med_gas_l
+		type	hill
+		statetype	degroote
+		musclegroup	femur_l_to_calcn_l
+		OriginPosition	-0.02034825727760985 -0.4207805412827848 0.025167581369675344
+		InsertionPosition	0 0.0325611095049173 0.0055668993669697317
+		optimalLength	0.060203872320934618
+		maximalForce	1558
+		tendonSlackLength	0.39132517008607504
+		pennationAngle	0.29670596999999999
+	endmuscle
+
+	muscle	lat_gas_l
+		type	hill
+		statetype	degroote
+		musclegroup	femur_l_to_calcn_l
+		OriginPosition	-0.02356114000565351 -0.42260117482867615 -0.029130136734262523
+		InsertionPosition	0 0.0325611095049173 0.0055668993669697317
+		optimalLength	0.064190402009467004
+		maximalForce	683
+		tendonSlackLength	0.38113051193121034
+		pennationAngle	0.13962633999999999
+	endmuscle
+
+// tibia_l > calcn_l
+musclegroup tibia_l_to_calcn_l
+	OriginParent	tibia_l
+	InsertionParent	calcn_l
+endmusclegroup
+
+	muscle	soleus_l
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_l_to_calcn_l
+		OriginPosition	-0.0024201001865671108 -0.15458389941697423 -0.0071594630519277039
+		InsertionPosition	0 0.0325611095049173 0.0055668993669697317
+		optimalLength	0.049992850050353199
+		maximalForce	3549
+		tendonSlackLength	0.24996425025176597
+		pennationAngle	0.43633231
+	endmuscle
+
+	muscle	tib_post_l
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_l_to_calcn_l
+		OriginPosition	-0.0094787257307211853 -0.13592896047885275 -0.0019159126476989629
+		InsertionPosition	0.081087666250955343 0.016700698100909194 0.029515070228650842
+		optimalLength	0.031262515012757099
+		maximalForce	1588
+		tendonSlackLength	0.31262515012757097
+		pennationAngle	0.20943951
+	endmuscle
+
+		viapoint	tib_post_l-P2
+			parent	tibia_l
+			muscle	tib_post_l
+			musclegroup	tibia_l_to_calcn_l
+			position	-0.014520601119402666 -0.40849274399097363 0.023091789280161187
+		endviapoint
+
+		viapoint	tib_post_l-P3
+			parent	calcn_l
+			muscle	tib_post_l
+			musclegroup	tibia_l_to_calcn_l
+			position	0.043799944075969398 0.035081969595620571 0.030040249414214022
+		endviapoint
+
+	muscle	tib_ant_l
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_l_to_calcn_l
+		OriginPosition	0.018049913891479703 -0.16376011262437451 -0.011596313393967408
+		InsertionPosition	0.12247178607333409 0.018696379006049285 0.032035930319354117
+		optimalLength	0.099450385010476428
+		maximalForce	905
+		tendonSlackLength	0.22630036589118616
+		pennationAngle	0.087266460000000004
+	endmuscle
+
+		viapoint	tib_ant_l-P2
+			parent	tibia_l
+			muscle	tib_ant_l
+			musclegroup	tibia_l_to_calcn_l
+			position	0.033175540057524149 -0.39840899321361067 0.017848238875932444
+		endviapoint
+
+	muscle	per_long_l
+		type	hill
+		statetype	degroote
+		musclegroup	tibia_l_to_calcn_l
+		OriginPosition	0.00050418753886814814 -0.15811321218905125 -0.036503177814053926
+		InsertionPosition	0.12635811204650166 0.0089280461545740986 0.019326594028725105
+		optimalLength	0.049968276773362005
+		maximalForce	943
+		tendonSlackLength	0.35181745891448757
+		pennationAngle	0.17453293
+	endmuscle
+
+		viapoint	per_long_l-P2
+			parent	tibia_l
+			muscle	per_long_l
+			musclegroup	tibia_l_to_calcn_l
+			position	-0.020873364109141333 -0.42402172018811257 -0.028839527223258075
+		endviapoint
+
+		viapoint	per_long_l-P3
+			parent	tibia_l
+			muscle	per_long_l
+			musclegroup	tibia_l_to_calcn_l
+			position	-0.016335676259328 -0.43551719607430639 -0.029142039746578963
+		endviapoint
+
+		viapoint	per_long_l-P4
+			parent	calcn_l
+			muscle	per_long_l
+			musclegroup	tibia_l_to_calcn_l
+			position	0.046005696655334757 0.024158242535906382 -0.023212920001892654
+		endviapoint
+
+		viapoint	per_long_l-P5
+			parent	calcn_l
+			muscle	per_long_l
+			musclegroup	tibia_l_to_calcn_l
+			position	0.071529405073705407 0.011133798733939463 -0.02983017773998875
+		endviapoint
+
+		viapoint	per_long_l-P6
+			parent	calcn_l
+			muscle	per_long_l
+			musclegroup	tibia_l_to_calcn_l
+			position	0.089490533219966251 0.0072474727607719147 -0.012394228779291101
+		endviapoint
+
+/*-------------- WARNINGS---------------
+*/
+
+
+/*-------------- VIRTUAL MARKERS --------------- 
+*/
+marker	pelvis-V1JC
+	parent	pelvis
+	position	-0.09662551487952034	0.03565697879024471	0.007601898570483184
+endmarker
+marker	femur_r-V1JC
+	parent	femur_r
+	position	0.0032515080867558943	-0.4395375017285691	0.007607452372694501
+endmarker
+marker	femur_r-V2JC
+	parent	femur_r
+	position	0.006199688808475767	-0.2948640881705164	0.04469779826088168
+endmarker
+marker	tibia_r-V1JC
+	parent	tibia_r
+	position	-0.0007645706433441479	-0.4381527017443134	0.000511747009942054
+endmarker
+marker	tibia_r-V2JC
+	parent	tibia_r
+	position	0.01507557358887566	-0.31356730932692295	0.011551520633673299
+endmarker
+marker	calcn_r-V1JC
+	parent	calcn_r
+	position	0.1975872164781748	0.01661394417181536	-0.04022360320787166
+endmarker
+marker	calcn_r-V2JC
+	parent	calcn_r
+	position	0.13038811983280513	0.004675599125129233	-0.038200447313078624
+endmarker
+marker	femur_l-V1JC
+	parent	femur_l
+	position	0.0032166403312982594	-0.43027710854946044	-0.008080294365531204
+endmarker
+marker	femur_l-V2JC
+	parent	femur_l
+	position	0.006019078976136479	-0.2956412783117879	-0.04567275010688121
+endmarker
+marker	tibia_l-V1JC
+	parent	tibia_l
+	position	0.0008920532068838471	-0.4509132118966105	0.001655892341544063
+endmarker
+marker	tibia_l-V2JC
+	parent	tibia_l
+	position	0.015288698245203217	-0.3269245164020004	-0.008350720897154126
+endmarker
+marker	calcn_l-V1JC
+	parent	calcn_l
+	position	0.20329428986547027	0.01556758471092659	0.04342916297379806
+endmarker
+marker	calcn_l-V2JC
+	parent	calcn_l
+	position	0.13527190960858762	-0.0011564910701318681	0.03692761455919047
+endmarker
+marker	torso-V1JC
+	parent	torso
+	position	0.0015362893609177641	0.3624510023810833	4.6647044363024026e-05
+endmarker
+marker	humerus_r-V1JC
+	parent	humerus_r
+	position	-0.0017560391672598596	-0.2926449975160926	-0.006228845783263243
+endmarker
+marker	radius_r-V1JC
+	parent	radius_r
+	position	-0.013010684397730704	-0.2529021762771868	0.017007344930936363
+endmarker
+marker	hand_r-V1JC
+	parent	hand_r
+	position	8.116752029968533e-06	-0.1030823591878533	-0.0056787536588951415
+endmarker
+marker	humerus_l-V1JC
+	parent	humerus_l
+	position	0.0008397562074201614	-0.28997839142676723	0.004425412200161294
+endmarker
+marker	radius_l-V1JC
+	parent	radius_l
+	position	-0.011342980482190873	-0.25376005252958167	-0.01751208347792832
+endmarker
+marker	hand_l-V1JC
+	parent	hand_l
+	position	-0.0006230973644985316	-0.0996005025984249	0.010402822639145493
+endmarker
+
+/*-------------- CONTACTS---------------
+*/
+contact	LCAL
+	parent	calcn_l
+	position	-0.018184372684362127	-0.036183919561541877	0.010718604411614319
+	axis	xyz
+endcontact
+
+contact	LMFH1
+	parent	calcn_l
+	position	0.19202791077724868	-0.013754853217574914	0.039283237127771042
+	axis	z
+endcontact
+
+contact	LMFH5
+	parent	calcn_l
+	position	0.18583815793306013	-0.0092170000425693677	-0.072430596752376397
+	axis	zy
+endcontact
+
