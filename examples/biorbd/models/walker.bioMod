@@ -1108,9 +1108,6 @@ gravity	0 -9.8066499999999994 0
 			0	0.65031854265495548	0
 			0	0	0.87633439188325069
 		com	0.0031228238985075494 0.25607155967761902 0
-		meshfile	Geometry_cleaned/hat_spine.vtp
-		meshcolor	1 1 1
-		meshscale	1.0409412995025165 1.0409412995025165 1.0409412995025165
 	endsegment
 	// Segment
 	segment torso_geom_2
@@ -1924,9 +1921,6 @@ gravity	0 -9.8066499999999994 0
 			0	0.0027281461737230671	0
 			0	0	0.0027281461737230671
 		com	0 -0.086022561643346207 0
-		meshfile	Geometry_cleaned/index_proximal_rvs.vtp
-		meshcolor	1 1 1
-		meshscale	1.0737818840861191 1.0737818840861191 1.0737818840861191
 	endsegment
 	// Segment
 	segment fingers_r_geom_2
@@ -2746,9 +2740,6 @@ gravity	0 -9.8066499999999994 0
 			0	0.0020376132384009571	0
 			0	0	0.0020376132384009571
 		com	0 -0.081145267199174823 0
-		meshfile	Geometry_cleaned/index_proximal_lvs.vtp
-		meshcolor	1 1 1
-		meshscale	1.0129007580482943 1.0129007580482943 1.0129007580482943
 	endsegment
 	// Segment
 	segment fingers_l_geom_2
