@@ -162,3 +162,5 @@ cython_debug/
 .idea/
 
 sandbox/
+
+.DS_Store
