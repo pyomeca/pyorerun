@@ -75,15 +75,19 @@ class ModelUpdater(Components):
         )
 
     def create_centers_of_mass_updater(self):
-        return MarkersUpdater(
-            self.name + "/centers_of_mass",
-            marker_properties=MarkerProperties(
-                markers_names=self.model.segment_names_with_mass,
-                color=np.array(self.model.options.centers_of_mass_color),
-                radius=self.model.options.centers_of_mass_radius,
-            ),
-            callable_markers=self.model.centers_of_mass,
-        )
+        has_mass = self.model.segment_names_with_mass != tuple([])
+        if has_mass:
+            return MarkersUpdater(
+                self.name + "/centers_of_mass",
+                marker_properties=MarkerProperties(
+                    markers_names=self.model.segment_names_with_mass,
+                    color=np.array(self.model.options.centers_of_mass_color),
+                    radius=self.model.options.centers_of_mass_radius,
+                ),
+                callable_markers=self.model.centers_of_mass,
+            )
+        else:
+            return EmptyUpdater(self.name + "/centers_of_mass")
 
     def create_soft_contacts_updater(self):
         if not self.model.has_soft_contacts:
