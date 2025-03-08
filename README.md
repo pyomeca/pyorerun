@@ -4,7 +4,7 @@
 We can rerun c3d files and display their original content.
 And also animate biorbd models from the pyomeca organization.
 
-``` conda install -c conda-forge pyorerun ```
+``` conda install -c conda-forge pyorerun rerun-sdk=0.21```
 
 # Rerun .c3d - As simple as that
 
