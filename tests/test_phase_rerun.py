@@ -43,12 +43,12 @@ def test_add_animated_model(tmp_path):
     """
     biomod_file = tmp_path / "test.bioMod"
     biomod_file.write_text(biomod_content)
-    
+
     t_span = np.linspace(0, 1, 50)
     phase_rerun = PhaseRerun(t_span)
     model = BiorbdModel(str(biomod_file))
     q = np.zeros((model.model.nbQ(), 50))
-    
+
     # Test basic model addition
     phase_rerun.add_animated_model(model, q)
     assert len(phase_rerun.biorbd_models.models) == 1
@@ -57,7 +57,7 @@ def test_add_animated_model(tmp_path):
     markers_data = np.random.rand(3, model.nb_markers, 50)
     markers = PyoMarkers(data=markers_data, channels=list(model.marker_names))
     phase_rerun.add_animated_model(model, q, markers)
-    
+
     # Test shape mismatch error
     wrong_q = np.zeros((model.nb_q, 40))
     with pytest.raises(ValueError, match="The shapes of q and tspan are inconsistent"):
@@ -74,7 +74,7 @@ def test_add_xp_markers():
     phase_rerun = PhaseRerun(t_span)
     markers_data = np.random.rand(3, 10, 50)
     markers = PyoMarkers(data=markers_data)
-    
+
     # Test valid markers
     phase_rerun.add_xp_markers("test_markers", markers)
     assert len(phase_rerun.xp_data.xp_data) == 1
@@ -88,7 +88,7 @@ def test_add_xp_markers():
 def test_add_floor():
     t_span = np.linspace(0, 1, 50)
     phase_rerun = PhaseRerun(t_span)
-    
+
     # Test with default parameters
     phase_rerun.add_floor(square_width=1.0)
     assert len(phase_rerun.timeless_components.timeless_components) == 1
@@ -111,7 +111,7 @@ def test_add_force_data():
     phase_rerun = PhaseRerun(t_span)
     force_origin = np.random.rand(3, 50)
     force_vector = np.random.rand(3, 50)
-    
+
     # Test valid force data
     phase_rerun.add_force_data(num=0, force_origin=force_origin, force_vector=force_vector)
     assert len(phase_rerun.xp_data.xp_data) == 1
@@ -126,7 +126,7 @@ def test_add_video():
     t_span = np.linspace(0, 1, 50)
     phase_rerun = PhaseRerun(t_span)
     video_array = np.random.randint(0, 255, size=(50, 10, 10, 3), dtype=np.uint8)
-    
+
     # Test valid video
     phase_rerun.add_video("test_video", video_array)
     assert len(phase_rerun.xp_data.xp_data) == 1

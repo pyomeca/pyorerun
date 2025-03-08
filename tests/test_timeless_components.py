@@ -10,7 +10,6 @@ class MockTimelessComponent:
         self.rerun_called = True
 
 
-
 def test_init():
     phase = TimelessRerunPhase("test_phase", 1)
     assert phase.name == "test_phase"
@@ -32,7 +31,7 @@ def test_to_rerun():
     component2 = MockTimelessComponent("component2")
     phase.add_component(component1)
     phase.add_component(component2)
-    
+
     phase.to_rerun()
     assert component1.rerun_called
     assert component2.rerun_called
@@ -44,5 +43,5 @@ def test_component_names():
     component2 = MockTimelessComponent("component2")
     phase.add_component(component1)
     phase.add_component(component2)
-    
+
     assert phase.component_names == ["component1", "component2"]

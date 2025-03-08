@@ -2,6 +2,7 @@ import pytest
 from pyorerun.xp_phase import XpRerunPhase
 from pyorerun.abstract.abstract_class import ExperimentalData
 
+
 class MockExperimentalData(ExperimentalData):
     def __init__(self, name):
         self.name = name
@@ -46,7 +47,7 @@ def test_initialize():
     data2 = MockExperimentalData("data2")
     phase.add_data(data1)
     phase.add_data(data2)
-    
+
     phase.initialize()
     assert data1.initialized
     assert data2.initialized
@@ -58,7 +59,7 @@ def test_to_rerun():
     data2 = MockExperimentalData("data2")
     phase.add_data(data1)
     phase.add_data(data2)
-    
+
     phase.to_rerun(5)
     assert data1.rerun_frame == 5
     assert data2.rerun_frame == 5
@@ -70,7 +71,7 @@ def test_to_chunk():
     data2 = MockExperimentalData("data2")
     phase.add_data(data1)
     phase.add_data(data2)
-    
+
     chunk = phase.to_chunk()
     assert chunk == {"data1": [1, 2, 3], "data2": [1, 2, 3]}
 
@@ -81,5 +82,5 @@ def test_component_names():
     data2 = MockExperimentalData("data2")
     phase.add_data(data1)
     phase.add_data(data2)
-    
+
     assert phase.component_names == ["data1", "data2"]
