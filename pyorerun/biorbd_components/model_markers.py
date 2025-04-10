@@ -37,8 +37,11 @@ class MarkersUpdater(Component):
     def compute_markers(self, q: np.ndarray) -> np.ndarray:
         nb_frames = q.shape[1]
         markers = np.zeros((3, self.nb_markers, nb_frames))
+
         for f in range(q.shape[1]):
-            markers[:, :, f] = self.callable_markers(q[:, f]).squeeze().T
+            computed_markers = self.callable_markers(q[:, f])
+            computed_markers = computed_markers.squeeze().T if self.nb_markers > 1 else computed_markers.T
+            markers[:, :, f] = computed_markers
 
         return markers
 
