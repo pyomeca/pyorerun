@@ -12,12 +12,13 @@ class TransformableMeshUpdater(Component):
     and always 'apply_transform' from its initial position
     """
 
-    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable):
+    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable, scaling_factor: np.ndarray):
         filename = (
             mesh.metadata["file_name"] if "file_name" in mesh.metadata else mesh.metadata["header"].replace(" ", "")
         )
         self.__name = name + "/" + filename
         self.__mesh = mesh
+        self.__scaling_factor = scaling_factor
 
         self.transformed_mesh = mesh.copy()
         self.__color = np.array([0, 0, 0])
@@ -32,7 +33,7 @@ class TransformableMeshUpdater(Component):
         self._set_rerun_mesh3d()
 
     def _set_rerun_mesh3d(self):
-        transformed_trimesh = self.apply_transform(np.eye(4))
+        transformed_trimesh = self.apply_transform(np.eye(4), self.__scaling_factor)
         if self.__transparency:
 
             # Create a list of line strips from the faces the fourth vertex is the first one to close the loop.
@@ -50,17 +51,19 @@ class TransformableMeshUpdater(Component):
             )
         else:
             self.__rerun_mesh = rr.Mesh3D(
-                vertex_positions=self.__mesh.vertices,
+                vertex_positions=transformed_trimesh.vertices,
                 vertex_normals=transformed_trimesh.vertex_normals,
                 vertex_colors=np.tile(self.__color, (self.__mesh.vertices.shape[0], 1)),
                 triangle_indices=self.__mesh.faces,
             )
 
     @classmethod
-    def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMeshUpdater":
+    def from_file(
+        cls, name, file_path: str, transform_callable, scaling_factor: np.ndarray
+    ) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
-            return cls(name, mesh, transform_callable)
+            return cls(name, mesh, transform_callable, scaling_factor)
         if file_path.endswith(".vtp"):
             output = read_vtp_file(file_path)
             is_not_a_trimesh = output["polygons"].shape[1] > 3
@@ -74,12 +77,13 @@ class TransformableMeshUpdater(Component):
                 vertex_normals=output["normals"],
                 metadata={"file_name": file_path.split("/")[-1].split(".")[0]},
             )
-            return cls(name, mesh, transform_callable)
+            return cls(name, mesh, transform_callable, scaling_factor)
 
-    def apply_transform(self, homogenous_matrix: np.ndarray) -> Trimesh:
+    def apply_transform(self, homogenous_matrix: np.ndarray, scaling_factor: np.ndarray) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""
         self.transformed_mesh = self.__mesh.copy()
         self.transformed_mesh.apply_transform(homogenous_matrix)
+        self.transformed_mesh.apply_scale(scaling_factor)
 
         return self.transformed_mesh
 

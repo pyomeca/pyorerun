@@ -45,6 +45,10 @@ class BiorbdSegment:
         return self.segment.characteristics().mesh().path().absolutePath().to_string()
 
     @cached_property
+    def mesh_scale(self) -> str:
+        return self.segment.characteristics().mesh().getScale().to_array()
+
+    @cached_property
     def mass(self) -> float:
         return self.segment.characteristics().mass()
 
