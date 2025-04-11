@@ -12,12 +12,13 @@ class TransformableMeshUpdater(Component):
     and always 'apply_transform' from its initial position
     """
 
-    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable):
+    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable, scaling_factor: np.ndarray):
         filename = (
             mesh.metadata["file_name"] if "file_name" in mesh.metadata else mesh.metadata["header"].replace(" ", "")
         )
         self.__name = name + "/" + filename
         self.__mesh = mesh
+        self.__scaling_factor = scaling_factor
 
         self.transformed_mesh = mesh.copy()
         self.__color = np.array([0, 0, 0])
