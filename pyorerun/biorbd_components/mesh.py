@@ -57,7 +57,9 @@ class TransformableMeshUpdater(Component):
             )
 
     @classmethod
-    def from_file(cls, name, file_path: str, transform_callable, scaling_factor: np.ndarray) -> "TransformableMeshUpdater":
+    def from_file(
+        cls, name, file_path: str, transform_callable, scaling_factor: np.ndarray
+    ) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
             return cls(name, mesh, transform_callable, scaling_factor)
