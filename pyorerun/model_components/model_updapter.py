@@ -4,18 +4,19 @@ from typing import Any
 import numpy as np
 
 from .mesh import TransformableMeshUpdater
-from .model_interface import BiorbdModel, BiorbdModelNoMesh
+from .biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
+from .osim_model_interface import OsimModel, OsimModelNoMesh
 from .model_markers import MarkersUpdater
 from .segment import SegmentUpdater
 from ..abstract.abstract_class import Components
 from ..abstract.empty_updater import EmptyUpdater
 from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
-from ..biorbd_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
+from ..model_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
 
 
 class ModelUpdater(Components):
-    def __init__(self, name, model: BiorbdModelNoMesh | BiorbdModel):
+    def __init__(self, name, model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()

@@ -4,7 +4,6 @@ import opensim as osim
 from typing import List, Union
 
 import numpy as np
-# from biorbd import GeneralizedCoordinates
 
 from .model_display_options import DisplayModelOptions
 
@@ -48,7 +47,7 @@ class OsimSegment:
         return self.segment.get_mass()
 
 
-class BiorbdModelNoMesh:
+class OsimModelNoMesh:
     """
     A class to handle a biorbd model and its transformations
     """
@@ -61,7 +60,7 @@ class BiorbdModelNoMesh:
         self.previous_q = None
 
     @classmethod
-    def from_biorbd_object(cls, model: osim.Model, options=None):
+    def from_osim_object(cls, model: osim.Model, options=None):
         return cls(model.getInputFileName(), options)
 
     @cached_property
@@ -265,7 +264,7 @@ class BiorbdModelNoMesh:
         [coordinate.setValue(self.state, q[i]) for i, coordinate in enumerate(self.model.getCoordinateSet())]
 
 
-class BiorbdModel(BiorbdModelNoMesh):
+class OsimModel(OsimModelNoMesh):
     """
     This class extends the BiorbdModelNoMesh class and overrides the segments property.
     It filters the segments to only include those that have a mesh.
@@ -276,25 +275,16 @@ class BiorbdModel(BiorbdModelNoMesh):
 
     @property
     def segments(self) -> tuple[OsimSegment, ...]:
-        return tuple([s for s in super().segments if s.has_mesh or s.has_meshlines])
+        return tuple([s for s in super().segments if s.has_mesh])
 
     @cached_property
     def meshlines(self) -> list[np.ndarray]:
-
-        meshes = []
-        for segment in self.segments:
-            segment_mesh = segment.segment.characteristics().mesh()
-            meshes += [np.array([segment_mesh.point(i).to_array() for i in range(segment_mesh.nbVertex())])]
-
-        return meshes
+        return []
 
     def mesh_homogenous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
         """
         Returns a list of homogeneous matrices of the mesh in the global reference frame
         """
-        mesh_rt = (
-            super(BiorbdModel, self).segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
-        )
-        # mesh_rt = self.segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
+        mesh_rt = np.eye(4)
         segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)
         return segment_rt @ mesh_rt

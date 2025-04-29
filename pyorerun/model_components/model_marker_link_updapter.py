@@ -3,7 +3,8 @@ from typing import Any
 import numpy as np
 
 from .ligaments import ModelMarkerLinkUpdater
-from .model_interface import BiorbdModel
+from .biorbd_model_interface import BiorbdModel
+from .osim_model_interface import OsimModel
 from ..abstract.abstract_class import Components
 from ..abstract.linestrip import LineStripProperties
 
@@ -14,7 +15,7 @@ class ModelMarkerLinksUpdater(Components):
     contact point in global frame, etc.
     """
 
-    def __init__(self, name, model: BiorbdModel):
+    def __init__(self, name, model: BiorbdModel | OsimModel):
         self.name = name
         self.model = model
         self.markers_link = self.create_markers_link_updater()
