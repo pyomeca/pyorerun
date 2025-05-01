@@ -1,8 +1,9 @@
 import numpy as np
 
-from .biorbd_components.model_interface import BiorbdModel
-from .biorbd_components.model_marker_link_updapter import ModelMarkerLinksUpdater
-from .biorbd_components.model_updapter import ModelUpdater
+from .model_components.biorbd_model_interface import BiorbdModel
+from .model_components.osim_model_interface import OsimModel
+from .model_components.model_marker_link_updapter import ModelMarkerLinksUpdater
+from .model_components.model_updapter import ModelUpdater
 
 
 class BiorbdRerunPhase:
@@ -23,7 +24,7 @@ class BiorbdRerunPhase:
     def _rerun_links_without_none(self):
         return [rr_link for rr_link in self.rerun_links if rr_link is not None]
 
-    def add_animated_model(self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: np.ndarray = None):
+    def add_animated_model(self, biomod: BiorbdModel | OsimModel, q: np.ndarray, tracked_markers: np.ndarray = None):
         self.models.append(biomod)
         self.rerun_models.append(ModelUpdater(name=f"{self.name}/{self.nb_models}_{biomod.name}", model=biomod))
         self.q.append(q)

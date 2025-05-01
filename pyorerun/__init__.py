@@ -5,6 +5,7 @@ from .model_components.model_updapter import ModelUpdater
 from .live_animation import LiveModelAnimation
 from .live_integration import LiveModelIntegration
 from .multi_phase_rerun import MultiPhaseRerun
+from .xp_components.timeseries_q import OsimTimeSeries
 
 # from .biorbd_phase import rr_biorbd as rrbiorbd, RerunBiorbdPhase
 from .phase_rerun import PhaseRerun

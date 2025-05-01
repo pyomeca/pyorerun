@@ -1,4 +1,5 @@
 from functools import cached_property
+from xml.dom import minidom
 
 import opensim as osim
 from typing import List, Union
@@ -15,9 +16,11 @@ class OsimSegment:
     An interface to simplify the access to a segment of a biorbd model
     """
 
-    def __init__(self, segment, index):
+    def __init__(self, segment, index, model_path=None):
         self.segment = segment
         self._index: int = index
+        self.mesh_path = None
+        self.model_path = model_path
 
     @cached_property
     def name(self) -> str:
@@ -29,22 +32,33 @@ class OsimSegment:
 
     @cached_property
     def has_mesh(self) -> bool:
-        return len(self.mesh_path) > 0
-
+        return len(self.get_mesh_path()) > 0
+    
     @cached_property
-    def mesh_path(self) -> Union[str, List[str]]:
-        mesh_files = []
-        count = 0
-        while True:
-            try:
-                mesh_files.append(self.segment.get_attached_geometry(count).getPropertyByName("mesh_file").toString())
-            except ValueError:
-                break
-        return mesh_files
+    def has_meshlines(self) -> bool:
+        return False
 
     @cached_property
     def mass(self) -> float:
         return self.segment.get_mass()
+    
+    def get_mesh_path(self) -> list[str]:
+        """
+        Returns the mesh file of the segment
+        Get the mesh file from the xml file of the model because there is no way to know how many meshes are attached to a segment in opensim.
+        Therefore it raise an error in a getter and it is not possible to avoid it (even whith try/except).
+        """
+        if self.mesh_path is None:
+            xmldoc = minidom.parse(self.model_path)
+            bodySet = xmldoc.getElementsByTagName('BodySet')[0]
+            body = [body for body in bodySet.getElementsByTagName('Body') if body.getAttribute('name') == self.name][0]
+            try : 
+                meshes=body.getElementsByTagName('Mesh')  
+                self.mesh_path = [mesh.getElementsByTagName('mesh_file')[0].firstChild.nodeValue for mesh in meshes]
+                self.mesh_path = r"D:\Documents\Programmation\pyorerun\examples\biorbd\models\Geometry_cleaned" + f"\{self.mesh_path[0]}"
+            except IndexError:
+                self.mesh_path = []
+        return self.mesh_path
 
 
 class OsimModelNoMesh:
@@ -52,16 +66,20 @@ class OsimModelNoMesh:
     A class to handle a biorbd model and its transformations
     """
 
-    def __init__(self, path: str, options=None):
-        self.path = path
-        self.model = osim.Model(path)
+    def __init__(self, path: str, options=None, loaded_model=None):
+        self.segment_names_with_mass_prop = None
+        self.segments = None
+        self.segments_with_mass_prop = None
+        self.path = path if loaded_model is None else loaded_model.getInputFileName()
+        self.model = loaded_model if loaded_model is not None else osim.Model(path)
         self.state = self.model.initSystem()
         self.options: DisplayModelOptions = options if options is not None else DisplayModelOptions()
         self.previous_q = None
+        self.xp_coordinate_names = None
 
     @classmethod
     def from_osim_object(cls, model: osim.Model, options=None):
-        return cls(model.getInputFileName(), options)
+        return cls(path="", loaded_model=model, options=options)
 
     @cached_property
     def name(self):
@@ -83,17 +101,36 @@ class OsimModelNoMesh:
     def nb_segments(self) -> int:
         return self.model.getNumBodies()
 
-    @cached_property
-    def segments(self) -> tuple[OsimSegment, ...]:
-        return tuple(OsimSegment(s, i) for i, s in enumerate(self.model.getBodySet()))
+    # @cached_property
+    def get_segments(self) -> tuple[OsimSegment, ...]:
+        if self.segments is None:
+            self.segments = []
+            for i, s in enumerate(self.model.getBodySet()):
+                self.segments.append(OsimSegment(s, i, self.path))
+            # self.segments_prop = tuple(OsimSegment(s, i) for i, s in enumerate(self.model.getBodySet()))
+        return self.segments
 
     @cached_property
     def segments_with_mass(self) -> tuple[OsimSegment, ...]:
-        return tuple([s for s in self.segments if s.mass > MINIMAL_SEGMENT_MASS])
+        if self.segments_with_mass_prop is None or self.segment_names_with_mass_prop is None:
+            segments_names_with_mass = []
+            segments_with_mass = []
+            if self.segments is None:
+                self.segments = self.get_segments()
+            for idx, s in enumerate(self.segments):
+                if s.mass > MINIMAL_SEGMENT_MASS:
+                    segments_names_with_mass.append(s.name)
+                    segments_with_mass.append(s)
+            self.segment_names_with_mass_prop = tuple(segments_names_with_mass)
+            self.segments_with_mass_prop = tuple(segments_with_mass)
+        return self.segments_with_mass_prop
+        # return tuple([s for s in self.segments if s.mass > MINIMAL_SEGMENT_MASS])
 
     @cached_property
     def segment_names_with_mass(self) -> tuple[str, ...]:
-        return tuple([s.name for s in self.segments_with_mass])
+        if self.segment_names_with_mass_prop is None:
+            _ = self.segments_with_mass
+        return self.segment_names_with_mass_prop
 
     def segment_homogeneous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
         """
@@ -122,11 +159,13 @@ class OsimModelNoMesh:
         """
         self.update_kinematics(q)
         all_com_with_mass = np.zeros((len(self.segments_with_mass), 3))
+        count = 0
         for i in range(self.model.getNumBodies()):
             if self.model.getBodySet().get(i).getMass() > MINIMAL_SEGMENT_MASS:
-                rt_matrix = self.segment_homogeneous_matrices_in_global(q, 0)
-                com_local = self.model.getBodySet().get(0).getMassCenter().to_numpy()
-                all_com_with_mass[i, :] = np.dot(rt_matrix, np.append(com_local, [1]))[:3]
+                rt_matrix = self.segment_homogeneous_matrices_in_global(q, i)
+                com_local = self.model.getBodySet().get(i).getMassCenter().to_numpy()
+                all_com_with_mass[count, :] = np.dot(rt_matrix, np.append(com_local, [1]))[:3]
+                count += 1
         return all_com_with_mass
 
     @cached_property
@@ -197,7 +236,6 @@ class OsimModelNoMesh:
         return tuple(s.toString() for s in self.model.getCoordinateSet())
 
     @cached_property
-    @cached_property
     def q_ranges(self) -> tuple[tuple[float, float], ...]:
         return tuple((c.getRangeMin(), c.getRangeMax()) for c in self.model.getCoordinateSet())
 
@@ -207,6 +245,8 @@ class OsimModelNoMesh:
 
     @cached_property
     def has_mesh(self) -> bool:
+        if self.segments is None:
+            self.segments = self.get_segments()
         return any([s.has_mesh for s in self.segments])
 
     @cached_property
@@ -226,6 +266,12 @@ class OsimModelNoMesh:
         Returns the position of the soft contacts spheres in the global reference frame
         """
         return None
+    
+    def set_xp_coordinate_names(self, names: list[str]) -> None:
+        """
+        Set the names of the coordinates
+        """
+        self.xp_coordinate_names = names
 
     def rigid_contacts(self, q: np.ndarray) -> None:
         """
@@ -261,8 +307,15 @@ class OsimModelNoMesh:
         if self.previous_q is not None and np.allclose(q, self.previous_q):
             return
         self.previous_q = q.copy()
-        [coordinate.setValue(self.state, q[i]) for i, coordinate in enumerate(self.model.getCoordinateSet())]
+        # if len(self.dof_names) != len(q) and self.xp_coordinate_names is None:
+        #     raise ValueError("The number of coordinates in the model and the number of coordinates in the q array do not match."
+        #                      "Make sure to set the experimental coordinate names in the model.")
+        xp_coordinate_names = self.xp_coordinate_names if self.xp_coordinate_names is not None else self.dof_names
+        
+        coordinates = [self.model.getCoordinateSet().get(coord) for coord in self.dof_names]
 
+        [coordinate.setValue(self.state, q[i], enforceContraints=False) for i, coordinate in enumerate(coordinates)]
+        self.model.realizePosition(self.state)
 
 class OsimModel(OsimModelNoMesh):
     """
@@ -270,16 +323,23 @@ class OsimModel(OsimModelNoMesh):
     It filters the segments to only include those that have a mesh.
     """
 
-    def __init__(self, path, options=None):
-        super().__init__(path, options)
+    def __init__(self, path, options=None, loaded_model=None):
+        super().__init__(path, options, loaded_model)
 
-    @property
-    def segments(self) -> tuple[OsimSegment, ...]:
-        return tuple([s for s in super().segments if s.has_mesh])
+    # @property
+    # def get_segments(self) -> tuple[OsimSegment, ...]:
+    #     if self.segments is None:
+    #         self.segments = []
+    #         for i, s in enumerate(self.model.getBodySet()):
+    #             s_object = OsimSegment(s, i)
+    #             if s_object.has_mesh:
+    #                 self.segments.append(s_object)
+    #     return self.segments
+        # return tuple([s for s in super().segments if s.has_mesh])
 
-    @cached_property
-    def meshlines(self) -> list[np.ndarray]:
-        return []
+    # @cached_property
+    # def meshlines(self) -> list[np.ndarray]:
+    #     return []
 
     def mesh_homogenous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
         """

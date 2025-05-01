@@ -23,6 +23,7 @@ class TransformableMeshUpdater(Component):
         self.__color = np.array([0, 0, 0])
         self.__transparency = False
         self.transform_callable = transform_callable
+        self.__rerun_mesh = None
 
     def set_transparency(self, transparency: bool) -> None:
         self.__transparency = transparency

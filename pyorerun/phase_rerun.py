@@ -3,7 +3,8 @@ import rerun as rr
 from pyomeca import Markers as PyoMarkers
 
 from .abstract.q import QProperties
-from .biorbd_components.model_interface import BiorbdModel
+from .model_components.biorbd_model_interface import BiorbdModel
+from .model_components.osim_model_interface import OsimModel
 from .biorbd_phase import BiorbdRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
@@ -54,7 +55,7 @@ class PhaseRerun:
         self.timeless_components = TimelessRerunPhase(name=self.name, phase=phase)
 
     def add_animated_model(
-        self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: PyoMarkers = None, display_q: bool = False
+        self, biomod: BiorbdModel | OsimModel, q: np.ndarray, tracked_markers: PyoMarkers = None, display_q: bool = False
     ) -> None:
         """
         Add an animated model to the phase.
@@ -96,7 +97,7 @@ class PhaseRerun:
                 Gravity(name=f"{self.name}/{self.biorbd_models.nb_models}_{biomod.name}", vector=biomod.gravity)
             )
 
-    def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers) -> None:
+    def __add_tracked_markers(self, biomod: BiorbdModel | OsimModel, tracked_markers: PyoMarkers) -> None:
         """Add the tracked markers to the phase."""
         shape_of_markers_is_not_consistent = biomod.nb_markers != tracked_markers.shape[1]
         names_are_ordered_differently = biomod.marker_names != tuple(tracked_markers.channel.data.tolist())

@@ -3,7 +3,7 @@ import numpy as np
 import rerun as rr
 import time
 
-from .biorbd_components.model_updapter import ModelUpdater
+from .model_components.model_updapter import ModelUpdater
 from .timeless.floor import Floor
 
 

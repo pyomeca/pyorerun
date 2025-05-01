@@ -1,29 +1,27 @@
 import opensim
 import numpy as np
 
-from pyorerun import OsimModel, PhaseRerun
+from pyorerun import OsimModel, PhaseRerun, OsimTimeSeries
 
 
 def main():
     # building some time components
-    nb_frames = 50
+    nb_frames = 100
     nb_seconds = 1
     t_span = np.linspace(0, nb_seconds, nb_frames)
 
-    biorbd_model = opensim.Model("models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod")
+    biorbd_model = opensim.Model(r"D:\Documents\Programmation\osim_to_biomod\example\Models\Model_Pose2Sim.osim")
     prr_model = OsimModel.from_osim_object(biorbd_model)
 
     # building some generalized coordinates
-    q = np.zeros((biorbd_model.getNumCoordinates(), nb_frames))
-    q[10, :] = np.linspace(0, np.pi / 8, nb_frames)
-    q[12, :] = np.linspace(0, np.pi / 3, nb_frames)
-    q[11, :] = np.linspace(0, np.pi / 4, nb_frames)
-    q[13, :] = np.linspace(0, np.pi / 8, nb_frames)
-    q[14, :] = np.linspace(0, np.pi / 8, nb_frames)
-    q[15, :] = np.linspace(0, np.pi / 8, nb_frames)
+    q = np.ones((biorbd_model.getNumCoordinates(), nb_frames))
+    mot_file = r"F:\CIME_LOC\tmp_videos\20250422_162024_output_jsons\ik_mot.mot"
+    mot_time_series = OsimTimeSeries(mot_file, biorbd_model)
+    prr_model.set_xp_coordinate_names(mot_time_series.coordinate_names)
 
-    viz = PhaseRerun(t_span)
-    viz.add_animated_model(prr_model, q)
+
+    viz = PhaseRerun(mot_time_series.times[:50])
+    viz.add_animated_model(prr_model, mot_time_series.q_in_radian[:, :50])
     viz.rerun("msk_model")
 
 

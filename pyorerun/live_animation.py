@@ -4,8 +4,9 @@ from tkinter import ttk
 import numpy as np
 import rerun as rr
 
-from .biorbd_components.model_interface import BiorbdModel
-from .biorbd_components.model_updapter import ModelUpdater
+from .model_components.biorbd_model_interface import BiorbdModel
+from .model_components.osim_model_interface import OsimModel
+from .model_components.model_updapter import ModelUpdater
 
 
 class LiveModelAnimation:

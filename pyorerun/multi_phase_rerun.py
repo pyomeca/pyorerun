@@ -3,7 +3,8 @@ import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 import rerun.blueprint as rrb
 from pyomeca import Markers as PyoMarkers
 
-from .biorbd_components.model_interface import BiorbdModel
+from .model_components.biorbd_model_interface import BiorbdModel
+from .model_components.osim_model_interface import OsimModel
 from .phase_rerun import PhaseRerun
 
 
@@ -29,7 +30,7 @@ class MultiPhaseRerun:
 
     def add_animated_model(
         self,
-        biomod: BiorbdModel,
+        biomod: BiorbdModel | OsimModel,
         q: np.ndarray,
         tracked_markers: np.ndarray = None,
         phase: int = 0,
