@@ -6,6 +6,7 @@ import numpy as np
 from .mesh import TransformableMeshUpdater
 from .biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
 from .osim_model_interface import OsimModel, OsimModelNoMesh
+from .model_display_options import DisplayModelOptions
 from .model_markers import MarkersUpdater
 from .segment import SegmentUpdater
 from ..abstract.abstract_class import Components
@@ -28,7 +29,7 @@ class ModelUpdater(Components):
         self.muscles = self.create_muscles_updater()
 
     @classmethod
-    def from_file(cls, model_path: str):
+    def from_file(cls, model_path: str, options: DisplayModelOptions = None):
         """
         This factory method is meant to be used with rerun easily. For example, to display a model in rerun,
         and add its custom experimental data.
@@ -58,10 +59,10 @@ class ModelUpdater(Components):
 
         """
         if model_path.endswith(".osim"):
-            model = OsimModel(model_path)
+            model = OsimModel(model_path, options=options)
             no_mesh_instance = OsimModelNoMesh
         elif model_path.endswith(".bioMod"):
-            model = BiorbdModel(model_path)
+            model = BiorbdModel(model_path, options=options)
             no_mesh_instance = BiorbdModelNoMesh
         else:
             raise ValueError("The model must be in biorbd or opensim format.")
@@ -69,7 +70,7 @@ class ModelUpdater(Components):
         if model.has_mesh or model.has_meshlines:
             return cls(model.name, model) 
         
-        return cls(model.name, no_mesh_instance(model_path))
+        return cls(model.name, no_mesh_instance(model_path, options=options))
 
 
     def create_markers_updater(self):
