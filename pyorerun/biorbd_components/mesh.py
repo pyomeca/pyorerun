@@ -12,7 +12,9 @@ class TransformableMeshUpdater(Component):
     and always 'apply_transform' from its initial position
     """
 
-    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable, scaling_factor: np.ndarray[float, float, float]):
+    def __init__(
+        self, name: str, mesh: Trimesh, transform_callable: callable, scaling_factor: np.ndarray[float, float, float]
+    ):
         """
         Parameters
         ----------
@@ -91,7 +93,9 @@ class TransformableMeshUpdater(Component):
             )
             return cls(name, mesh, transform_callable, scaling_factor)
 
-    def apply_transform(self, homogenous_matrix: np.ndarray, scaling_factor: np.ndarray[float, float, float]) -> Trimesh:
+    def apply_transform(
+        self, homogenous_matrix: np.ndarray, scaling_factor: np.ndarray[float, float, float]
+    ) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""
         self.transformed_mesh = self.__mesh.copy()
         self.transformed_mesh.apply_transform(homogenous_matrix)
