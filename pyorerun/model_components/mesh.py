@@ -58,7 +58,9 @@ class TransformableMeshUpdater(Component):
             )
 
     @classmethod
-    def from_file(cls, name, file_path: str, transform_callable, scale_factor: list[float]= (1, 1, 1)) -> "TransformableMeshUpdater":
+    def from_file(
+        cls, name, file_path: str, transform_callable, scale_factor: list[float] = (1, 1, 1)
+    ) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
             if not np.all(np.array(scale_factor) == 1):
@@ -81,9 +83,7 @@ class TransformableMeshUpdater(Component):
                 mesh.apply_scale(scale_factor)
             return cls(name, mesh, transform_callable)
         else:
-            raise ValueError(
-                f"The file {file_path} is not a valid mesh file. It should be either .stl or .vtp."
-            )
+            raise ValueError(f"The file {file_path} is not a valid mesh file. It should be either .stl or .vtp.")
 
     def apply_transform(self, homogenous_matrix: np.ndarray) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""

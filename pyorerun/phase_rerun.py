@@ -55,7 +55,11 @@ class PhaseRerun:
         self.timeless_components = TimelessRerunPhase(name=self.name, phase=phase)
 
     def add_animated_model(
-        self, biomod: BiorbdModel | OsimModel, q: np.ndarray, tracked_markers: PyoMarkers = None, display_q: bool = False
+        self,
+        biomod: BiorbdModel | OsimModel,
+        q: np.ndarray,
+        tracked_markers: PyoMarkers = None,
+        display_q: bool = False,
     ) -> None:
         """
         Add an animated model to the phase.

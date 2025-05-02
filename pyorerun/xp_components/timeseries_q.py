@@ -1,5 +1,6 @@
 import numpy as np
 import rerun as rr
+
 try:
     import opensim as osim
 except ImportError:
@@ -13,7 +14,8 @@ class OsimTimeSeries:
     Convert a .mot file to a time series of generalized coordinates q.
     The .mot file is a file format used in OpenSim to store motion capture data.
     """
-    def __init__(self, mot_file : str, osim_model : any = None):
+
+    def __init__(self, mot_file: str, osim_model: any = None):
         """
         Parameters
         ----------
@@ -24,28 +26,28 @@ class OsimTimeSeries:
         self.osim_model = None
         self.initialize_file()
         self.set_opensim_model(osim_model)
-    
+
     @property
     def is_degree(self):
         """
         Returns True if the .mot file is in degrees, False otherwise.
         """
-        return self.motion_data.getTableMetaDataAsString('inDegrees') == 'yes'
-    
+        return self.motion_data.getTableMetaDataAsString("inDegrees") == "yes"
+
     @property
     def times(self):
         """
         Returns the time series of the .mot file.
         """
         return np.array(self.motion_data.getIndependentColumn())
-    
+
     @property
     def coordinate_names(self):
         """
         Returns the names of the coordinates in the .mot file.
         """
         return self.motion_data.getColumnLabels()
-    
+
     def initialize_file(self):
         self.motion_data = osim.TimeSeriesTable(self.mot_file)
 
@@ -55,7 +57,7 @@ class OsimTimeSeries:
         Returns the time series of the generalized coordinates q.
         """
         return self.motion_data.getMatrix().to_numpy().T
-    
+
     @property
     def q_in_degree(self):
         """
@@ -64,12 +66,14 @@ class OsimTimeSeries:
         if self.is_degree:
             return self.q
         if self.osim_model is None:
-            raise ValueError("The original .mot file is not in degrees. Please set the osim_model before calling this method.")
+            raise ValueError(
+                "The original .mot file is not in degrees. Please set the osim_model before calling this method."
+            )
         q_tmp = self.q.copy()
         for q_idx, q in enumerate(q_tmp):
             q_tmp[q_idx] = np.rad2deg(q) if self.motion_types[q_idx] == 1 else q
-        return self.q    
-    
+        return self.q
+
     @property
     def q_in_radian(self):
         """
@@ -78,21 +82,24 @@ class OsimTimeSeries:
         if not self.is_degree:
             return self.q
         if self.osim_model is None:
-            raise ValueError("The original .mot file is in degrees. Please set the osim_model before calling this method.")
+            raise ValueError(
+                "The original .mot file is in degrees. Please set the osim_model before calling this method."
+            )
         q_tmp = self.q.copy()
         for q_idx, q in enumerate(q_tmp):
             q_tmp[q_idx] = np.deg2rad(q) if self.motion_types[q_idx] != 2 else q
         return q_tmp
-    
+
     def set_opensim_model(self, osim_model: any):
         """
         Set the OpenSim model to be used for the conversion.
         """
         self.osim_model = osim_model if not isinstance(osim_model, str) else osim.Model(osim_model)
-        coordinates_ordered = [self.osim_model.getCoordinateSet().get(coordinate) for coordinate in self.coordinate_names]
+        coordinates_ordered = [
+            self.osim_model.getCoordinateSet().get(coordinate) for coordinate in self.coordinate_names
+        ]
         self.motion_types = [coordinate.getMotionType() for coordinate in coordinates_ordered]
 
-        
 
 class TimeSeriesQ(ExperimentalData):
     def __init__(self, name, q: np.ndarray, properties: QProperties):

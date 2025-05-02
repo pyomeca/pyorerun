@@ -66,12 +66,11 @@ class ModelUpdater(Components):
             no_mesh_instance = BiorbdModelNoMesh
         else:
             raise ValueError("The model must be in biorbd or opensim format.")
-        
-        if model.has_mesh or model.has_meshlines:
-            return cls(model.name, model) 
-        
-        return cls(model.name, no_mesh_instance(model_path, options=options))
 
+        if model.has_mesh or model.has_meshlines:
+            return cls(model.name, model)
+
+        return cls(model.name, no_mesh_instance(model_path, options=options))
 
     def create_markers_updater(self):
         if self.model.nb_markers == 0:
@@ -147,20 +146,26 @@ class ModelUpdater(Components):
         for i, segment in enumerate(self.model.segments):
             segment_name = self.name + "/" + segment.name
             transform_callable = partial(
-                    self.model.segment_homogeneous_matrices_in_global,
-                    segment_index=segment.id,
-                )
+                self.model.segment_homogeneous_matrices_in_global,
+                segment_index=segment.id,
+            )
             if segment.has_mesh:
                 mesh = []
                 path = [segment.mesh_path] if isinstance(segment.mesh_path, str) else segment.mesh_path
-                scale_factor = [segment.mesh_scale_factor] if isinstance(segment.mesh_scale_factor, float) else segment.mesh_scale_factor
+                scale_factor = (
+                    [segment.mesh_scale_factor]
+                    if isinstance(segment.mesh_scale_factor, float)
+                    else segment.mesh_scale_factor
+                )
                 for m_idx, m in enumerate(path):
                     mesh_transform_callable = partial(
-                    self.model.mesh_homogenous_matrices_in_global,
-                    segment_index=segment.id,
-                    mesh_index=m_idx
+                        self.model.mesh_homogenous_matrices_in_global, segment_index=segment.id, mesh_index=m_idx
                     )
-                    mesh.append(TransformableMeshUpdater.from_file(segment_name, m, mesh_transform_callable, scale_factor[m_idx]))
+                    mesh.append(
+                        TransformableMeshUpdater.from_file(
+                            segment_name, m, mesh_transform_callable, scale_factor[m_idx]
+                        )
+                    )
                     mesh[-1].set_transparency(self.model.options.transparent_mesh)
                     mesh[-1].set_color(self.model.options.mesh_color)
 
