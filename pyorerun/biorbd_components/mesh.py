@@ -12,7 +12,19 @@ class TransformableMeshUpdater(Component):
     and always 'apply_transform' from its initial position
     """
 
-    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable, scaling_factor: np.ndarray):
+    def __init__(self, name: str, mesh: Trimesh, transform_callable: callable, scaling_factor: np.ndarray[float, float, float]):
+        """
+        Parameters
+        ----------
+        name: str
+            The name of the mesh
+        mesh: Trimesh
+            The trimesh object to be transformed
+        transform_callable: callable
+            The function translating and rotating the mesh
+        scaling_factor: np.ndarray[float, float, float]
+            The scaling factor to be applied to the mesh on the x, y, and z-axis
+        """
         filename = (
             mesh.metadata["file_name"] if "file_name" in mesh.metadata else mesh.metadata["header"].replace(" ", "")
         )
@@ -39,7 +51,7 @@ class TransformableMeshUpdater(Component):
             # Create a list of line strips from the faces the fourth vertex is the first one to close the loop.
             # Each triangle is a substrip
             strips = [
-                [self.__mesh.vertices[element] for element in [face[0], face[1], face[2], face[0]]]
+                [self.transformed_trimesh.vertices[element] for element in [face[0], face[1], face[2], face[0]]]
                 for face in self.__mesh.faces
             ]
 
@@ -59,7 +71,7 @@ class TransformableMeshUpdater(Component):
 
     @classmethod
     def from_file(
-        cls, name, file_path: str, transform_callable, scaling_factor: np.ndarray
+        cls, name, file_path: str, transform_callable, scaling_factor: np.ndarray[float, float, float]
     ) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
@@ -79,7 +91,7 @@ class TransformableMeshUpdater(Component):
             )
             return cls(name, mesh, transform_callable, scaling_factor)
 
-    def apply_transform(self, homogenous_matrix: np.ndarray, scaling_factor: np.ndarray) -> Trimesh:
+    def apply_transform(self, homogenous_matrix: np.ndarray, scaling_factor: np.ndarray[float, float, float]) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""
         self.transformed_mesh = self.__mesh.copy()
         self.transformed_mesh.apply_transform(homogenous_matrix)
