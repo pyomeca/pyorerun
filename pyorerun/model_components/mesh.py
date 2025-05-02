@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import rerun as rr
 from trimesh import Trimesh, load
@@ -16,7 +17,7 @@ class TransformableMeshUpdater(Component):
         filename = (
             mesh.metadata["file_name"] if "file_name" in mesh.metadata else mesh.metadata["header"].replace(" ", "")
         )
-        self.__name = name + "/" + filename
+        self.__name = name + "/" + filename.split(os.sep)[-1]
         self.__mesh = mesh
 
         self.transformed_mesh = mesh.copy()
@@ -47,7 +48,6 @@ class TransformableMeshUpdater(Component):
                 strips=strips,
                 colors=[self.__color for _ in range(len(strips))],
                 radii=[0.0002 for _ in range(len(strips))],
-                # labels=
             )
         else:
             self.__rerun_mesh = rr.Mesh3D(
@@ -58,11 +58,13 @@ class TransformableMeshUpdater(Component):
             )
 
     @classmethod
-    def from_file(cls, name, file_path: str, transform_callable) -> "TransformableMeshUpdater":
+    def from_file(cls, name, file_path: str, transform_callable, scale_factor: list[float]= (1, 1, 1)) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
+            if not np.all(np.array(scale_factor) == 1):
+                mesh.apply_scale(scale_factor)
             return cls(name, mesh, transform_callable)
-        if file_path.endswith(".vtp"):
+        elif file_path.endswith(".vtp"):
             output = read_vtp_file(file_path)
             is_not_a_trimesh = output["polygons"].shape[1] > 3
             if is_not_a_trimesh:
@@ -75,13 +77,18 @@ class TransformableMeshUpdater(Component):
                 vertex_normals=output["normals"],
                 metadata={"file_name": file_path.split("/")[-1].split(".")[0]},
             )
+            if not np.all(np.array(scale_factor) == 1):
+                mesh.apply_scale(scale_factor)
             return cls(name, mesh, transform_callable)
+        else:
+            raise ValueError(
+                f"The file {file_path} is not a valid mesh file. It should be either .stl or .vtp."
+            )
 
     def apply_transform(self, homogenous_matrix: np.ndarray) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""
         self.transformed_mesh = self.__mesh.copy()
         self.transformed_mesh.apply_transform(homogenous_matrix)
-
         return self.transformed_mesh
 
     @property

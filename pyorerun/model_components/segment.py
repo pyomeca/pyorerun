@@ -6,10 +6,10 @@ from .mesh import TransformableMeshUpdater
 
 
 class SegmentUpdater(Component):
-    def __init__(self, name, transform_callable: callable, mesh: TransformableMeshUpdater):
+    def __init__(self, name, transform_callable: callable, mesh: TransformableMeshUpdater | list[TransformableMeshUpdater]):
         self.name = name
         self.transform_callable = transform_callable
-        self.mesh = mesh
+        self.mesh = mesh if isinstance(mesh, list) else [mesh]
         self.local_frame = LocalFrameUpdater(name + "/frame", transform_callable)
 
     @property
@@ -20,7 +20,7 @@ class SegmentUpdater(Component):
 
     @property
     def components(self) -> list[Component]:
-        return [self.mesh, self.local_frame]
+        return [*self.mesh, self.local_frame]
 
     def to_rerun(self, q: np.ndarray) -> None:
         for component in self.components:
@@ -32,7 +32,7 @@ class SegmentUpdater(Component):
 
     def initialize(self):
         self.local_frame.initialize()
-        self.mesh.initialize()
+        [mesh.initialize() for mesh in self.mesh]
 
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
         return {component.name: component.to_chunk(q) for component in self.components}

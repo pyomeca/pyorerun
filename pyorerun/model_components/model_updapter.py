@@ -57,11 +57,20 @@ class ModelUpdater(Components):
         >>> rr.log("anything", rr.Anything())
 
         """
-        model = BiorbdModel(model_path)
+        if model_path.endswith(".osim"):
+            model = OsimModel(model_path)
+            no_mesh_instance = OsimModelNoMesh
+        elif model_path.endswith(".bioMod"):
+            model = BiorbdModel(model_path)
+            no_mesh_instance = BiorbdModelNoMesh
+        else:
+            raise ValueError("The model must be in biorbd or opensim format.")
+        
         if model.has_mesh or model.has_meshlines:
-            return cls(model.name, model)
+            return cls(model.name, model) 
+        
+        return cls(model.name, no_mesh_instance(model_path))
 
-        return cls(model.name, BiorbdModelNoMesh(model_path))
 
     def create_markers_updater(self):
         if self.model.nb_markers == 0:
@@ -137,18 +146,22 @@ class ModelUpdater(Components):
         for i, segment in enumerate(self.model.segments):
             segment_name = self.name + "/" + segment.name
             transform_callable = partial(
-                self.model.segment_homogeneous_matrices_in_global,
-                segment_index=segment.id,
-            )
-
-            if segment.has_mesh:
-                mesh_transform_callable = partial(
-                    self.model.mesh_homogenous_matrices_in_global,
+                    self.model.segment_homogeneous_matrices_in_global,
                     segment_index=segment.id,
                 )
-                mesh = TransformableMeshUpdater.from_file(segment_name, segment.mesh_path, mesh_transform_callable)
-                mesh.set_transparency(self.model.options.transparent_mesh)
-                mesh.set_color(self.model.options.mesh_color)
+            if segment.has_mesh:
+                mesh = []
+                path = [segment.mesh_path] if isinstance(segment.mesh_path, str) else segment.mesh_path
+                scale_factor = [segment.mesh_scale_factor] if isinstance(segment.mesh_scale_factor, float) else segment.mesh_scale_factor
+                for m_idx, m in enumerate(path):
+                    mesh_transform_callable = partial(
+                    self.model.mesh_homogenous_matrices_in_global,
+                    segment_index=segment.id,
+                    mesh_index=m_idx
+                    )
+                    mesh.append(TransformableMeshUpdater.from_file(segment_name, m, mesh_transform_callable, scale_factor[m_idx]))
+                    mesh[-1].set_transparency(self.model.options.transparent_mesh)
+                    mesh[-1].set_color(self.model.options.mesh_color)
 
             elif segment.has_meshlines:
                 mesh = LineStripUpdaterFromGlobalTransform(
@@ -215,7 +228,10 @@ class ModelUpdater(Components):
             The generalized coordinates of the model one-dimensional array, i.e., q.shape = (n_q,).
         """
         for segment in self.segments:
-            segment.mesh.initialize()
+            if not isinstance(segment.mesh, list):
+                segment.mesh.initialize()
+            else:
+                [mesh.initialize() for mesh in segment.mesh]
 
         for component in self.components:
             component.to_rerun(q)

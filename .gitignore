@@ -161,6 +161,10 @@ cython_debug/
 
 .idea/
 
+# VS Code
+.vscode/
+*.env
+
 sandbox/
 
 .DS_Store

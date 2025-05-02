@@ -30,7 +30,7 @@ class OsimTimeSeries:
         """
         Returns True if the .mot file is in degrees, False otherwise.
         """
-        return self.motion_data.getTableMetaDataAsString('inDegrees')
+        return self.motion_data.getTableMetaDataAsString('inDegrees') == 'yes'
     
     @property
     def times(self):
@@ -65,8 +65,9 @@ class OsimTimeSeries:
             return self.q
         if self.osim_model is None:
             raise ValueError("The original .mot file is not in degrees. Please set the osim_model before calling this method.")
-        for q_idx, q in enumerate(self.q):
-            self.q[q_idx] = np.rad2deg(q) if self.motion_types[q_idx] == 1 else q
+        q_tmp = self.q.copy()
+        for q_idx, q in enumerate(q_tmp):
+            q_tmp[q_idx] = np.rad2deg(q) if self.motion_types[q_idx] == 1 else q
         return self.q    
     
     @property
@@ -78,9 +79,10 @@ class OsimTimeSeries:
             return self.q
         if self.osim_model is None:
             raise ValueError("The original .mot file is in degrees. Please set the osim_model before calling this method.")
-        for q_idx, q in enumerate(self.q):
-            self.q[q_idx] = np.deg2rad(q) if self.motion_types[q_idx] == 1 else q
-        return self.q
+        q_tmp = self.q.copy()
+        for q_idx, q in enumerate(q_tmp):
+            q_tmp[q_idx] = np.deg2rad(q) if self.motion_types[q_idx] != 2 else q
+        return q_tmp
     
     def set_opensim_model(self, osim_model: any):
         """
@@ -151,3 +153,6 @@ class TimeSeriesQ(ExperimentalData):
         rr.log(f"{name}/min", rr.Scalar(min))
         rr.log(f"{name}/max", rr.Scalar(max))
         rr.log(f"{name}/value", rr.Scalar(val))
+
+    def to_chunk(self):
+        pass

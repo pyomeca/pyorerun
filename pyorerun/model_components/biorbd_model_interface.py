@@ -43,6 +43,10 @@ class BiorbdSegment:
     @cached_property
     def mesh_path(self) -> str:
         return self.segment.characteristics().mesh().path().absolutePath().to_string()
+    
+    @cached_property
+    def scale_factor(self) -> list[str]:
+        return self.segment.characteristics().mesh().getScale().to_array()
 
     @cached_property
     def mass(self) -> float:
@@ -274,7 +278,7 @@ class BiorbdModel(BiorbdModelNoMesh):
 
         return meshes
 
-    def mesh_homogenous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
+    def mesh_homogenous_matrices_in_global(self, q: np.ndarray, segment_index: int, **kwargs) -> np.ndarray:
         """
         Returns a list of homogeneous matrices of the mesh in the global reference frame
         """
