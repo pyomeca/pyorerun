@@ -381,9 +381,9 @@ class OsimModel(OsimModelNoMesh):
     def __init__(self, path, options=None, loaded_model=None):
         super().__init__(path, options, loaded_model)
 
-    # @property
-    # def segments(self) -> tuple[OsimSegment, ...]:
-    #     return tuple([s for s in super().segments if s.has_mesh])
+    @property
+    def segments(self) -> tuple[OsimSegment, ...]:
+        return tuple([s for s in super().segments if s.has_mesh])
 
     @cached_property
     def meshlines(self) -> list[np.ndarray]:
