@@ -86,6 +86,8 @@ class PhaseRerun:
         if tracked_markers is None:
             self.biorbd_models.add_animated_model(biomod, q)
         else:
+            if isinstance(tracked_markers, np.ndarray):
+                tracked_markers = PyoMarkers(tracked_markers, channels=biomod.marker_names)
             self.biorbd_models.add_animated_model(biomod, q, tracked_markers.to_numpy()[:3, :, :])
             self.__add_tracked_markers(biomod, tracked_markers)
 

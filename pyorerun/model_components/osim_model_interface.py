@@ -291,16 +291,16 @@ class OsimModelNoMesh:
         """
         Returns the position of the ligaments in the global reference frame
         """
-        # muscles = []
-        # self.model.updateMuscles(q, True)
-        # for idx in range(self.nb_muscles):
-        #     muscle = self.model.muscle(idx)
-        #     muscle_strip = []
-        #     for pts in muscle.position().pointsInGlobal():
-        #         muscle_strip.append(pts.to_array().tolist())
-        #     muscles.append(muscle_strip)
-        # return muscles
-        raise NotImplementedError("Muscle strips are not implemented yet")
+        self.update_kinematics(q)
+        muscles = []
+        for idx in range(self.nb_muscles):
+             muscle = self.model.getMuscles().get(idx)
+             muscle_strip = []
+             path_point = muscle.getGeometryPath().getPathPointSet()
+             for p in range(path_point.getSize()):
+                 muscle_strip.append(list(path_point.get(p).getLocationInGround(self.state).to_numpy()))
+             muscles.append(muscle_strip)
+        return muscles
 
     @cached_property
     def nb_q(self) -> int:
