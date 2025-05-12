@@ -1,7 +1,10 @@
 import pytest
 from pyorerun.xp_phase import XpRerunPhase
 from pyorerun.abstract.abstract_class import ExperimentalData
+from pyorerun import OsimTimeSeries
 
+mot_file = "../examples/osim/ik.mot"
+osim_ts = OsimTimeSeries(mot_file)
 
 class MockExperimentalData(ExperimentalData):
     def __init__(self, name):
@@ -84,3 +87,13 @@ def test_component_names():
     phase.add_data(data2)
 
     assert phase.component_names == ["data1", "data2"]
+
+def test_osim_time_series():
+    assert isinstance(osim_ts, OsimTimeSeries)
+    assert osim_ts.coordinate_names == ["r_shoulder_elev", "r_elbow_flex"]
+    assert osim_ts.q[0, 50] == 0.00590309
+    assert osim_ts.is_degree is True
+    
+    
+
+

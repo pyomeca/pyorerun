@@ -3,8 +3,8 @@ from typing import Any
 import numpy as np
 
 from .ligaments import ModelMarkerLinkUpdater
-from .biorbd_model_interface import BiorbdModel
-from .osim_model_interface import OsimModel
+from ..model_interfaces.biorbd_model_interface import BiorbdModel
+from ..model_interfaces.osim_model_interface import OsimModel
 from ..abstract.abstract_class import Components
 from ..abstract.linestrip import LineStripProperties
 

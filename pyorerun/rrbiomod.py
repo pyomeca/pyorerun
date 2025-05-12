@@ -1,6 +1,6 @@
 import numpy as np
 
-from .model_components.biorbd_model_interface import BiorbdModel
+from .model_interfaces.biorbd_model_interface import BiorbdModel
 from .phase_rerun import PhaseRerun
 
 

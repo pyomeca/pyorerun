@@ -7,14 +7,14 @@ import opensim as osim
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-from .model_display_options import DisplayModelOptions
+from ..model_components.model_display_options import DisplayModelOptions
 
 MINIMAL_SEGMENT_MASS = 0.001  # Need to be this value as minimum mass of opensim segment is 0.001
 
 
 class OsimSegment:
     """
-    An interface to simplify the access to a segment of a biorbd model
+    An interface to simplify the access to a segment of an Opensim model
     """
 
     def __init__(self, segment, index, model_path=None, mesh_path=None):
@@ -91,7 +91,7 @@ class OsimSegment:
         return self.__mesh_path
 
     @cached_property
-    def mesh_scale_factor(self) -> list[str]:
+    def mesh_scale_factor(self) -> list[np.ndarray]:
         """
         Returns the mesh file of the segment
         Get the mesh file from the xml file of the model because there is no way to know how many meshes are attached to a segment in opensim.
@@ -136,13 +136,12 @@ class OsimSegment:
                     rt_matrix[:3, 3] = translations
                     self.__mesh_rt.extend([rt_matrix])
                     count += 1
-
         return self.__mesh_rt
 
 
 class OsimModelNoMesh:
     """
-    A class to handle a biorbd model and its transformations
+    A class to handle an Opensim model and its transformations
     """
 
     def __init__(self, path: str, options=None, loaded_model=None):
@@ -204,11 +203,7 @@ class OsimModelNoMesh:
         return self.__segment_names_with_mass
 
     def segment_homogeneous_matrices_in_global(self, q: np.ndarray, segment_index: int) -> np.ndarray:
-        """
-        Returns a biorbd object containing the roto-translation matrix of the segment in the global reference frame.
-        This is useful if you want to interact with biorbd directly later on.
-        """
-        self.update_kinematics(q)
+        self._update_kinematics(q)
         transform = self.model.getBodySet().get(segment_index).getTransformInGround(self.state)
         T = transform.T().to_numpy()
         R = transform.R()
@@ -225,14 +220,14 @@ class OsimModelNoMesh:
         """
         Returns a [N_markers x 3] array containing the position of each marker in the global reference frame
         """
-        self.update_kinematics(q)
+        self._update_kinematics(q)
         return np.array([mark.getLocationInGround(self.state).to_numpy() for mark in self.model.getMarkerSet()])
 
     def centers_of_mass(self, q: np.ndarray) -> np.ndarray:
         """
         Returns the position of the centers of mass in the global reference frame
         """
-        self.update_kinematics(q)
+        self._update_kinematics(q)
         all_com_with_mass = np.zeros((len(self.segments_with_mass), 3))
         count = 0
         for i in range(self.model.getNumBodies()):
@@ -291,7 +286,7 @@ class OsimModelNoMesh:
         """
         Returns the position of the ligaments in the global reference frame
         """
-        self.update_kinematics(q)
+        self._update_kinematics(q)
         muscles = []
         for idx in range(self.nb_muscles):
              muscle = self.model.getMuscles().get(idx)
@@ -340,12 +335,6 @@ class OsimModelNoMesh:
         """
         return None
 
-    def set_xp_coordinate_names(self, names: list[str]) -> None:
-        """
-        Set the names of the coordinates
-        """
-        self.xp_coordinate_names = names
-
     def rigid_contacts(self, q: np.ndarray) -> None:
         """
         Returns the position of the rigid contacts in the global reference frame
@@ -373,7 +362,7 @@ class OsimModelNoMesh:
         """
         return None
 
-    def update_kinematics(self, q: np.ndarray) -> None:
+    def _update_kinematics(self, q: np.ndarray) -> None:
         """
         Updates the kinematics of the model
         """
@@ -387,7 +376,7 @@ class OsimModelNoMesh:
 
 class OsimModel(OsimModelNoMesh):
     """
-    This class extends the BiorbdModelNoMesh class and overrides the segments property.
+    This class extends the OsimModelNoMesh class and overrides the segments property.
     It filters the segments to only include those that have a mesh.
     """
 

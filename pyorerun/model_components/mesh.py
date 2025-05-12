@@ -63,8 +63,7 @@ class TransformableMeshUpdater(Component):
     ) -> "TransformableMeshUpdater":
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
-            if not np.all(np.array(scale_factor) == 1):
-                mesh.apply_scale(scale_factor)
+            mesh.apply_scale(scale_factor)
             return cls(name, mesh, transform_callable)
         elif file_path.endswith(".vtp"):
             output = read_vtp_file(file_path)
@@ -79,8 +78,7 @@ class TransformableMeshUpdater(Component):
                 vertex_normals=output["normals"],
                 metadata={"file_name": file_path.split("/")[-1].split(".")[0]},
             )
-            if not np.all(np.array(scale_factor) == 1):
-                mesh.apply_scale(scale_factor)
+            mesh.apply_scale(scale_factor)
             return cls(name, mesh, transform_callable)
         else:
             raise ValueError(f"The file {file_path} is not a valid mesh file. It should be either .stl or .vtp.")

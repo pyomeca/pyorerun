@@ -3,7 +3,7 @@ import pytest
 from pyomeca import Markers as PyoMarkers
 
 from pyorerun import BiorbdModel, PhaseRerun
-from pyorerun.biorbd_phase import BiorbdRerunPhase
+from pyorerun.model_phase import ModelRerunPhase
 from pyorerun.timeless_components import TimelessRerunPhase
 from pyorerun.xp_phase import XpRerunPhase
 
@@ -14,7 +14,7 @@ def test_phase_rerun_init():
     assert phase_rerun.phase == 1
     assert phase_rerun.name == "test_window/animation_phase_1"
     np.testing.assert_array_equal(phase_rerun.t_span, t_span)
-    assert isinstance(phase_rerun.biorbd_models, BiorbdRerunPhase)
+    assert isinstance(phase_rerun.models, ModelRerunPhase)
     assert isinstance(phase_rerun.xp_data, XpRerunPhase)
     assert isinstance(phase_rerun.timeless_components, TimelessRerunPhase)
 
@@ -51,7 +51,7 @@ def test_add_animated_model(tmp_path):
 
     # Test basic model addition
     phase_rerun.add_animated_model(model, q)
-    assert len(phase_rerun.biorbd_models.models) == 1
+    assert len(phase_rerun.models.models) == 1
 
     # Test with tracked markers
     markers_data = np.random.rand(3, model.nb_markers, 50)

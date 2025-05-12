@@ -4,8 +4,8 @@ from typing import Any
 import numpy as np
 
 from .mesh import TransformableMeshUpdater
-from .biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
-from .osim_model_interface import OsimModel, OsimModelNoMesh
+from ..model_interfaces.biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
+from ..model_interfaces.osim_model_interface import OsimModel, OsimModelNoMesh
 from .model_display_options import DisplayModelOptions
 from .model_markers import MarkersUpdater
 from .segment import SegmentUpdater
@@ -151,19 +151,13 @@ class ModelUpdater(Components):
             )
             if segment.has_mesh:
                 mesh = []
-                path = [segment.mesh_path] if isinstance(segment.mesh_path, str) else segment.mesh_path
-                scale_factor = (
-                    [segment.mesh_scale_factor]
-                    if isinstance(segment.mesh_scale_factor, float)
-                    else segment.mesh_scale_factor
-                )
-                for m_idx, m in enumerate(path):
+                for m_idx, m in enumerate(segment.mesh_path):
                     mesh_transform_callable = partial(
                         self.model.mesh_homogenous_matrices_in_global, segment_index=segment.id, mesh_index=m_idx
                     )
                     mesh.append(
                         TransformableMeshUpdater.from_file(
-                            segment_name, m, mesh_transform_callable, scale_factor[m_idx]
+                            segment_name, m, mesh_transform_callable, segment.mesh_scale_factor[m_idx]
                         )
                     )
                     mesh[-1].set_transparency(self.model.options.transparent_mesh)
@@ -234,10 +228,7 @@ class ModelUpdater(Components):
             The generalized coordinates of the model one-dimensional array, i.e., q.shape = (n_q,).
         """
         for segment in self.segments:
-            if not isinstance(segment.mesh, list):
-                segment.mesh.initialize()
-            else:
-                [mesh.initialize() for mesh in segment.mesh]
+            [mesh.initialize() for mesh in segment.mesh]
 
         for component in self.components:
             component.to_rerun(q)

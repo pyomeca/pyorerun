@@ -4,8 +4,8 @@ from tkinter import ttk
 import numpy as np
 import rerun as rr
 
-from .model_components.biorbd_model_interface import BiorbdModel
-from .model_components.osim_model_interface import OsimModel
+from .model_interfaces.biorbd_model_interface import BiorbdModel
+from .model_interfaces.osim_model_interface import OsimModel
 from .model_components.model_updapter import ModelUpdater
 
 

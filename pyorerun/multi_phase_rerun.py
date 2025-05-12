@@ -3,8 +3,8 @@ import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 import rerun.blueprint as rrb
 from pyomeca import Markers as PyoMarkers
 
-from .model_components.biorbd_model_interface import BiorbdModel
-from .model_components.osim_model_interface import OsimModel
+from .model_interfaces.biorbd_model_interface import BiorbdModel
+from .model_interfaces.osim_model_interface import OsimModel
 from .phase_rerun import PhaseRerun
 
 

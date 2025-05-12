@@ -7,11 +7,11 @@ from .mesh import TransformableMeshUpdater
 
 class SegmentUpdater(Component):
     def __init__(
-        self, name, transform_callable: callable, mesh: TransformableMeshUpdater | list[TransformableMeshUpdater]
+        self, name, transform_callable: callable, mesh: list[TransformableMeshUpdater]
     ):
         self.name = name
         self.transform_callable = transform_callable
-        self.mesh = mesh if isinstance(mesh, list) else [mesh]
+        self.mesh = mesh
         self.local_frame = LocalFrameUpdater(name + "/frame", transform_callable)
 
     @property

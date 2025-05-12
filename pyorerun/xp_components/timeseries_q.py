@@ -15,7 +15,7 @@ class OsimTimeSeries:
     The .mot file is a file format used in OpenSim to store motion capture data.
     """
 
-    def __init__(self, mot_file: str, osim_model: any = None):
+    def __init__(self, mot_file: str, osim_model: object = None):
         """
         Parameters
         ----------
@@ -94,6 +94,8 @@ class OsimTimeSeries:
         """
         Set the OpenSim model to be used for the conversion.
         """
+        if osim_model is None:
+            return
         self.osim_model = osim_model if not isinstance(osim_model, str) else osim.Model(osim_model)
         coordinates_ordered = [
             self.osim_model.getCoordinateSet().get(coordinate) for coordinate in self.coordinate_names

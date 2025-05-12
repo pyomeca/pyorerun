@@ -4,7 +4,7 @@ import biorbd
 import numpy as np
 from biorbd import GeneralizedCoordinates
 
-from .model_display_options import DisplayModelOptions
+from ..model_components.model_display_options import DisplayModelOptions
 
 MINIMAL_SEGMENT_MASS = 1e-08
 
@@ -41,12 +41,15 @@ class BiorbdSegment:
         return has_mesh
 
     @cached_property
-    def mesh_path(self) -> str:
-        return self.segment.characteristics().mesh().path().absolutePath().to_string()
+    def mesh_path(self) -> list[str]:
+        return [self.segment.characteristics().mesh().path().absolutePath().to_string()]
 
     @cached_property
-    def scale_factor(self) -> list[str]:
-        return self.segment.characteristics().mesh().getScale().to_array()
+    def scale_factor(self) -> list[np.ndarray]:
+        """
+        return: numpy array (3,) of the scale factor of the mesh 
+        """
+        return [self.segment.characteristics().mesh().getScale().to_array()]
 
     @cached_property
     def mass(self) -> float:

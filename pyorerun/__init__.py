@@ -1,6 +1,6 @@
 from .model_components.model_display_options import DisplayModelOptions
-from .model_components.biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
-from .model_components.osim_model_interface import OsimModel, OsimModelNoMesh
+from .model_interfaces.biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
+from .model_interfaces.osim_model_interface import OsimModel, OsimModelNoMesh
 from .model_components.model_updapter import ModelUpdater
 from .live_animation import LiveModelAnimation
 from .live_integration import LiveModelIntegration

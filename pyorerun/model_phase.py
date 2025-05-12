@@ -1,14 +1,14 @@
 import numpy as np
 
-from .model_components.biorbd_model_interface import BiorbdModel
-from .model_components.osim_model_interface import OsimModel
+from .model_interfaces.biorbd_model_interface import BiorbdModel
+from .model_interfaces.osim_model_interface import OsimModel
 from .model_components.model_marker_link_updapter import ModelMarkerLinksUpdater
 from .model_components.model_updapter import ModelUpdater
 
 
-class BiorbdRerunPhase:
+class ModelRerunPhase:
     """
-    A class to animate a biorbd model in rerun.
+    A class to animate a musculoskeletal model in rerun.
     """
 
     def __init__(self, name, phase: int = 0):

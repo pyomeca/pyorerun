@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyorerun.biorbd_components.local_frame import LocalFrameUpdater
+from pyorerun.model_components.local_frame import LocalFrameUpdater
 
 
 def dummy_callable_transform(q):
