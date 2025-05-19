@@ -54,7 +54,12 @@ class PhaseRerun:
         self.timeless_components = TimelessRerunPhase(name=self.name, phase=phase)
 
     def add_animated_model(
-        self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: PyoMarkers = None, display_q: bool = False
+            self,
+            biomod: BiorbdModel,
+            q: np.ndarray,
+            tracked_markers: PyoMarkers = None,
+            show_tracked_marker_labels: bool = True,
+            display_q: bool = False
     ) -> None:
         """
         Add an animated model to the phase.
@@ -67,6 +72,8 @@ class PhaseRerun:
             The generalized coordinates of the model.
         tracked_markers: PyoMarkers
             The markers to display, and sets a link between the model markers and the tracked markers.
+        show_tracked_marker_labels: bool
+            Whether to display the tracked markers labels.
         display_q: bool
             Whether to display the generalized coordinates q in charts.
         """
@@ -82,7 +89,7 @@ class PhaseRerun:
             self.biorbd_models.add_animated_model(biomod, q)
         else:
             self.biorbd_models.add_animated_model(biomod, q, tracked_markers.to_numpy()[:3, :, :])
-            self.__add_tracked_markers(biomod, tracked_markers)
+            self.__add_tracked_markers(biomod, tracked_markers, show_tracked_marker_labels)
 
         if display_q:
             self.add_q(
@@ -96,7 +103,7 @@ class PhaseRerun:
                 Gravity(name=f"{self.name}/{self.biorbd_models.nb_models}_{biomod.name}", vector=biomod.gravity)
             )
 
-    def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers) -> None:
+    def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
         """Add the tracked markers to the phase."""
         shape_of_markers_is_not_consistent = biomod.nb_markers != tracked_markers.shape[1]
         names_are_ordered_differently = biomod.marker_names != tuple(tracked_markers.channel.data.tolist())
@@ -107,9 +114,9 @@ class PhaseRerun:
                 f"Current markers are {biomod.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
             )
 
-        self.add_xp_markers(f"{biomod.name}_tracked_markers", tracked_markers)
+        self.add_xp_markers(f"{biomod.name}_tracked_markers", tracked_markers, show_tracked_marker_labels)
 
-    def add_xp_markers(self, name, markers: PyoMarkers) -> None:
+    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
         """
         Add an animated model to the phase.
 
@@ -126,7 +133,7 @@ class PhaseRerun:
                 f"They must have the same length."
                 f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
-        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
+        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers, show_labels=show_tracked_marker_labels))
 
     def add_q(
         self,

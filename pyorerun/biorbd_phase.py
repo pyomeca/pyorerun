@@ -30,7 +30,10 @@ class BiorbdRerunPhase:
 
         self.tracked_markers.append(tracked_markers if tracked_markers is not None else None)
         updater = (
-            ModelMarkerLinksUpdater(name=f"{self.name}/{self.nb_models}_{biomod.name}", model=biomod)
+            ModelMarkerLinksUpdater(
+                name=f"{self.name}/{self.nb_models}_{biomod.name}",
+                model=biomod,
+            )
             if tracked_markers is not None
             else None
         )
