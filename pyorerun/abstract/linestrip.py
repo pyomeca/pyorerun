@@ -36,11 +36,12 @@ class LineStripProperties:
     """
 
     def __init__(
-            self,
-            strip_names: list[str, ...] | tuple[str, ...],
-            radius: float | np.ndarray,
-            color: np.ndarray,
-            show_labels: bool = True):
+        self,
+        strip_names: list[str, ...] | tuple[str, ...],
+        radius: float | np.ndarray,
+        color: np.ndarray,
+        show_labels: bool = True,
+    ):
         """
         Constructs all the necessary attributes for the MarkerProperties object.
 

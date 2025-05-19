@@ -36,11 +36,11 @@ class MarkerProperties:
     """
 
     def __init__(
-            self,
-            markers_names: list[str, ...] | tuple[str, ...],
-            radius: float | tuple[float, ...],
-            color: np.ndarray,
-            show_labels: bool = True
+        self,
+        markers_names: list[str, ...] | tuple[str, ...],
+        radius: float | tuple[float, ...],
+        color: np.ndarray,
+        show_labels: bool = True,
     ):
         """
         Constructs all the necessary attributes for the MarkerProperties object.
