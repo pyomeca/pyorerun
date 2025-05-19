@@ -71,6 +71,7 @@ class ModelUpdater(Components):
                 markers_names=self.model.marker_names,
                 color=np.array(self.model.options.markers_color),
                 radius=self.model.options.markers_radius,
+                show_labels=self.model.options.show_marker_labels,
             ),
             callable_markers=self.model.markers,
         )
@@ -84,6 +85,7 @@ class ModelUpdater(Components):
                     markers_names=self.model.segment_names_with_mass,
                     color=np.array(self.model.options.centers_of_mass_color),
                     radius=self.model.options.centers_of_mass_radius,
+                    show_labels=self.model.options.show_center_of_mass_labels,
                 ),
                 callable_markers=self.model.centers_of_mass,
             )
@@ -99,6 +101,7 @@ class ModelUpdater(Components):
                 markers_names=self.model.soft_contacts_names,
                 color=np.array(self.model.options.soft_contacts_color),
                 radius=self.model.soft_contact_radii,
+                show_labels=self.model.options.show_contact_labels,
             ),
             callable_markers=self.model.soft_contacts,
         )
@@ -112,6 +115,7 @@ class ModelUpdater(Components):
                 markers_names=self.model.rigid_contacts_names,
                 color=np.array(self.model.options.rigid_contacts_color),
                 radius=0.01,
+                show_labels=self.model.options.show_contact_labels,
             ),
             callable_markers=self.model.rigid_contacts,
         )
@@ -126,6 +130,7 @@ class ModelUpdater(Components):
                 strip_names=self.model.ligament_names,
                 color=np.array(self.model.options.ligaments_color),
                 radius=self.model.options.ligaments_radius,
+                show_labels=self.model.options.show_ligament_labels,
             ),
             update_callable=self.model.ligament_strips,
         )
@@ -177,6 +182,7 @@ class ModelUpdater(Components):
                 strip_names=self.model.muscle_names,
                 color=np.array(self.model.options.muscles_color),
                 radius=self.model.options.muscles_radius,
+                show_labels=self.model.options.show_muscle_labels,
             ),
             update_callable=self.model.muscle_strips,
         )

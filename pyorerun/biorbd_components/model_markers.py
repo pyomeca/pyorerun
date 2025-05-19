@@ -31,6 +31,7 @@ class MarkersUpdater(Component):
             radii=self.marker_properties.radius_to_rerun(),
             colors=self.marker_properties.color_to_rerun(),
             labels=self.marker_properties.markers_names,
+            show_labels=self.marker_properties.show_labels,
         )
 
     def compute_markers(self, q: np.ndarray) -> np.ndarray:

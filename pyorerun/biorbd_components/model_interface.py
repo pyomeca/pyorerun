@@ -45,7 +45,7 @@ class BiorbdSegment:
         return self.segment.characteristics().mesh().path().absolutePath().to_string()
 
     @cached_property
-    def mesh_scale(self) -> np.ndarray[float, float, float]:
+    def mesh_scale(self) -> np.ndarray:
         """The scaling to apply to the mesh on the x, y, and z-axis."""
         return self.segment.characteristics().mesh().getScale().to_array()
 
