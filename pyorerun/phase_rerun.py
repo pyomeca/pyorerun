@@ -122,9 +122,9 @@ class PhaseRerun:
         """
         if markers.shape[2] != self.t_span.shape[0]:
             raise ValueError(
-                f"The shapes of q and tspan are inconsistent. "
+                f"The shapes of markers and tspan are inconsistent. "
                 f"They must have the same length."
-                f"Current shapes are q: {markers.shape[1]} and tspan: {self.t_span.shape}."
+                f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
 
