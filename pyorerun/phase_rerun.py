@@ -129,7 +129,7 @@ class PhaseRerun:
         markers: PyoMarkers
             The experimental data to display.
         show_tracked_marker_labels: bool
-
+            Whether to display the tracked markers labels.
         """
         if markers.shape[2] != self.t_span.shape[0]:
             raise ValueError(
