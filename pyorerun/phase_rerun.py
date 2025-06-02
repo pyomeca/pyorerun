@@ -118,7 +118,7 @@ class PhaseRerun:
 
         self.add_xp_markers(f"{biomod.name}_tracked_markers", tracked_markers, show_tracked_marker_labels)
 
-    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
+    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool = True) -> None:
         """
         Add an animated model to the phase.
 
@@ -128,6 +128,8 @@ class PhaseRerun:
             The name of the markers set.
         markers: PyoMarkers
             The experimental data to display.
+        show_tracked_marker_labels: bool
+
         """
         if markers.shape[2] != self.t_span.shape[0]:
             raise ValueError(
