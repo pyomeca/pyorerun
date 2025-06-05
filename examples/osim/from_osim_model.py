@@ -1,3 +1,4 @@
+import os
 import opensim
 import numpy as np
 
@@ -5,25 +6,15 @@ from pyorerun import OsimModel, PhaseRerun, OsimTimeSeries, DisplayModelOptions
 
 
 def main():
-    # building some time components
-    nb_frames = 100
-    nb_seconds = 1
-    t_span = np.linspace(0, nb_seconds, nb_frames)
-
-    osim_model = opensim.Model(r"D:\Documents\Programmation\osim_to_biomod\example\Models\Model_Pose2Sim.osim")
+    osim_model = opensim.Model(r"models\Rajagopal2015.osim")
     display_options = DisplayModelOptions()
-    display_options.mesh_path = "Geometry_cleaned"
+    display_options.mesh_path = "D:\Documents\Programmation\pyorerun\examples\biorbd\models\Geometry_cleaned"
     prr_model = OsimModel.from_osim_object(osim_model, options=display_options)
 
-    # building some generalized coordinates
-    q = np.zeros((prr_model.nb_q, nb_frames))
-    q[10, :] = np.linspace(0, 0.2, nb_frames)
-    # q[1, :] = np.linspace(0, 2, nb_frames)
-    mot_file = r"F:\CIME_LOC\tmp_videos\20250422_162024_output_jsons\ik_mot.mot"
     mot_file = r"ik.mot"
-    mot_time_series = OsimTimeSeries(mot_file, None)
+    mot_time_series = OsimTimeSeries(mot_file, osim_model)
     viz = PhaseRerun(mot_time_series.times)
-    viz.add_animated_model(prr_model, mot_time_series.q )#_in_radian[:, :], display_q=False)
+    viz.add_animated_model(prr_model, mot_time_series.q_in_radian)
     # viz = PhaseRerun(t_span=t_span)
     # viz.add_animated_model(prr_model, q)
     viz.rerun("msk_model")
