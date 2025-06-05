@@ -148,9 +148,11 @@ class OsimModelNoMesh:
         self.path = path if loaded_model is None else loaded_model.getInputFileName()
         self.model = loaded_model if loaded_model is not None else osim.Model(path)
         self.state = self.model.initSystem()
+        self.coordinate_set = self.model.getCoordinateSet()
         self.options: DisplayModelOptions = options if options is not None else DisplayModelOptions()
         self.previous_q = None
         self.xp_coordinate_names = None
+        self.state_variables = self.model.getStateVariableValues(self.state).to_numpy()
 
         # Private attributes
         self.__segments = None
@@ -303,11 +305,11 @@ class OsimModelNoMesh:
 
     @cached_property
     def dof_names(self) -> tuple[str, ...]:
-        return tuple(s.toString() for s in self.model.getCoordinateSet())
+        return tuple(s.toString() for s in self.coordinate_set)
 
     @cached_property
     def q_ranges(self) -> tuple[tuple[float, float], ...]:
-        return tuple((c.getRangeMin(), c.getRangeMax()) for c in self.model.getCoordinateSet())
+        return tuple((c.getRangeMin(), c.getRangeMax()) for c in self.coordinate_set)
 
     @cached_property
     def gravity(self) -> np.ndarray:
@@ -369,9 +371,11 @@ class OsimModelNoMesh:
         if self.previous_q is not None and np.allclose(q, self.previous_q):
             return
         self.previous_q = q.copy()
-        coordinates = [self.model.getCoordinateSet().get(coord) for coord in self.dof_names]
-        [coordinate.setValue(self.state, q[i], enforceContraints=False) for i, coordinate in enumerate(coordinates)]
+        map_q = np.array([[q, 0] for q in self.previous_q]).flatten()
+        self.state_variables[:self.nb_q * 2] = map_q
+        self.model.setStateVariableValues(self.state, osim.Vector(self.state_variables))
         self.model.realizePosition(self.state)
+
 
 
 class OsimModel(OsimModelNoMesh):

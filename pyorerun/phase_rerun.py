@@ -100,7 +100,7 @@ class PhaseRerun:
             )
         if model.options.show_gravity:
             self.timeless_components.add_component(
-                Gravity(name=f"{self.name}/{self.biorbd_models.nb_models}_{model.name}", vector=model.gravity)
+                Gravity(name=f"{self.name}/{self.models.nb_models}_{model.name}", vector=model.gravity)
             )
 
     def __add_tracked_markers(self, biomod: BiorbdModel | OsimModel, tracked_markers: PyoMarkers) -> None:
@@ -206,17 +206,17 @@ class PhaseRerun:
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
         self.timeless_components.to_rerun()
-        self.biorbd_models.to_rerun(frame)
+        self.models.to_rerun(frame)
         self.xp_data.to_rerun(frame)
 
         for frame, t in enumerate(self.t_span[1:]):
             rr.set_time_seconds("stable_time", t)
-            self.biorbd_models.to_rerun(frame + 1)
+            self.models.to_rerun(frame + 1)
             self.xp_data.to_rerun(frame + 1)
 
         if clear_last_node:
             for component in [
-                *self.biorbd_models.component_names,
+                *self.models.component_names,
                 *self.xp_data.component_names,
                 *self.timeless_components.component_names,
             ]:
@@ -231,7 +231,7 @@ class PhaseRerun:
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
         self.timeless_components.to_rerun()
-        self.biorbd_models.initialize()
+        self.models.initialize()
         self.xp_data.initialize()
 
         times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
@@ -243,7 +243,7 @@ class PhaseRerun:
                 components=chunk,
             )
 
-        for name, chunk in self.biorbd_models.to_chunk().items():
+        for name, chunk in self.models.to_chunk().items():
             rr.send_columns(
                 name,
                 times=times,
@@ -253,7 +253,7 @@ class PhaseRerun:
         if clear_last_node:
             rr.set_time_seconds("stable_time", self.t_span[-1])
             for component in [
-                *self.biorbd_models.component_names,
+                *self.models.component_names,
                 *self.xp_data.component_names,
                 *self.timeless_components.component_names,
             ]:
