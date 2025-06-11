@@ -3,11 +3,10 @@ channels:
 - conda-forge
 - default
 - opensim-org
-
 dependencies:
 - ezc3d
 - rerun-sdk=0.21.0
-- numpy=1.26.4
+- numpy
 - biorbd>=1.10.5
 - trimesh
 - pyomeca
