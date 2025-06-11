@@ -6,7 +6,7 @@ from pyorerun import OsimModel, PhaseRerun, OsimTimeSeries, DisplayModelOptions
 def main():
     osim_model = opensim.Model(r"Rajagopal2015.osim")
     display_options = DisplayModelOptions()
-    display_options.mesh_path = "../biorbd/models/Geometry_cleaned"
+    display_options.mesh_path = "Geometry_cleaned"
     prr_model = OsimModel.from_osim_object(osim_model, options=display_options)
 
     mot_file = r"ik.mot"

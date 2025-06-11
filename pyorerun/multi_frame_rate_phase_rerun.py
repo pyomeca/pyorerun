@@ -121,7 +121,7 @@ class MultiFrameRatePhaseRerun:
             frame = 0
             rr.set_time_seconds("stable_time", phase_rerun.t_span[frame])
             phase_rerun.timeless_components.to_rerun()
-            phase_rerun.biorbd_models.initialize()
+            phase_rerun.models.initialize()
             phase_rerun.xp_data.initialize()
 
             times = [rr.TimeSecondsColumn("stable_time", phase_rerun.t_span)]
@@ -133,7 +133,7 @@ class MultiFrameRatePhaseRerun:
                     components=chunk,
                 )
 
-            for name, chunk in phase_rerun.biorbd_models.to_chunk().items():
+            for name, chunk in phase_rerun.models.to_chunk().items():
                 rr.send_columns(
                     name,
                     times=times,

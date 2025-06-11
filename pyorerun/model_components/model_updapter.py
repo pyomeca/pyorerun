@@ -230,7 +230,7 @@ class ModelUpdater(Components):
             The generalized coordinates of the model one-dimensional array, i.e., q.shape = (n_q,).
         """
         for segment in self.segments:
-            [mesh.initialize() for mesh in segment.mesh]
+            [mesh.initialize() for mesh in segment.meshes]
 
         for component in self.components:
             component.to_rerun(q)
