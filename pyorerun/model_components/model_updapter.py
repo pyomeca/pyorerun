@@ -4,8 +4,6 @@ from typing import Any
 import numpy as np
 
 from .mesh import TransformableMeshUpdater
-from ..model_interfaces.biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
-from ..model_interfaces.osim_model_interface import OsimModel, OsimModelNoMesh
 from .model_display_options import DisplayModelOptions
 from .model_markers import MarkersUpdater
 from .segment import SegmentUpdater
@@ -14,6 +12,8 @@ from ..abstract.empty_updater import EmptyUpdater
 from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
 from ..model_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
+from ..model_interfaces.biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
+from ..model_interfaces.osim_model_interface import OsimModel, OsimModelNoMesh
 
 
 class ModelUpdater(Components):
@@ -150,34 +150,36 @@ class ModelUpdater(Components):
                 segment_index=segment.id,
             )
             if segment.has_mesh:
-                mesh = []
+                meshes = []
                 for m_idx, m in enumerate(segment.mesh_path):
                     mesh_transform_callable = partial(
                         self.model.mesh_homogenous_matrices_in_global, segment_index=segment.id, mesh_index=m_idx
                     )
-                    mesh.append(
+                    meshes.append(
                         TransformableMeshUpdater.from_file(
                             segment_name, m, mesh_transform_callable, segment.mesh_scale_factor[m_idx]
                         )
                     )
-                    mesh[-1].set_transparency(self.model.options.transparent_mesh)
-                    mesh[-1].set_color(self.model.options.mesh_color)
+                    meshes[-1].set_transparency(self.model.options.transparent_mesh)
+                    meshes[-1].set_color(self.model.options.mesh_color)
 
             elif segment.has_meshlines:
-                mesh = LineStripUpdaterFromGlobalTransform(
-                    segment_name + "/meshlines",
-                    properties=LineStripProperties(
-                        strip_names=self.model.muscle_names,
-                        color=np.array((0, 0, 0)),
-                        radius=0.001,
-                    ),
-                    strips=self.model.meshlines[i],
-                    transform_callable=transform_callable,
-                )
+                meshes = [
+                    LineStripUpdaterFromGlobalTransform(
+                        segment_name + "/meshlines",
+                        properties=LineStripProperties(
+                            strip_names=self.model.muscle_names,
+                            color=np.array((0, 0, 0)),
+                            radius=0.001,
+                        ),
+                        strips=self.model.meshlines[i],
+                        transform_callable=transform_callable,
+                    )
+                ]
             else:
-                mesh = EmptyUpdater(segment_name + "/mesh")
+                meshes = [EmptyUpdater(segment_name + "/mesh")]
 
-            segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, mesh=mesh))
+            segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, meshes=meshes))
         return segments
 
     def create_muscles_updater(self):

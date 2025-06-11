@@ -30,14 +30,14 @@ class BiorbdSegment:
     def has_mesh(self) -> bool:
         has_mesh = self.segment.characteristics().mesh().hasMesh()
         if has_mesh:
-            return not self.mesh_path.endswith("/")  # Avoid empty mesh path
+            return not self.mesh_path[0].endswith("/")  # Avoid empty mesh path
         return has_mesh
 
     @cached_property
     def has_meshlines(self) -> bool:
         has_mesh = self.segment.characteristics().mesh().hasMesh()
         if has_mesh:
-            return self.mesh_path.endswith("/")  # Avoid empty mesh path
+            return self.mesh_path[0].endswith("/")  # Avoid empty mesh path
         return has_mesh
 
     @cached_property
@@ -45,9 +45,9 @@ class BiorbdSegment:
         return [self.segment.characteristics().mesh().path().absolutePath().to_string()]
 
     @cached_property
-    def scale_factor(self) -> list[np.ndarray]:
+    def mesh_scale_factor(self) -> list[np.ndarray]:
         """
-        return: numpy array (3,) of the scale factor of the mesh 
+        return: numpy array (3,) of the scale factor of the mesh
         """
         return [self.segment.characteristics().mesh().getScale().to_array()]
 
