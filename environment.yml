@@ -2,6 +2,8 @@ name: pyorerun
 channels:
 - conda-forge
 - default
+- opensim-org
+
 dependencies:
 - ezc3d
 - rerun-sdk=0.21.0
