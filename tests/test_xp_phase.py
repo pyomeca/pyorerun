@@ -1,10 +1,12 @@
-import pytest
-from pyorerun.xp_phase import XpRerunPhase
-from pyorerun.abstract.abstract_class import ExperimentalData
+import numpy as np
+
 from pyorerun import OsimTimeSeries
+from pyorerun.abstract.abstract_class import ExperimentalData
+from pyorerun.xp_phase import XpRerunPhase
 
 mot_file = "../examples/osim/ik.mot"
 osim_ts = OsimTimeSeries(mot_file)
+
 
 class MockExperimentalData(ExperimentalData):
     def __init__(self, name):
@@ -88,12 +90,47 @@ def test_component_names():
 
     assert phase.component_names == ["data1", "data2"]
 
+
 def test_osim_time_series():
     assert isinstance(osim_ts, OsimTimeSeries)
-    assert osim_ts.coordinate_names == ["r_shoulder_elev", "r_elbow_flex"]
-    assert osim_ts.q[0, 50] == 0.00590309
+    assert osim_ts.coordinate_names == (
+        "pelvis_tilt",
+        "pelvis_list",
+        "pelvis_rotation",
+        "pelvis_tx",
+        "pelvis_ty",
+        "pelvis_tz",
+        "hip_flexion_r",
+        "hip_adduction_r",
+        "hip_rotation_r",
+        "knee_angle_r",
+        "ankle_angle_r",
+        "subtalar_angle_r",
+        "mtp_angle_r",
+        "hip_flexion_l",
+        "hip_adduction_l",
+        "hip_rotation_l",
+        "knee_angle_l",
+        "ankle_angle_l",
+        "subtalar_angle_l",
+        "mtp_angle_l",
+        "lumbar_extension",
+        "lumbar_bending",
+        "lumbar_rotation",
+        "arm_flex_r",
+        "arm_add_r",
+        "arm_rot_r",
+        "elbow_flex_r",
+        "pro_sup_r",
+        "wrist_flex_r",
+        "wrist_dev_r",
+        "arm_flex_l",
+        "arm_add_l",
+        "arm_rot_l",
+        "elbow_flex_l",
+        "pro_sup_l",
+        "wrist_flex_l",
+        "wrist_dev_l",
+    )
+    assert osim_ts.q[0, 50] == np.float64(3.16086172)
     assert osim_ts.is_degree is True
-    
-    
-
-

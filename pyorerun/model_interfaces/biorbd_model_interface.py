@@ -258,7 +258,7 @@ class BiorbdModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMe
         return tuple(radii)
 
 
-class BiorbdModel(BiorbdModelNoMesh, AbstractModel): # Inherits from BiorbdModelNoMesh and AbstractModel
+class BiorbdModel(BiorbdModelNoMesh, AbstractModel):  # Inherits from BiorbdModelNoMesh and AbstractModel
     """
     This class extends the BiorbdModelNoMesh class and overrides the segments property.
     It filters the segments to only include those that have a mesh.

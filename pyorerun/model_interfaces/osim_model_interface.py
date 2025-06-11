@@ -16,6 +16,7 @@ class OsimSegment(AbstractSegment):  # Inherits from AbstractSegment
     """
     An interface to simplify the access to a segment of an Opensim model
     """
+
     def __init__(self, segment, index, model_path=None, mesh_path=None):
         self.segment = segment
         self._index: int = index
@@ -266,12 +267,12 @@ class OsimModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMesh
         self._update_kinematics(q)
         muscles = []
         for idx in range(self.nb_muscles):
-             muscle = self.model.getMuscles().get(idx)
-             muscle_strip = []
-             path_point = muscle.getGeometryPath().getPathPointSet()
-             for p in range(path_point.getSize()):
-                 muscle_strip.append(list(path_point.get(p).getLocationInGround(self.state).to_numpy()))
-             muscles.append(muscle_strip)
+            muscle = self.model.getMuscles().get(idx)
+            muscle_strip = []
+            path_point = muscle.getGeometryPath().getPathPointSet()
+            for p in range(path_point.getSize()):
+                muscle_strip.append(list(path_point.get(p).getLocationInGround(self.state).to_numpy()))
+            muscles.append(muscle_strip)
         return muscles
 
     @cached_property
@@ -332,7 +333,7 @@ class OsimModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMesh
             return
         self.previous_q = q.copy()
         map_q = np.array([[q_val, 0] for q_val in self.previous_q]).flatten()
-        self.state_variables[:self.nb_q * 2] = map_q
+        self.state_variables[: self.nb_q * 2] = map_q
         self.model.setStateVariableValues(self.state, osim.Vector(self.state_variables))
         self.model.realizePosition(self.state)
 
@@ -362,5 +363,5 @@ class OsimModel(OsimModelNoMesh, AbstractModel):  # Inherits from OsimModelNoMes
         """
         segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)
         # In this implementation, mesh_index from kwargs is ignored.
-        # mesh_index = kwargs.get("mesh_index") 
+        # mesh_index = kwargs.get("mesh_index")
         return segment_rt @ np.eye(4)  # self.segments[segment_index].mesh_rt[mesh_index]
