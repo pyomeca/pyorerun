@@ -1,11 +1,13 @@
+from pathlib import Path
+
 import numpy as np
 
 from pyorerun import OsimTimeSeries
 from pyorerun.abstract.abstract_class import ExperimentalData
 from pyorerun.xp_phase import XpRerunPhase
 
-mot_file = "../examples/osim/ik.mot"
-osim_ts = OsimTimeSeries(mot_file)
+MOT_FILE = "../examples/osim/ik.mot"
+OSIM_TIME_SERIES = OsimTimeSeries(str(Path(__file__).parent) + "/" + MOT_FILE)
 
 
 class MockExperimentalData(ExperimentalData):
@@ -92,8 +94,8 @@ def test_component_names():
 
 
 def test_osim_time_series():
-    assert isinstance(osim_ts, OsimTimeSeries)
-    assert osim_ts.coordinate_names == (
+    assert isinstance(OSIM_TIME_SERIES, OsimTimeSeries)
+    assert OSIM_TIME_SERIES.coordinate_names == (
         "pelvis_tilt",
         "pelvis_list",
         "pelvis_rotation",
@@ -132,5 +134,5 @@ def test_osim_time_series():
         "wrist_flex_l",
         "wrist_dev_l",
     )
-    assert osim_ts.q[0, 50] == np.float64(3.16086172)
-    assert osim_ts.is_degree is True
+    assert OSIM_TIME_SERIES.q[0, 50] == np.float64(3.16086172)
+    assert OSIM_TIME_SERIES.is_degree is True
