@@ -12,12 +12,11 @@ from ..abstract.empty_updater import EmptyUpdater
 from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
 from ..model_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
-from ..model_interfaces.biorbd_model_interface import BiorbdModel, BiorbdModelNoMesh
-from ..model_interfaces.osim_model_interface import OsimModel, OsimModelNoMesh
+from ..model_interfaces import BiorbdModel, BiorbdModelNoMesh, OsimModel, OsimModelNoMesh, AbstractModel
 
 
 class ModelUpdater(Components):
-    def __init__(self, name, model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel):
+    def __init__(self, name, model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel | AbstractModel):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()

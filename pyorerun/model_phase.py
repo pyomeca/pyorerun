@@ -1,9 +1,8 @@
 import numpy as np
 
-from .model_interfaces.biorbd_model_interface import BiorbdModel
-from .model_interfaces.osim_model_interface import OsimModel
 from .model_components.model_marker_link_updapter import ModelMarkerLinksUpdater
 from .model_components.model_updapter import ModelUpdater
+from .model_interfaces import AbstractModel
 
 
 class ModelRerunPhase:
@@ -24,14 +23,14 @@ class ModelRerunPhase:
     def _rerun_links_without_none(self):
         return [rr_link for rr_link in self.rerun_links if rr_link is not None]
 
-    def add_animated_model(self, biomod: BiorbdModel | OsimModel, q: np.ndarray, tracked_markers: np.ndarray = None):
-        self.models.append(biomod)
-        self.rerun_models.append(ModelUpdater(name=f"{self.name}/{self.nb_models}_{biomod.name}", model=biomod))
+    def add_animated_model(self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None):
+        self.models.append(model)
+        self.rerun_models.append(ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model))
         self.q.append(q)
 
         self.tracked_markers.append(tracked_markers if tracked_markers is not None else None)
         updater = (
-            ModelMarkerLinksUpdater(name=f"{self.name}/{self.nb_models}_{biomod.name}", model=biomod)
+            ModelMarkerLinksUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model)
             if tracked_markers is not None
             else None
         )
