@@ -1,6 +1,7 @@
 """
 This example shows how to run multiple models in the same window. It also shows how to run multiple phases in different
 windows. It also shows how to add experimental markers to the animation.
+# todo: to restore the multi-window, it doesn't work anymore.
 """
 
 import numpy as np

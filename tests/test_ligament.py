@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyorerun.biorbd_components.ligaments import LineStripProperties, LigamentsUpdater
+from pyorerun.model_components.ligaments import LineStripProperties, LigamentsUpdater
 
 
 def dummy_callable_ligaments(q):

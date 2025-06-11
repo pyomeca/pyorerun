@@ -3,8 +3,8 @@ import rerun as rr
 from pyomeca import Markers as PyoMarkers
 
 from .abstract.q import QProperties
-from .biorbd_components.model_interface import BiorbdModel
-from .biorbd_phase import BiorbdRerunPhase
+from .model_interfaces import AbstractModel
+from .model_phase import ModelRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
 from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video
@@ -13,7 +13,7 @@ from .xp_phase import XpRerunPhase
 
 class PhaseRerun:
     """
-    A class to animate a biorbd model in rerun.
+    A class to animate a musculoskeletal model in rerun.
 
     Attributes
     ----------
@@ -23,7 +23,7 @@ class PhaseRerun:
         The name of the animation.
     t_span : np.ndarray
         The time span of the animation, such as the time instant of each frame.
-    biorbd_models : BiorbdRerunPhase
+    models : ModelRerunPhase
         The biorbd models to animate.
     xp_data : XpRerunPhase
         The experimental data to display.
@@ -49,20 +49,24 @@ class PhaseRerun:
         # same t_span for the phase
         self.t_span = t_span
 
-        self.biorbd_models = BiorbdRerunPhase(name=self.name, phase=phase)
+        self.models = ModelRerunPhase(name=self.name, phase=phase)
         self.xp_data = XpRerunPhase(name=self.name, phase=phase)
         self.timeless_components = TimelessRerunPhase(name=self.name, phase=phase)
 
     def add_animated_model(
-        self, biomod: BiorbdModel, q: np.ndarray, tracked_markers: PyoMarkers = None, display_q: bool = False
+        self,
+        model: AbstractModel,
+        q: np.ndarray,
+        tracked_markers: PyoMarkers = None,
+        display_q: bool = False,
     ) -> None:
         """
         Add an animated model to the phase.
 
         Parameters
         ----------
-        biomod: BiorbdModel
-            The biorbd model to display.
+        model: AbstractModel
+            The msk model to display.
         q: np.ndarray
             The generalized coordinates of the model.
         tracked_markers: PyoMarkers
@@ -79,35 +83,37 @@ class PhaseRerun:
             )
 
         if tracked_markers is None:
-            self.biorbd_models.add_animated_model(biomod, q)
+            self.models.add_animated_model(model, q)
         else:
-            self.biorbd_models.add_animated_model(biomod, q, tracked_markers.to_numpy()[:3, :, :])
-            self.__add_tracked_markers(biomod, tracked_markers)
+            if isinstance(tracked_markers, np.ndarray):
+                tracked_markers = PyoMarkers(tracked_markers, channels=model.marker_names)
+            self.models.add_animated_model(model, q, tracked_markers.to_numpy()[:3, :, :])
+            self.__add_tracked_markers(model, tracked_markers)
 
         if display_q:
             self.add_q(
-                f"{biomod.name}_q",
+                f"{model.name}_q",
                 q,
-                ranges=biomod.q_ranges,
-                dof_names=biomod.dof_names,
+                ranges=model.q_ranges,
+                dof_names=model.dof_names,
             )
-        if biomod.options.show_gravity:
+        if model.options.show_gravity:
             self.timeless_components.add_component(
-                Gravity(name=f"{self.name}/{self.biorbd_models.nb_models}_{biomod.name}", vector=biomod.gravity)
+                Gravity(name=f"{self.name}/{self.models.nb_models}_{model.name}", vector=model.gravity)
             )
 
-    def __add_tracked_markers(self, biomod: BiorbdModel, tracked_markers: PyoMarkers) -> None:
+    def __add_tracked_markers(self, model: AbstractModel, tracked_markers: PyoMarkers) -> None:
         """Add the tracked markers to the phase."""
-        shape_of_markers_is_not_consistent = biomod.nb_markers != tracked_markers.shape[1]
-        names_are_ordered_differently = biomod.marker_names != tuple(tracked_markers.channel.data.tolist())
+        shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
+        names_are_ordered_differently = model.marker_names != tuple(tracked_markers.channel.data.tolist())
         if shape_of_markers_is_not_consistent or names_are_ordered_differently:
             raise ValueError(
                 f"The markers of the model and the tracked markers are inconsistent. "
                 f"They must have the same names and shape.\n"
-                f"Current markers are {biomod.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
+                f"Current markers are {model.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
             )
 
-        self.add_xp_markers(f"{biomod.name}_tracked_markers", tracked_markers)
+        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers)
 
     def add_xp_markers(self, name, markers: PyoMarkers) -> None:
         """
@@ -199,17 +205,17 @@ class PhaseRerun:
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
         self.timeless_components.to_rerun()
-        self.biorbd_models.to_rerun(frame)
+        self.models.to_rerun(frame)
         self.xp_data.to_rerun(frame)
 
         for frame, t in enumerate(self.t_span[1:]):
             rr.set_time_seconds("stable_time", t)
-            self.biorbd_models.to_rerun(frame + 1)
+            self.models.to_rerun(frame + 1)
             self.xp_data.to_rerun(frame + 1)
 
         if clear_last_node:
             for component in [
-                *self.biorbd_models.component_names,
+                *self.models.component_names,
                 *self.xp_data.component_names,
                 *self.timeless_components.component_names,
             ]:
@@ -224,7 +230,7 @@ class PhaseRerun:
         frame = 0
         rr.set_time_seconds("stable_time", self.t_span[frame])
         self.timeless_components.to_rerun()
-        self.biorbd_models.initialize()
+        self.models.initialize()
         self.xp_data.initialize()
 
         times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
@@ -236,7 +242,7 @@ class PhaseRerun:
                 components=chunk,
             )
 
-        for name, chunk in self.biorbd_models.to_chunk().items():
+        for name, chunk in self.models.to_chunk().items():
             rr.send_columns(
                 name,
                 times=times,
@@ -246,7 +252,7 @@ class PhaseRerun:
         if clear_last_node:
             rr.set_time_seconds("stable_time", self.t_span[-1])
             for component in [
-                *self.biorbd_models.component_names,
+                *self.models.component_names,
                 *self.xp_data.component_names,
                 *self.timeless_components.component_names,
             ]:

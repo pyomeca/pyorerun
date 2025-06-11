@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyorerun.biorbd_components.axisupdater import AxisUpdater
+from pyorerun.model_components.axisupdater import AxisUpdater
 
 
 def dummy_transform(q):

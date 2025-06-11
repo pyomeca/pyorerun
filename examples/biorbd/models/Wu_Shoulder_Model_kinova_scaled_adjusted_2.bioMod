@@ -103,9 +103,9 @@ gravity	0 -9.8000000000000007 0
 			0		1		0		0
 			0		0		1		0
 			0		0		0		1
-		meshfile	Geometry_cleaned/hat_spine.vtp
-		meshcolor	1 1 1
-		meshscale	1.0292818375283255 0.97883771207021109 1
+		//meshfile	Geometry_cleaned/hat_spine.vtp
+		//meshcolor	1 1 1
+		//meshscale	1.0292818375283255 0.97883771207021109 1
 	endsegment
 
 
