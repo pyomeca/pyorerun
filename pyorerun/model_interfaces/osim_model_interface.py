@@ -1,22 +1,21 @@
-from functools import cached_property
 import os
+from functools import cached_property
 from xml.dom import minidom
 
-import opensim as osim
-
 import numpy as np
+import opensim as osim
 from scipy.spatial.transform import Rotation as R
 
-from ..model_components.model_display_options import DisplayModelOptions
+# Import the abstract classes
+from .abstract_model_interface import AbstractModel, AbstractModelNoMesh, AbstractSegment
 
 MINIMAL_SEGMENT_MASS = 0.001  # Need to be this value as minimum mass of opensim segment is 0.001
 
 
-class OsimSegment:
+class OsimSegment(AbstractSegment):  # Inherits from AbstractSegment
     """
     An interface to simplify the access to a segment of an Opensim model
     """
-
     def __init__(self, segment, index, model_path=None, mesh_path=None):
         self.segment = segment
         self._index: int = index
@@ -139,17 +138,18 @@ class OsimSegment:
         return self.__mesh_rt
 
 
-class OsimModelNoMesh:
+class OsimModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMesh
     """
     A class to handle an Opensim model and its transformations
     """
 
     def __init__(self, path: str, options=None, loaded_model=None):
-        self.path = path if loaded_model is None else loaded_model.getInputFileName()
-        self.model = loaded_model if loaded_model is not None else osim.Model(path)
+        super().__init__(path, options)
+        if loaded_model:
+            self.path = loaded_model.getInputFileName()
+        self.model = loaded_model if loaded_model is not None else osim.Model(self.path)
         self.state = self.model.initSystem()
         self.coordinate_set = self.model.getCoordinateSet()
-        self.options: DisplayModelOptions = options if options is not None else DisplayModelOptions()
         self.previous_q = None
         self.xp_coordinate_names = None
         self.state_variables = self.model.getStateVariableValues(self.state).to_numpy()
@@ -208,12 +208,12 @@ class OsimModelNoMesh:
         self._update_kinematics(q)
         transform = self.model.getBodySet().get(segment_index).getTransformInGround(self.state)
         T = transform.T().to_numpy()
-        R = transform.R()
+        R_ = transform.R()
         R = np.array(
             [
-                [R.get(0, 0), R.get(0, 1), R.get(0, 2)],
-                [R.get(1, 0), R.get(1, 1), R.get(1, 2)],
-                [R.get(2, 0), R.get(2, 1), R.get(2, 2)],
+                [R_.get(0, 0), R_.get(0, 1), R_.get(0, 2)],
+                [R_.get(1, 0), R_.get(1, 1), R_.get(1, 2)],
+                [R_.get(2, 0), R_.get(2, 1), R_.get(2, 2)],
             ]
         )
         return np.block([[R, T.reshape(3, 1)], [np.zeros(3), 1]])
@@ -242,46 +242,21 @@ class OsimModelNoMesh:
 
     @cached_property
     def nb_ligaments(self) -> int:
-        """
-        Returns the number of ligaments
-        """
         return 0
 
     @cached_property
     def ligament_names(self) -> tuple[str, ...]:
-        """
-        Returns the names of the ligaments
-        """
-        # return tuple([s.toString() for s in self.model.ligamentNames()])
-        raise NotImplementedError("Ligament names are not implemented yet")
+        raise NotImplementedError("Ligaments are not implemented in the OpenSim interface.")
 
     def ligament_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
-        """
-        Returns the position of the ligaments in the global reference frame
-        """
-        # ligaments = []
-        # self.model.updateLigaments(q, True)
-        # for ligament_idx in range(self.nb_ligaments):
-        #     ligament = self.model.ligament(ligament_idx)
-        #     ligament_strip = []
-        #     for pts in ligament.position().pointsInGlobal():
-        #         ligament_strip.append(pts.to_array().tolist())
-        #     ligaments.append(ligament_strip)
-        # return ligaments
-        raise NotImplementedError("Ligament strips are not implemented yet")
+        raise NotImplementedError("Ligaments are not implemented in the OpenSim interface.")
 
     @cached_property
     def nb_muscles(self) -> int:
-        """
-        Returns the number of ligaments
-        """
         return self.model.getForceSet().getMuscles().getSize()
 
     @cached_property
     def muscle_names(self) -> tuple[str, ...]:
-        """
-        Returns the names of the ligaments
-        """
         return tuple([s.getName() for s in self.model.get_ForceSet().getMuscles()])
 
     def muscle_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
@@ -332,36 +307,21 @@ class OsimModelNoMesh:
         return False
 
     def soft_contacts(self, q: np.ndarray) -> None:
-        """
-        Returns the position of the soft contacts spheres in the global reference frame
-        """
         return None
 
     def rigid_contacts(self, q: np.ndarray) -> None:
-        """
-        Returns the position of the rigid contacts in the global reference frame
-        """
         return None
 
     @cached_property
     def soft_contacts_names(self) -> None:
-        """
-        Returns the names of the soft contacts
-        """
         return None
 
     @cached_property
     def rigid_contacts_names(self) -> None:
-        """
-        Returns the names of the soft contacts
-        """
         return None
 
     @cached_property
     def soft_contact_radii(self) -> None:
-        """
-        Returns the radii of the soft contacts
-        """
         return None
 
     def _update_kinematics(self, q: np.ndarray) -> None:
@@ -371,14 +331,13 @@ class OsimModelNoMesh:
         if self.previous_q is not None and np.allclose(q, self.previous_q):
             return
         self.previous_q = q.copy()
-        map_q = np.array([[q, 0] for q in self.previous_q]).flatten()
+        map_q = np.array([[q_val, 0] for q_val in self.previous_q]).flatten()
         self.state_variables[:self.nb_q * 2] = map_q
         self.model.setStateVariableValues(self.state, osim.Vector(self.state_variables))
         self.model.realizePosition(self.state)
 
 
-
-class OsimModel(OsimModelNoMesh):
+class OsimModel(OsimModelNoMesh, AbstractModel):  # Inherits from OsimModelNoMesh and AbstractModel
     """
     This class extends the OsimModelNoMesh class and overrides the segments property.
     It filters the segments to only include those that have a mesh.
@@ -402,4 +361,6 @@ class OsimModel(OsimModelNoMesh):
         Returns a list of homogeneous matrices of the mesh in the global reference frame
         """
         segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)
+        # In this implementation, mesh_index from kwargs is ignored.
+        # mesh_index = kwargs.get("mesh_index") 
         return segment_rt @ np.eye(4)  # self.segments[segment_index].mesh_rt[mesh_index]
