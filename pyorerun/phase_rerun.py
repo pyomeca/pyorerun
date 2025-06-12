@@ -58,7 +58,6 @@ class PhaseRerun:
         model: AbstractModel,
         q: np.ndarray,
         tracked_markers: PyoMarkers = None,
-        show_tracked_marker_labels: bool = True,
         display_q: bool = False,
     ) -> None:
         """
@@ -72,8 +71,6 @@ class PhaseRerun:
             The generalized coordinates of the model.
         tracked_markers: PyoMarkers
             The markers to display, and sets a link between the model markers and the tracked markers.
-        show_tracked_marker_labels: bool
-            Whether to display the tracked markers labels in the GUI.
         display_q: bool
             Whether to display the generalized coordinates q in charts.
         """
@@ -91,7 +88,7 @@ class PhaseRerun:
             if isinstance(tracked_markers, np.ndarray):
                 tracked_markers = PyoMarkers(tracked_markers, channels=model.marker_names)
             self.models.add_animated_model(model, q, tracked_markers.to_numpy()[:3, :, :])
-            self.__add_tracked_markers(model, tracked_markers, show_tracked_marker_labels)
+            self.__add_tracked_markers(model, tracked_markers)
 
         if display_q:
             self.add_q(
@@ -106,7 +103,7 @@ class PhaseRerun:
             )
 
     def __add_tracked_markers(
-        self, model: AbstractModel, tracked_markers: PyoMarkers, show_tracked_marker_labels: bool
+        self, model: AbstractModel, tracked_markers: PyoMarkers,
     ) -> None:
         """Add the tracked markers to the phase."""
 
@@ -128,7 +125,7 @@ class PhaseRerun:
                 reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[:, model.marker_names.index(marker), :]
             tracked_markers = PyoMarkers(reordered_markers, channels=list(model.marker_names))
 
-        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers, show_tracked_marker_labels)
+        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers, model.options.show_experimental_marker_labels)
 
     def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
         """
