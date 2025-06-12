@@ -103,7 +103,9 @@ class PhaseRerun:
             )
 
     def __add_tracked_markers(
-        self, model: AbstractModel, tracked_markers: PyoMarkers,
+        self,
+        model: AbstractModel,
+        tracked_markers: PyoMarkers,
     ) -> None:
         """Add the tracked markers to the phase."""
 
@@ -122,10 +124,14 @@ class PhaseRerun:
             reordered_markers = np.zeros_like(tracked_markers.to_numpy())
             for marker in model.marker_names:
                 marker_index = tracked_marker_names.index(marker)
-                reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[:, model.marker_names.index(marker), :]
+                reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[
+                    :, model.marker_names.index(marker), :
+                ]
             tracked_markers = PyoMarkers(reordered_markers, channels=list(model.marker_names))
 
-        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers, model.options.show_experimental_marker_labels)
+        self.add_xp_markers(
+            f"{model.name}_tracked_markers", tracked_markers, model.options.show_experimental_marker_labels
+        )
 
     def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
         """
