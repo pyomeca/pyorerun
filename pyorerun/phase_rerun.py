@@ -105,7 +105,9 @@ class PhaseRerun:
                 Gravity(name=f"{self.name}/{self.models.nb_models}_{model.name}", vector=model.gravity)
             )
 
-    def __add_tracked_markers(self, model: AbstractModel, tracked_markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
+    def __add_tracked_markers(
+        self, model: AbstractModel, tracked_markers: PyoMarkers, show_tracked_marker_labels: bool
+    ) -> None:
         """Add the tracked markers to the phase."""
         shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
         names_are_ordered_differently = model.marker_names != tuple(tracked_markers.channel.data.tolist())
@@ -137,7 +139,9 @@ class PhaseRerun:
                 f"They must have the same length."
                 f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
-        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers, show_labels=show_tracked_marker_labels))
+        self.xp_data.add_data(
+            MarkersXp(name=f"{self.name}/{name}", markers=markers, show_labels=show_tracked_marker_labels)
+        )
 
     def add_q(
         self,

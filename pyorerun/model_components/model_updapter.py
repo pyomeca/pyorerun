@@ -94,7 +94,7 @@ class ModelUpdater(Components):
                     markers_names=self.model.segment_names_with_mass,
                     color=np.array(self.model.options.centers_of_mass_color),
                     radius=self.model.options.centers_of_mass_radius,
-                    show_labels= self.model.options.show_center_of_mass_labels,
+                    show_labels=self.model.options.show_center_of_mass_labels,
                 ),
                 callable_markers=self.model.centers_of_mass,
             )
@@ -195,7 +195,7 @@ class ModelUpdater(Components):
                 strip_names=self.model.muscle_names,
                 color=np.array(self.model.options.muscles_color),
                 radius=self.model.options.muscles_radius,
-                show_labels= self.model.options.show_muscle_labels,
+                show_labels=self.model.options.show_muscle_labels,
             ),
             update_callable=self.model.muscle_strips,
         )
