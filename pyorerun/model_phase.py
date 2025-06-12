@@ -49,8 +49,9 @@ class ModelRerunPhase:
 
     def to_rerun_links(self, frame: int):
         """Update the links between markers and models"""
-        for i, rr_link in enumerate(self._rerun_links_without_none):
-            rr_link.to_rerun(self.q[i][:, frame], self.tracked_markers[i][:, :, frame])
+        for i, rr_link in enumerate(self.rerun_links):
+            if self.tracked_markers[i] is not None:
+                rr_link.to_rerun(self.q[i][:, frame], self.tracked_markers[i][:, :, frame])
 
     @property
     def nb_models(self):
