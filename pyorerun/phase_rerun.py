@@ -109,14 +109,24 @@ class PhaseRerun:
         self, model: AbstractModel, tracked_markers: PyoMarkers, show_tracked_marker_labels: bool
     ) -> None:
         """Add the tracked markers to the phase."""
+
         shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
-        names_are_ordered_differently = model.marker_names != tuple(tracked_markers.channel.data.tolist())
-        if shape_of_markers_is_not_consistent or names_are_ordered_differently:
+        if shape_of_markers_is_not_consistent:
             raise ValueError(
                 f"The markers of the model and the tracked markers are inconsistent. "
                 f"They must have the same names and shape.\n"
                 f"Current markers are {model.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
             )
+
+        tracked_marker_names = tuple(tracked_markers.channel.data.tolist())
+        names_are_ordered_differently = model.marker_names != tracked_marker_names
+        if names_are_ordered_differently:
+            # Replace the markers in the right order based on the names provided in PyoMarkers
+            reordered_markers = np.zeros_like(tracked_markers.to_numpy())
+            for marker in model.marker_names:
+                marker_index = tracked_marker_names.index(marker)
+                reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[:, model.marker_names.index(marker), :]
+            tracked_markers = PyoMarkers(reordered_markers, channels=list(model.marker_names))
 
         self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers, show_tracked_marker_labels)
 
