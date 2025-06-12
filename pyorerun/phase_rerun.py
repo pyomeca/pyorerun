@@ -58,6 +58,7 @@ class PhaseRerun:
         model: AbstractModel,
         q: np.ndarray,
         tracked_markers: PyoMarkers = None,
+        show_tracked_marker_labels: bool = True,
         display_q: bool = False,
     ) -> None:
         """
@@ -71,6 +72,8 @@ class PhaseRerun:
             The generalized coordinates of the model.
         tracked_markers: PyoMarkers
             The markers to display, and sets a link between the model markers and the tracked markers.
+        show_tracked_marker_labels: bool
+            Whether to display the tracked markers labels in the GUI.
         display_q: bool
             Whether to display the generalized coordinates q in charts.
         """
@@ -88,7 +91,7 @@ class PhaseRerun:
             if isinstance(tracked_markers, np.ndarray):
                 tracked_markers = PyoMarkers(tracked_markers, channels=model.marker_names)
             self.models.add_animated_model(model, q, tracked_markers.to_numpy()[:3, :, :])
-            self.__add_tracked_markers(model, tracked_markers)
+            self.__add_tracked_markers(model, tracked_markers, show_tracked_marker_labels)
 
         if display_q:
             self.add_q(
@@ -102,7 +105,7 @@ class PhaseRerun:
                 Gravity(name=f"{self.name}/{self.models.nb_models}_{model.name}", vector=model.gravity)
             )
 
-    def __add_tracked_markers(self, model: AbstractModel, tracked_markers: PyoMarkers) -> None:
+    def __add_tracked_markers(self, model: AbstractModel, tracked_markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
         """Add the tracked markers to the phase."""
         shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
         names_are_ordered_differently = model.marker_names != tuple(tracked_markers.channel.data.tolist())
@@ -113,9 +116,9 @@ class PhaseRerun:
                 f"Current markers are {model.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
             )
 
-        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers)
+        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers, show_tracked_marker_labels)
 
-    def add_xp_markers(self, name, markers: PyoMarkers) -> None:
+    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
         """
         Add an animated model to the phase.
 
@@ -125,14 +128,16 @@ class PhaseRerun:
             The name of the markers set.
         markers: PyoMarkers
             The experimental data to display.
+        show_tracked_marker_labels: bool
+            Whether to display the tracked markers labels in the GUI.
         """
         if markers.shape[2] != self.t_span.shape[0]:
             raise ValueError(
-                f"The shapes of q and tspan are inconsistent. "
+                f"The shapes of markers and tspan are inconsistent. "
                 f"They must have the same length."
-                f"Current shapes are q: {markers.shape[1]} and tspan: {self.t_span.shape}."
+                f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
-        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
+        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers, show_labels=show_tracked_marker_labels))
 
     def add_q(
         self,
