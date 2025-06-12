@@ -39,7 +39,7 @@ class DisplayModelOptions:
 
     @property
     def markers_color(self) -> tuple[int, int, int]:
-        return self.markers_color
+        return self._markers_color
 
     @markers_color.setter
     def markers_color(self, value: tuple[int, int, int]):
