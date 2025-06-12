@@ -133,7 +133,7 @@ class PhaseRerun:
             f"{model.name}_tracked_markers", tracked_markers, model.options.show_experimental_marker_labels
         )
 
-    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool) -> None:
+    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool = True) -> None:
         """
         Add an animated model to the phase.
 
