@@ -98,6 +98,7 @@ class MarkersXp(Markers, ExperimentalData):
                 rr.components.ColorBatch([self.markers_properties.color for _ in range(self.nb_frames)]),
                 rr.components.RadiusBatch([self.markers_properties.radius for _ in range(self.nb_frames)]),
                 rr.components.TextBatch(markers_names).partition(partition),
+                rr.components.ShowLabelsBatch([self.markers_properties.show_labels for _ in range(self.nb_frames)]),
             ]
         }
 

@@ -57,7 +57,7 @@ class MarkersUpdater(Component):
                 rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames)]),
                 rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames)]),
                 rr.components.TextBatch(markers_names).partition(partition),
-                rr.components.ShowLabelsBatch([False for _ in range(nb_frames)]),
+                rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames)]),
             ]
         }
 
