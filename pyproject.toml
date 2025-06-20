@@ -10,7 +10,7 @@ name = "pyorerun"
 version = " 1.2.3"
 authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
-description = "A Python package to rerun C3D files and pyomeca simulations."
+description = "A Python package to rerun C3D files and biomechanical simulations."
 license = {file = "LICENSE.md"}
 readme = "README.md"
 requires-python = ">=3.11"
