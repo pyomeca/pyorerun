@@ -1,7 +1,7 @@
 import numpy as np
 import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 import rerun.blueprint as rrb
-from pyomeca import Markers as PyoMarkers
+from .pyomarkers import Pyomarkers as PyoMarkers
 
 from .model_interfaces import AbstractModel
 from .phase_rerun import PhaseRerun

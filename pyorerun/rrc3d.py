@@ -5,7 +5,7 @@ import ezc3d
 import imageio
 import numpy as np
 import rerun as rr
-from pyomeca import Markers as PyoMarkers
+from .pyomarkers import Pyomarkers as PyoMarkers
 
 from .multi_frame_rate_phase_rerun import MultiFrameRatePhaseRerun
 from .phase_rerun import PhaseRerun

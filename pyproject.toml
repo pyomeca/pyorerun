@@ -20,18 +20,17 @@ classifiers = [
          "Operating System :: OS Independent",
      ]
 dependencies = [
-#    "ezc3d", # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
+    "ezc3d",  # Now needed for C3D file loading in our custom Pyomarkers
     "numpy==1.26.4",
     "rerun-sdk==0.21.0",
     "trimesh",
-    "pyomeca",
     "tk",
     "imageio",
     "imageio-ffmpeg",
 #    "opensim", # Not yet available on pypi, use `conda install opensim-org::opensim`
 #    "biorbd" # Not yet available on pypi, use `conda install -c conda-forge biorbd`
     ]
-keywords = ["c3d", "motion capture", "rerun", "biorbd", "pyomeca"]
+keywords = ["c3d", "motion capture", "rerun", "biorbd", "markers"]
 
 [project.urls]
 homepage = "http://github.com/Ipuch/pyorerun"
