@@ -1,5 +1,5 @@
 import numpy as np
-from pyomeca import Markers as PyoMarkers
+from pyorerun.pyomarkers import Pyomarkers as PyoMarkers
 
 from pyorerun import BiorbdModelNoMesh, PhaseRerun
 

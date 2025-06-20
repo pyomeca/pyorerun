@@ -30,9 +30,10 @@ class Pyomarkers:
     
     def __init__(
         self,
-        data: np.ndarray,
+        data: np.ndarray = None,
         time: Optional[np.ndarray] = None,
         marker_names: Optional[List[str]] = None,
+        channels: Optional[List[str]] = None,  # Alternative name for marker_names for compatibility
         show_labels: bool = True,
         attrs: Optional[dict] = None
     ):
@@ -47,11 +48,16 @@ class Pyomarkers:
             Time vector. If None, creates a simple index-based time vector
         marker_names : list of str, optional
             Marker names. If None, creates default names
+        channels : list of str, optional
+            Alternative name for marker_names for compatibility with original API
         show_labels : bool, default True
             Whether to show marker labels
         attrs : dict, optional
             Metadata attributes
         """
+        if data is None:
+            raise ValueError("Data must be provided")
+            
         # Handle data shape - ensure we have 4D (homogeneous coordinates)
         if data.ndim != 3:
             raise ValueError("Data must be 3D array with shape (3 or 4, n_markers, n_frames)")
@@ -71,7 +77,10 @@ class Pyomarkers:
         else:
             self.time = np.array(time)
             
-        # Set up marker names
+        # Set up marker names - handle both marker_names and channels parameters
+        if channels is not None:
+            marker_names = channels  # Use channels if provided (for compatibility)
+            
         if marker_names is None:
             self.marker_names = [f"marker_{i}" for i in range(self.data.shape[1])]
         else:

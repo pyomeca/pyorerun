@@ -6,7 +6,7 @@ windows. It also shows how to add experimental markers to the animation.
 
 import numpy as np
 from numpy import random
-from pyomeca import Markers
+from pyorerun.pyomarkers import Pyomarkers as Markers
 
 from pyorerun import BiorbdModel, MultiPhaseRerun
 
