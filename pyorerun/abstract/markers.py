@@ -40,7 +40,7 @@ class MarkerProperties:
         markers_names: list[str, ...] | tuple[str, ...],
         radius: float | tuple[float, ...],
         color: np.ndarray,
-        show_labels: bool = True,
+        show_labels: bool | list[bool] = True,
     ):
         """
         Constructs all the necessary attributes for the MarkerProperties object.
@@ -96,3 +96,14 @@ class MarkerProperties:
             A numpy array with the color of each marker.
         """
         return np.tile(self.color, (self.nb_markers, 1))
+
+    def show_labels_to_rerun(self) -> list[bool]:
+        """
+        Returns a list of booleans indicating if the label of each marker should be displayed.
+        """
+        if isinstance(self.show_labels, bool):
+            return [self.show_labels] * self.nb_markers
+        elif isinstance(self.show_labels, list):
+            return self.show_labels
+        else:
+            raise ValueError("The show_labels attribute must be a boolean or a list of booleans.")

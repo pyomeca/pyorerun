@@ -60,7 +60,7 @@ class MarkersXp(Markers, ExperimentalData):
                 radii=self.markers_properties.radius_to_rerun(),
                 colors=self.markers_properties.color_to_rerun(),
                 labels=self.markers_names,
-                show_labels=self.show_labels,
+                show_labels=self.markers_properties.show_labels_to_rerun(),
             ),
         )
 
@@ -83,7 +83,7 @@ class MarkersXp(Markers, ExperimentalData):
             radii=self.markers_properties.radius_to_rerun(),
             colors=self.markers_properties.color_to_rerun(),
             labels=self.markers_names,
-            show_labels=self.show_labels,
+            show_labels=self.markers_properties.show_labels_to_rerun(),
         )
 
     def to_chunk(self, **kwargs) -> dict[str, list]:
