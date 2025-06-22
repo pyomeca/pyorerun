@@ -1095,34 +1095,39 @@ gravity	0 -9.8066499999999994 0
 			0		0		0		1
 	endsegment
 
+    segment	torso_geom_2
+        parent	torso_reset_axis
+        RTinMatrix	1
+        RT
+            1.000000	0.000000	0.000000	0.000000
+            0.000000	1.000000	0.000000	0.000000
+            0.000000	0.000000	1.000000	0.000000
+            0.000000	0.000000	0.000000	1.000000
+        meshfile	Geometry_cleaned/hat_ribs_scap.vtp
+        meshcolor	1.0	1.0	1.0
+        meshscale	1.0409412995025165	1.0409412995025165	1.0409412995025165
+        meshrt	0.0	0.0	0.0	xyz	0.0	0.0	0.0
+    endsegment
 
-    //True segment where are applied inertial values.
-	// Segment
-	segment torso
-		parent torso_reset_axis 
-		RTinMatrix	0
-		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
-		mass	20.35317860731281
-		inertia
-			0.65031854265495548	0	0
-			0	0.65031854265495548	0
-			0	0	0.87633439188325069
-		com	0.0031228238985075494 0.25607155967761902 0
-	endsegment
-	// Segment
-	segment torso_geom_2
-		parent torso 
-		RTinMatrix	1
-		RT
-			1		0		0		0
-			0		1		0		0
-			0		0		1		0
-			0		0		0		1
-		meshfile	Geometry_cleaned/hat_ribs_scap.vtp
-		meshcolor	1 1 1
-		meshscale	1.0409412995025165 1.0409412995025165 1.0409412995025165
-	endsegment
-
+    segment	torso
+        parent	torso_geom_2
+        RTinMatrix	1
+        RT
+            1.000000	0.000000	0.000000	-0.000000
+            0.000000	1.000000	0.000000	-0.000000
+            0.000000	0.000000	1.000000	-0.000000
+            0.000000	0.000000	0.000000	1.000000
+        mass	20.35317860731281
+        CenterOfMass	0.003123	0.256072	0.000000
+        inertia
+            0.650319	0.000000	0.000000
+            0.000000	0.650319	0.000000
+            0.000000	0.000000	0.876334
+        meshfile	Geometry_cleaned/hat_spine.vtp
+        meshcolor	1.0	1.0	1.0
+        meshscale	1.0409412995025165	1.0409412995025165	1.0409412995025165
+        meshrt	0.0	0.0	0.0	xyz	0.0	0.0	0.0
+    endsegment
 
 	// Markers
 
@@ -1157,118 +1162,127 @@ gravity	0 -9.8066499999999994 0
 	endmarker
 
 // Information about head_and_neck segment
-	// Segment
-	segment head_and_neck_parent_offset
-		parent torso 
-		RTinMatrix	0
-		RT	0 0 0	xyz	-0.010409412995025165 0.46321887827861985 -0
-	endsegment
+segment	head_and_neck_parent_offset
+	parent	torso
+	RTinMatrix	1
+	RT
+		1.000000	0.000000	0.000000	-0.010409
+		0.000000	1.000000	0.000000	0.463219
+		0.000000	0.000000	1.000000	-0.000000
+		0.000000	0.000000	0.000000	1.000000
+endsegment
 
-	// Segments to define transformation axis.
-	// Segment
-	segment head_and_neck_translation
-		parent head_and_neck_parent_offset 
-		RTinMatrix	1
-		RT
-			1.0		0.0		0.0		0
-			0.0		1.0		0.0		0
-			0.0		0.0		1.0		0
-			0		0		0		1
-	endsegment
+segment	head_and_neck_translation
+	parent	head_and_neck_parent_offset
+	RTinMatrix	1
+	RT
+		1.000000	0.000000	0.000000	0.000000
+		0.000000	1.000000	0.000000	0.000000
+		0.000000	0.000000	1.000000	0.000000
+		0.000000	0.000000	0.000000	1.000000
+endsegment
 
-// Rotation transform was initially an orthogonal basis
-	// Segment
-	segment head_and_neck_rotation_transform
-		parent head_and_neck_translation 
-		RTinMatrix	1
-		RT
-			0.0		1.0		0.0		0
-			0.0		0.0		1.0		0
-			1.0		0.0		0.0		0
-			0		0		0		1
-		rotations xyz
-		ranges
-				-0.8726646259971648 0.7853981633974483
-				-0.59999999999999998 0.59999999999999998
-				-1.2217 1.2217
-	endsegment
+segment	head_and_neck_rotation_transform
+	parent	head_and_neck_translation
+	RTinMatrix	1
+	RT
+		0.000000	1.000000	0.000000	0.000000
+		0.000000	0.000000	1.000000	0.000000
+		1.000000	0.000000	0.000000	0.000000
+		0.000000	0.000000	0.000000	1.000000
+	rotations	xyz
+	rangesQ
+		-1.745330	1.047198
+		-0.600000	0.600000
+		-1.221700	1.221700
 
-
-    // Segment to cancel transformation bases effect.
-	// Segment
-	segment head_and_neck_reset_axis
-		parent head_and_neck_rotation_transform 
-		RTinMatrix	1
-		RT
-			0.0		0.0		1.0		0
-			1.0		0.0		0.0		0
-			0.0		1.0		0.0		0
-			0		0		0		1
-	endsegment
+endsegment
 
 
-    //True segment where are applied inertial values.
-	// Segment
-	segment head_and_neck
-		parent head_and_neck_reset_axis 
-		RTinMatrix	0
-		RT	-0.0	 0.0	 -0.0	xyz	-0.0	 -0.0	 -0.0
-		mass	4.2876396778956565
-		inertia
-			0.02579270165063547	0.00021739925335685653	0.00024155461915025098
-			0.00021739925335685653	0.016774666380557999	0.00010735824932209392
-			0.00024155461915025098	0.00010735824932209392	0.025888823281329437
-		com	-0.0061523225471619564 0.15278267658785524 0
-		meshfile	Geometry_cleaned/jaw.vtp
-		meshcolor	1 1 1
-		meshscale	1.0253870911936593 1.0253870911936593 1.0253870911936593
-	endsegment
-	// Segment
-	segment head_and_neck_geom_2
-		parent head_and_neck 
-		RTinMatrix	1
-		RT
-			1		0		0		0.0
-			0		1		0		0.06152322547161956
-			0		0		1		0.0
-			0		0		0		1
-		meshfile	Geometry_cleaned/skull.vtp
-		meshcolor	1 1 1
-		meshscale	1.0253870911936593 1.0253870911936593 1.0253870911936593
-	endsegment
+
+segment	head_and_neck_reset_axis
+	parent	head_and_neck_rotation_transform
+	RTinMatrix	1
+	RT
+		0.000000	0.000000	1.000000	0.000000
+		1.000000	0.000000	0.000000	0.000000
+		0.000000	1.000000	0.000000	0.000000
+		0.000000	0.000000	0.000000	1.000000
+endsegment
 
 
-	// Markers
 
-	marker	SEL
-		parent	head_and_neck
-		position	0.13831270245964256 0.21910226147653322 0.00016369234742580341
-	endmarker
+segment	head_and_neck_geom_2
+	parent	head_and_neck_reset_axis
+	RTinMatrix	1
+	RT
+		1.000000	0.000000	0.000000	0.000000
+		0.000000	1.000000	0.000000	0.061523
+		0.000000	0.000000	1.000000	0.000000
+		0.000000	0.000000	0.000000	1.000000
+	meshfile	Geometry_cleaned/skull.vtp
+	meshcolor	1.0	1.0	1.0
+	meshscale	1.0253870911936593	1.0253870911936593	1.0253870911936593
+	meshrt	0.0	0.0	0.0	xyz	0.0	0.0	0.0
+endsegment
 
-	marker	OCC
-		parent	head_and_neck
-		position	-0.083968105395422321 0.14417036072510392 -0.0090433366871778276
-	endmarker
 
-	marker	RTEMP
-		parent	head_and_neck
-		position	0.027747995899044309 0.19634608727603675 0.090761784172013416
-	endmarker
 
-	marker	LTEMP
-		parent	head_and_neck
-		position	0.021666372797748523 0.19572389074870289 -0.089929196145861756
-	endmarker
+segment	head_and_neck
+	parent	head_and_neck_geom_2
+	RTinMatrix	1
+	RT
+		1.000000	0.000000	0.000000	-0.000000
+		0.000000	1.000000	0.000000	-0.000000
+		0.000000	0.000000	1.000000	-0.000000
+		0.000000	0.000000	0.000000	1.000000
+	mass	4.2876396778956565
+	CenterOfMass	-0.006152	0.152783	0.000000
+	inertia
+		0.025793	0.000217	0.000242
+		0.000217	0.016775	0.000107
+		0.000242	0.000107	0.025889
+	meshfile	Geometry_cleaned/jaw.vtp
+	meshcolor	1.0	1.0	1.0
+	meshscale	1.0253870911936593	1.0253870911936593	1.0253870911936593
+	meshrt	0.0	0.0	0.0	xyz	0.0	0.0	0.0
+endsegment
 
-	marker	HV
-		parent	head_and_neck
-		position	0.0022667849603161816 0.29702735383832302 0.0090627595273590766
-	endmarker
+marker	SEL
+	parent	head_and_neck
+	position	0.13831270	0.21910226	0.00016369
+	technical	1
+	anatomical	0
+endmarker
+marker	OCC
+	parent	head_and_neck
+	position	-0.08396811	0.14417036	-0.00904334
+	technical	1
+	anatomical	0
+endmarker
+marker	RTEMP
+	parent	head_and_neck
+	position	0.02774800	0.19634609	0.09076178
+	technical	1
+	anatomical	0
+endmarker
+marker	LTEMP
+	parent	head_and_neck
+	position	0.02166637	0.19572389	-0.08992920
+	technical	1
+	anatomical	0
+endmarker
+marker	HV
+	parent	head_and_neck
+	position	0.00226678	0.29702735	0.00906276
+	technical	1
+	anatomical	0
+endmarker
 
 // Information about humerus_r segment
 	// Segment
 	segment humerus_r_parent_offset
-		parent torso 
+		parent torso
 		RTinMatrix	0
 		RT	0 0 0	xyz	0.0032841697999304391 0.38670969276518485 0.17696002091542781
 	endsegment
