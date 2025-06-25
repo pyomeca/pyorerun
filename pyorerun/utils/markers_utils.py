@@ -1,10 +1,10 @@
 import numpy as np
-from pyomeca import Markers as PyoMarkers
 
 from ..model_interfaces import AbstractModel
+from ..pyomarkers import Pyomarkers
 
 
-def check_and_adjust_markers(model: AbstractModel, tracked_markers: PyoMarkers) -> PyoMarkers:
+def check_and_adjust_markers(model: AbstractModel, tracked_markers: Pyomarkers) -> Pyomarkers:
     """
     Check if the markers of the model and the tracked markers are consistent.
     Plus, if the names are ordered differently, reorder the tracked markers accordingly.
@@ -36,6 +36,6 @@ def check_and_adjust_markers(model: AbstractModel, tracked_markers: PyoMarkers) 
         for marker in model.marker_names:
             marker_index = tracked_marker_names.index(marker)
             reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[:, model.marker_names.index(marker), :]
-        tracked_markers = PyoMarkers(reordered_markers, channels=list(model.marker_names))
+        tracked_markers = Pyomarkers(reordered_markers, channels=list(model.marker_names))
 
     return tracked_markers
