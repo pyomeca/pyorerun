@@ -9,21 +9,21 @@ class DisplayModelOptions:
 
     _markers_color: tuple[int, int, int] = (0, 0, 255)
     _markers_radius: float = 0.01
-    _show_marker_labels: bool = True
+    _show_marker_labels: bool = False
 
-    _show_experimental_marker_labels: bool = True
+    _show_experimental_marker_labels: bool = False
 
     _centers_of_mass_color: tuple[int, int, int] = (0, 0, 0)
     _centers_of_mass_radius: float = 0.01
-    _show_center_of_mass_labels: bool = True
+    _show_center_of_mass_labels: bool = False
 
     _ligaments_color: tuple[int, int, int] = (255, 255, 0)
     _ligaments_radius: float = 0.01
-    _show_ligament_labels: bool = True
+    _show_ligament_labels: bool = False
 
     _muscles_color: tuple[int, int, int] = (255, 0, 0)
     _muscles_radius: float = 0.004
-    _show_muscle_labels: bool = True
+    _show_muscle_labels: bool = False
 
     # NOTE : mesh_opacity doesnt exist in rerun yet
     # segment_frame_size: float = 0.1 not implemented yet
@@ -33,7 +33,7 @@ class DisplayModelOptions:
 
     _soft_contacts_color: tuple[int, int, int] = (0, 255, 255)
     _rigid_contacts_color: tuple[int, int, int] = (255, 0, 255)
-    _show_contact_labels: bool = True
+    _show_contact_labels: bool = False
 
     _mesh_path: str = ""
 
