@@ -18,15 +18,17 @@ class MarkersXp(Markers, ExperimentalData):
         np.array([103, 56, 182]),
     ]
 
-    def __init__(self, name, markers: PyoMarkers):
+    def __init__(self, name, markers: PyoMarkers, show_labels: bool = True):
 
         self.name = name + "/markers"
         self.markers = markers
         self.markers_numpy = markers.to_numpy()
+        self.show_labels = show_labels
         self.markers_properties = MarkerProperties(
             markers_names=markers.channel.values.tolist(),
             radius=0.01,
             color=MarkersXp._MARKERS_COLORS[MarkersXp._counter],
+            show_labels=self.show_labels,
         )
 
         MarkersXp._counter = (MarkersXp._counter + 1) % len(MarkersXp._MARKERS_COLORS)
@@ -58,6 +60,7 @@ class MarkersXp(Markers, ExperimentalData):
                 radii=self.markers_properties.radius_to_rerun(),
                 colors=self.markers_properties.color_to_rerun(),
                 labels=self.markers_names,
+                show_labels=self.markers_properties.show_labels_to_rerun(),
             ),
         )
 
@@ -80,6 +83,7 @@ class MarkersXp(Markers, ExperimentalData):
             radii=self.markers_properties.radius_to_rerun(),
             colors=self.markers_properties.color_to_rerun(),
             labels=self.markers_names,
+            show_labels=self.markers_properties.show_labels_to_rerun(),
         )
 
     def to_chunk(self, **kwargs) -> dict[str, list]:
@@ -94,6 +98,7 @@ class MarkersXp(Markers, ExperimentalData):
                 rr.components.ColorBatch([self.markers_properties.color for _ in range(self.nb_frames)]),
                 rr.components.RadiusBatch([self.markers_properties.radius for _ in range(self.nb_frames)]),
                 rr.components.TextBatch(markers_names).partition(partition),
+                rr.components.ShowLabelsBatch([self.markers_properties.show_labels for _ in range(self.nb_frames)]),
             ]
         }
 

@@ -23,6 +23,13 @@ def main():
     biorbd_model_path = "models/walker.bioMod"
     model = BiorbdModel(biorbd_model_path)
     model.options.transparent_mesh = False
+    model.options.show_marker_labels = False
+    model.options.show_contact_labels = False
+    model.options.show_center_of_mass_labels = False
+    model.options.show_muscle_labels = False
+    model.options.show_ligament_labels = False
+    model.options.show_experimental_marker_labels = False
+
     viz = PhaseRerun(t_span)
 
     # Add experimental markers
@@ -43,6 +50,9 @@ def main():
     )
 
     # Add the kinematics
+    viz.add_animated_model(
+        model, q
+    )  # This line is just to test the model without markers (but is not necessary for the example to work)
     viz.add_animated_model(model, q, tracked_markers=pyomarkers)
 
     # Play

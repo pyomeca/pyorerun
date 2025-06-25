@@ -30,7 +30,7 @@ class LineStripUpdater(LineStrips):
             radii=self.properties.radius_to_rerun(),
             colors=self.properties.color_to_rerun(),
             labels=self.properties.strip_names,
-            show_labels=False,
+            show_labels=self.properties.show_labels_to_rerun(),
         )
 
     def compute_strips(self, q: np.ndarray) -> list[list[list[list[float]]]]:

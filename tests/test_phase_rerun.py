@@ -81,7 +81,7 @@ def test_add_xp_markers():
 
     # Test shape mismatch error
     wrong_markers = PyoMarkers(data=np.random.rand(3, 10, 40))
-    with pytest.raises(ValueError, match="The shapes of q and tspan are inconsistent"):
+    with pytest.raises(ValueError, match="The shapes of markers and tspan are inconsistent"):
         phase_rerun.add_xp_markers("wrong_markers", wrong_markers)
 
 
