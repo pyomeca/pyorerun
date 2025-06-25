@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from pyomeca import Markers as PyoMarkers
+from pyorerun.pyomarkers import Pyomarkers as PyoMarkers
 
 from pyorerun.rrc3d import (
     max_xy_coordinate_span_by_markers,

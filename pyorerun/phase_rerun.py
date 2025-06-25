@@ -1,6 +1,6 @@
 import numpy as np
 import rerun as rr
-from pyomeca import Markers as PyoMarkers
+from .pyomarkers import Pyomarkers as PyoMarkers
 
 from .abstract.q import QProperties
 from .model_interfaces import AbstractModel

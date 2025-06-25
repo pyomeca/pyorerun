@@ -5,10 +5,10 @@ import ezc3d
 import imageio
 import numpy as np
 import rerun as rr
-from pyomeca import Markers as PyoMarkers
 
 from .multi_frame_rate_phase_rerun import MultiFrameRatePhaseRerun
 from .phase_rerun import PhaseRerun
+from .pyomarkers import Pyomarkers as PyoMarkers
 
 
 def rrc3d(
@@ -56,7 +56,7 @@ def rrc3d(
     pyomarkers = PyoMarkers.from_c3d(c3d_file)
     units = pyomarkers.units
     pyomarkers = adjust_position_unit_to_meters(pyomarkers, pyomarkers.units)
-    t_span = pyomarkers.time.to_numpy()
+    t_span = pyomarkers.time
     filename = Path(c3d_file).name
 
     force_plates_corners = get_force_plates(c3d_file, units=units)

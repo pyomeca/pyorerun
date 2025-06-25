@@ -1,6 +1,6 @@
 import numpy as np
 import rerun as rr
-from pyomeca import Markers as PyoMarkers
+from ..pyomarkers import Pyomarkers as PyoMarkers
 
 from ..abstract.abstract_class import ExperimentalData
 from ..abstract.markers import Markers, MarkerProperties
