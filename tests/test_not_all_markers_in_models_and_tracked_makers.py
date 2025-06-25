@@ -3,9 +3,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from pyomeca import Markers
 
-from pyorerun import PhaseRerun, BiorbdModel
+from pyorerun import PhaseRerun, BiorbdModel, Pyomarkers
 
 
 class TestUtils:
@@ -46,9 +45,9 @@ def test_not_all_markers_in_models_and_tracked_makers():
 
     # running the animation
     rerun_biorbd = PhaseRerun(t_span)
-    markers = Markers(data=noisy_markers, channels=list(biorbd_model.marker_names)[::-1][:-1])
+    markers = Pyomarkers(data=noisy_markers, channels=list(biorbd_model.marker_names)[::-1][:-1])
     with pytest.raises(
         ValueError,
-        match=r"The markers of the model and the tracked markers are inconsistent. They must have the same names and shape.\nCurrent markers are \('marker_1', 'marker_2', 'marker_3', 'marker_4'\) and\n tracked markers: \['marker_4', 'marker_3', 'marker_2'\].",
+        match=r"The markers of the model and the tracked markers are inconsistent. They must have the same names and shape.\nCurrent markers are \('marker_1', 'marker_2', 'marker_3', 'marker_4'\) and\n tracked markers: \('marker_4', 'marker_3', 'marker_2'\).",
     ):
         rerun_biorbd.add_animated_model(biorbd_model, q, tracked_markers=markers)
