@@ -19,13 +19,21 @@ def check_and_adjust_markers(model: AbstractModel, tracked_markers: PyoMarkers) 
         )
 
     tracked_marker_names = tuple(tracked_markers.channel.data.tolist())
+    tracked_marker_names_are_not_all_in_model_markers = any(
+        marker not in tracked_marker_names for marker in model.marker_names
+    )
+
+    if tracked_marker_names_are_not_all_in_model_markers:
+        raise ValueError(
+            f"The markers of the model and the tracked markers are inconsistent. "
+            f"Tracked markers {tracked_marker_names} must contain all the markers in the model {model.marker_names}."
+        )
+
     names_are_ordered_differently = model.marker_names != tracked_marker_names
     if names_are_ordered_differently:
         # Replace the markers in the right order based on the names provided in PyoMarkers
         reordered_markers = np.zeros_like(tracked_markers.to_numpy())
         for marker in model.marker_names:
-            if marker not in tracked_marker_names:
-                raise RuntimeError("The marker names in the model and the tracked markers do not match.")
             marker_index = tracked_marker_names.index(marker)
             reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[:, model.marker_names.index(marker), :]
         tracked_markers = PyoMarkers(reordered_markers, channels=list(model.marker_names))
