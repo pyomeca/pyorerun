@@ -23,6 +23,10 @@ class ModelRerunPhase:
     def _rerun_links_without_none(self):
         return [rr_link for rr_link in self.rerun_links if rr_link is not None]
 
+    @property
+    def _model_links_index_without_none(self):
+        return [i for i, rr_link in enumerate(self.rerun_links) if rr_link is not None]
+
     def add_animated_model(self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None):
         self.models.append(model)
         self.rerun_models.append(ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model))
@@ -49,7 +53,7 @@ class ModelRerunPhase:
 
     def to_rerun_links(self, frame: int):
         """Update the links between markers and models"""
-        for i, rr_link in enumerate(self._rerun_links_without_none):
+        for i, rr_link in zip(self._model_links_index_without_none, self._rerun_links_without_none):
             rr_link.to_rerun(self.q[i][:, frame], self.tracked_markers[i][:, :, frame])
 
     @property
@@ -73,6 +77,6 @@ class ModelRerunPhase:
         all_chunks = {}
         for i, model in enumerate(self.rerun_models):
             all_chunks.update(model.to_chunk(self.q[i]))
-        for i, rr_link in enumerate(self._rerun_links_without_none):
+        for i, rr_link in zip(self._model_links_index_without_none, self._rerun_links_without_none):
             all_chunks.update(rr_link.to_chunk(self.q[i], self.tracked_markers[i]))
         return all_chunks

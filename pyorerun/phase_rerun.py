@@ -9,6 +9,7 @@ from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
 from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video
 from .xp_phase import XpRerunPhase
+from .utils.markers_utils import check_and_adjust_markers
 
 
 class PhaseRerun:
@@ -102,20 +103,19 @@ class PhaseRerun:
                 Gravity(name=f"{self.name}/{self.models.nb_models}_{model.name}", vector=model.gravity)
             )
 
-    def __add_tracked_markers(self, model: AbstractModel, tracked_markers: PyoMarkers) -> None:
+    def __add_tracked_markers(
+        self,
+        model: AbstractModel,
+        tracked_markers: PyoMarkers,
+    ) -> None:
         """Add the tracked markers to the phase."""
-        shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
-        names_are_ordered_differently = model.marker_names != tuple(tracked_markers.channel.data.tolist())
-        if shape_of_markers_is_not_consistent or names_are_ordered_differently:
-            raise ValueError(
-                f"The markers of the model and the tracked markers are inconsistent. "
-                f"They must have the same names and shape.\n"
-                f"Current markers are {model.marker_names} and\n tracked markers: {tracked_markers.channel.data.tolist()}."
-            )
 
-        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers)
+        tracked_markers = check_and_adjust_markers(model, tracked_markers)
+        self.add_xp_markers(
+            f"{model.name}_tracked_markers", tracked_markers, model.options.show_experimental_marker_labels
+        )
 
-    def add_xp_markers(self, name, markers: PyoMarkers) -> None:
+    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool = True) -> None:
         """
         Add an animated model to the phase.
 
@@ -125,14 +125,18 @@ class PhaseRerun:
             The name of the markers set.
         markers: PyoMarkers
             The experimental data to display.
+        show_tracked_marker_labels: bool
+            Whether to display the tracked markers labels in the GUI.
         """
         if markers.shape[2] != self.t_span.shape[0]:
             raise ValueError(
-                f"The shapes of q and tspan are inconsistent. "
+                f"The shapes of markers and tspan are inconsistent. "
                 f"They must have the same length."
-                f"Current shapes are q: {markers.shape[1]} and tspan: {self.t_span.shape}."
+                f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
-        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
+        self.xp_data.add_data(
+            MarkersXp(name=f"{self.name}/{name}", markers=markers, show_labels=show_tracked_marker_labels)
+        )
 
     def add_q(
         self,
