@@ -1,7 +1,7 @@
 import numpy as np
-from pyorerun.pyomarkers import Pyomarkers as Markers
 
 from pyorerun import BiorbdModel, PhaseRerun
+from pyorerun.pyomarkers import Pyomarkers
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
 
     # running the animation
     rerun_biorbd = PhaseRerun(t_span)
-    markers = Markers(data=noisy_markers, channels=list(biorbd_model.marker_names))
+    markers = Pyomarkers(data=noisy_markers, channels=list(biorbd_model.marker_names))
     rerun_biorbd.add_animated_model(biorbd_model, q, tracked_markers=markers)
 
     # rerun_biorbd.add_xp_markers(
