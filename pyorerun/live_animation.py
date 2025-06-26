@@ -7,6 +7,8 @@ import rerun as rr
 from .model_interfaces.biorbd_model_interface import BiorbdModel
 from .model_interfaces.osim_model_interface import OsimModel
 from .model_components.model_updapter import ModelUpdater
+from .model_components.model_display_options import DisplayModelOptions
+
 
 
 class LiveModelAnimation:
@@ -53,6 +55,7 @@ class LiveModelAnimation:
         self.dof_slider_values = []
         self.update_functions = []
         self.with_q_charts = with_q_charts
+        self.options = DisplayModelOptions()
 
     def update_viewer(self, event, dof_index: int):
         the_dof_idx, the_value = self.fetch_and_update_slider_value(event, dof_index)
