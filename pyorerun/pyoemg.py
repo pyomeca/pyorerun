@@ -4,8 +4,9 @@ Custom Pyoemg class to display muscle activation.
 
 from typing import Optional, List
 
-import ezc3d
 import numpy as np
+from matplotlib.cm import get_cmap
+from matplotlib.colors import ListedColormap
 
 
 class Pyoemg:
@@ -19,7 +20,7 @@ class Pyoemg:
         time: Optional[np.ndarray] = None,
         muscle_names: Optional[List[str]] = None,
         mvc: Optional[np.ndarray] = None,
-        colormap: Optional["matplotlib.colors.Colormap"] = None,
+        colormap: Optional[ListedColormap] | str = get_cmap("magma"),
         attrs: Optional[dict] = None,
     ):
         """
@@ -36,7 +37,8 @@ class Pyoemg:
             Names/labels of the emg/muscles
         mvc : np.ndarray
             The maximal voluntary contraction values for each muscle. If None, the default is the maximal value across all frames for each muscle independently.
-        colormap: matplotlblib.colors.Colormap, optional
+        colormap: matplotlib.cm.get_cmap() instance, optional
+            The colormap to use when displaying the emg data. If None, the default is "magma".
         attrs : dict
             Metadata attributes (e.g., units)
         """
@@ -46,7 +48,8 @@ class Pyoemg:
         # Handle data shape
         if data.ndim != 2:
             raise ValueError("Data must be 2D array with shape (n_emg, n_frames)")
-        self.data = data
+        # Rectify the emg signal
+        self.data = np.abs(data)
 
         # Set up time vector
         if time is None:
@@ -66,12 +69,21 @@ class Pyoemg:
         else:
             if mvc.shape[0] != self.data.shape[0]:
                 raise ValueError(f"MVC values must be provided for each muscle. There were {mvc.shape[0]} mvc values and {self.data.shape[0]} muscle values provided.")
+            if np.any(mvc <= 0.0):
+                raise ValueError("MVC values must be strictly positive.")
             self.mvc = mvc
+
+        if colormap is not None:
+            if isinstance(colormap, str):
+                colormap = get_cmap(colormap)
+            if not isinstance(colormap, ListedColormap):
+                raise TypeError("colormap must be a matplotlib.cm.get_cmap instance or the name of the colormap (str).")
+        self.colormap = colormap
 
         # Validate dimensions
         if len(self.muscle_names) != self.data.shape[0]:
             raise ValueError("Number of marker names must match number of markers")
-        if len(self.time) != self.data.shape[2]:
+        if len(self.time) != self.data.shape[1]:
             raise ValueError("Time vector length must match number of frames")
 
         # Set attributes
@@ -104,8 +116,16 @@ class Pyoemg:
         return self.attrs.get("last_frame")
 
     def to_numpy(self) -> np.ndarray:
-        """Return the data as a numpy array."""
-        return self.data.copy()
+        """Return the data as a numpy array and normalize by MVC."""
+        data = self.data.copy()
+        for i_muscle in range(self.data.shape[0]):
+            data[i_muscle, :] /= self.mvc[i_muscle]
+        return data
+
+    def to_colors(self) -> np.ndarray:
+        """Return a np.array of RGB values for each muscle."""
+        data = self.to_numpy()
+        return self.colormap(data)[:, :, :3]
 
     def __truediv__(self, other):
         """Support division for unit conversion."""
@@ -124,68 +144,6 @@ class Pyoemg:
         self.data /= other
         return self
 
-
-    # .....
     @classmethod
-    def from_c3d(
-        cls, filename: str, prefix_delimiter: str = ":", suffix_delimiter: str = None, show_labels: bool = True
-    ) -> "Pyomarkers":
-        """
-        Create Pyomarkers from a C3D file.
-
-        Parameters
-        ----------
-        filename : str
-            Path to the C3D file
-        prefix_delimiter : str, default ":"
-            Delimiter for prefix in marker names
-        suffix_delimiter : str, optional
-            Delimiter for suffix in marker names
-        show_labels : bool, default True
-            Whether to show marker labels
-
-        Returns
-        -------
-        Pyomarkers
-            A new Pyomarkers instance
-        """
-        c3d = ezc3d.c3d(filename)
-
-        # Get marker data
-        points = c3d["data"]["points"]  # Shape: (4, n_markers, n_frames)
-
-        # Get marker names
-        marker_names = c3d["parameters"]["POINT"]["LABELS"]["value"]
-
-        # Clean up marker names (remove empty strings and strip whitespace)
-        marker_names = [name.strip() for name in marker_names if name.strip()]
-
-        # Get time vector
-        point_rate = c3d["parameters"]["POINT"]["RATE"]["value"][0]
-        n_frames = points.shape[2]
-        time = np.arange(n_frames) / point_rate
-
-        # Get units
-        units = "mm"  # Default C3D unit
-        if "UNITS" in c3d["parameters"]["POINT"]:
-            units = c3d["parameters"]["POINT"]["UNITS"]["value"][0].strip()
-
-        attrs = {
-            "units": units,
-            "rate": point_rate,
-            "filename": filename,
-            "first_frame": c3d.c3d_swig.header().firstFrame(),
-            "last_frame": c3d.c3d_swig.header().lastFrame(),
-        }
-
-        return cls(data=points, time=time, marker_names=marker_names, show_labels=show_labels, attrs=attrs)
-
-
-class MockChannel:
-    """
-    Mock channel object to provide compatibility with pyomeca.Markers.channel API.
-    """
-
-    def __init__(self, marker_names: List[str]):
-        self.values = np.array(marker_names)
-        self.data = marker_names
+    def from_c3d(cls, filename: str) -> "Pyomarkers":
+        raise NotImplementedError("Defining muscle activation from a c3d file is not implmented yet.")

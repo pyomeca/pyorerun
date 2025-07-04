@@ -62,7 +62,15 @@ class LineStripUpdater(LineStrips):
         #     for s in range(self.nb_strips)
         # }
         # lets try a more advanced approach
-        colors = [self.properties.color for _ in range(nb_frames * self.nb_strips)]
+
+        # @ipuch: I do not find the declaration, but I feel this should be done before
+        if len(self.properties.color.shape) == 3:
+            colors = [self.properties.color[s, f, :] for f in range(nb_frames) for s in range(self.nb_strips)]
+        elif len(self.properties.color.shape) == 2:
+            colors = [self.properties.color[s, :, :] for _ in range(nb_frames) for s in range(self.nb_strips)]
+        else:
+            colors = [self.properties.color for _ in range(nb_frames * self.nb_strips)]
+
         radii = [self.properties.radius for _ in range(nb_frames * self.nb_strips)]
         labels = [self.properties.strip_names[s] for _ in range(nb_frames) for s in range(self.nb_strips)]
         partition = [self.nb_strips for _ in range(nb_frames)]

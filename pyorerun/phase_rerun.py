@@ -1,6 +1,7 @@
 import numpy as np
 import rerun as rr
 from .pyomarkers import Pyomarkers as PyoMarkers
+from .pyoemg import Pyoemg
 
 from .abstract.q import QProperties
 from .model_interfaces import AbstractModel
@@ -58,7 +59,8 @@ class PhaseRerun:
         self,
         model: AbstractModel,
         q: np.ndarray,
-        tracked_markers: PyoMarkers = None,
+        tracked_markers: PyoMarkers | np.ndarray = None,
+        emg: Pyoemg | np.ndarray = None,
         display_q: bool = False,
     ) -> None:
         """
@@ -72,6 +74,8 @@ class PhaseRerun:
             The generalized coordinates of the model.
         tracked_markers: PyoMarkers
             The markers to display, and sets a link between the model markers and the tracked markers.
+        emg: Pyoemg
+            The muscle activation level to display.
         display_q: bool
             Whether to display the generalized coordinates q in charts.
         """
@@ -83,13 +87,21 @@ class PhaseRerun:
                 f"Current shapes are q: {q.shape[1]} and tspan: {self.t_span.shape}."
             )
 
-        if tracked_markers is None:
-            self.models.add_animated_model(model, q)
-        else:
-            if isinstance(tracked_markers, np.ndarray):
-                tracked_markers = PyoMarkers(tracked_markers, channels=model.marker_names)
-            self.models.add_animated_model(model, q, tracked_markers.to_numpy()[:3, :, :])
+        if isinstance(tracked_markers, np.ndarray):
+            tracked_markers = PyoMarkers(tracked_markers, channels=model.marker_names)
+
+        muscle_colors = None
+        if isinstance(emg, np.ndarray):
+            muscle_colors = Pyoemg(emg, muscle_names=model.muscle_names).to_colors()
+        elif isinstance(emg, Pyoemg):
+            muscle_colors = emg.to_colors()
+
+        if tracked_markers is not None:
             self.__add_tracked_markers(model, tracked_markers)
+
+        if tracked_markers is not None:
+            tracked_markers = tracked_markers.to_numpy()[:3, :, :]
+        self.models.add_animated_model(model, q, tracked_markers, muscle_colors)
 
         if display_q:
             self.add_q(
