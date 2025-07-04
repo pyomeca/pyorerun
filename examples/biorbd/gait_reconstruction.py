@@ -42,11 +42,12 @@ def main():
     fake_emg = np.ones((nb_muscles, nb_frames))  # Fake EMG data for demonstration
     for i_muscle in range(nb_muscles):
         fake_emg[i_muscle, :] = np.linspace(0.01, 1, nb_frames)
-    pyoemg = Pyoemg(data=fake_emg,
-                   muscle_names=list(model.muscle_names),
-                   mvc=np.ones((nb_muscles, )),  # Fake MVC values
-                    colormap="viridis",
-                    )
+    pyoemg = Pyoemg(
+        data=fake_emg,
+        muscle_names=list(model.muscle_names),
+        mvc=np.ones((nb_muscles,)),  # Fake MVC values
+        colormap="viridis",
+    )
 
     # Add force plates to the animation
     viz.add_force_plate(num=0, corners=force_plate_1_corners)

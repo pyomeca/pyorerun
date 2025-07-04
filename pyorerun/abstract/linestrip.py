@@ -100,6 +100,7 @@ class LineStripProperties:
         np.ndarray
             A numpy array with the color of each line.
         """
+        # @ ipuch: at this point we do not know how much frames there will be :/
         if self.color.ndim == 1:
             return np.tile(self.color, (self.nb_strips, 1))
         else:

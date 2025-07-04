@@ -28,9 +28,13 @@ class ModelRerunPhase:
     def _model_links_index_without_none(self):
         return [i for i, rr_link in enumerate(self.rerun_links) if rr_link is not None]
 
-    def add_animated_model(self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None, muscle_colors: np.ndarray = None):
+    def add_animated_model(
+        self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None, muscle_colors: np.ndarray = None
+    ):
         self.models.append(model)
-        self.rerun_models.append(ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model, muscle_colors=muscle_colors))
+        self.rerun_models.append(
+            ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model, muscle_colors=muscle_colors)
+        )
         self.q.append(q)
 
         self.tracked_markers.append(tracked_markers if tracked_markers is not None else None)

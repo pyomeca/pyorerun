@@ -68,7 +68,9 @@ class Pyoemg:
             self.mvc = np.nanmax(self.data, axis=1)
         else:
             if mvc.shape[0] != self.data.shape[0]:
-                raise ValueError(f"MVC values must be provided for each muscle. There were {mvc.shape[0]} mvc values and {self.data.shape[0]} muscle values provided.")
+                raise ValueError(
+                    f"MVC values must be provided for each muscle. There were {mvc.shape[0]} mvc values and {self.data.shape[0]} muscle values provided."
+                )
             if np.any(mvc <= 0.0):
                 raise ValueError("MVC values must be strictly positive.")
             self.mvc = mvc
@@ -88,7 +90,6 @@ class Pyoemg:
 
         # Set attributes
         self.attrs = attrs if attrs is not None else {}
-
 
     @property
     def shape(self) -> tuple:

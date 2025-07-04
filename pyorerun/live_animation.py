@@ -10,7 +10,6 @@ from .model_components.model_updapter import ModelUpdater
 from .model_components.model_display_options import DisplayModelOptions
 
 
-
 class LiveModelAnimation:
     """
     A class to animate a biorbd model in rerun and update the joint angles in real-time.

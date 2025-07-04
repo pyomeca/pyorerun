@@ -16,10 +16,12 @@ from ..model_interfaces import BiorbdModel, BiorbdModelNoMesh, OsimModel, OsimMo
 
 
 class ModelUpdater(Components):
-    def __init__(self,
-                 name: str,
-                 model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel | AbstractModel,
-                 muscle_colors: np.ndarray = None):
+    def __init__(
+        self,
+        name: str,
+        model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel | AbstractModel,
+        muscle_colors: np.ndarray = None,
+    ):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
