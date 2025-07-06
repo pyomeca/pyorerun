@@ -111,11 +111,9 @@ class PhaseRerun:
         """Add the tracked markers to the phase."""
 
         tracked_markers = check_and_adjust_markers(model, tracked_markers)
-        self.add_xp_markers(
-            f"{model.name}_tracked_markers", tracked_markers, model.options.show_experimental_marker_labels
-        )
+        self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers)
 
-    def add_xp_markers(self, name, markers: PyoMarkers, show_tracked_marker_labels: bool = True) -> None:
+    def add_xp_markers(self, name, markers: PyoMarkers) -> None:
         """
         Add an animated model to the phase.
 
@@ -125,8 +123,6 @@ class PhaseRerun:
             The name of the markers set.
         markers: PyoMarkers
             The experimental data to display.
-        show_tracked_marker_labels: bool
-            Whether to display the tracked markers labels in the GUI.
         """
         if markers.shape[2] != self.t_span.shape[0]:
             raise ValueError(
@@ -134,9 +130,7 @@ class PhaseRerun:
                 f"They must have the same length."
                 f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
-        self.xp_data.add_data(
-            MarkersXp(name=f"{self.name}/{name}", markers=markers, show_labels=show_tracked_marker_labels)
-        )
+        self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
 
     def add_q(
         self,

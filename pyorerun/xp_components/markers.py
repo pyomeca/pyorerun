@@ -18,17 +18,16 @@ class MarkersXp(Markers, ExperimentalData):
         np.array([103, 56, 182]),
     ]
 
-    def __init__(self, name, markers: PyoMarkers, show_labels: bool = True):
+    def __init__(self, name, markers: PyoMarkers):
 
         self.name = name + "/markers"
         self.markers = markers
         self.markers_numpy = markers.to_numpy()
-        self.show_labels = show_labels
         self.markers_properties = MarkerProperties(
             markers_names=markers.channel.values.tolist(),
             radius=0.01,
             color=MarkersXp._MARKERS_COLORS[MarkersXp._counter],
-            show_labels=self.show_labels,
+            show_labels=markers.show_labels,
         )
 
         MarkersXp._counter = (MarkersXp._counter + 1) % len(MarkersXp._MARKERS_COLORS)
