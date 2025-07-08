@@ -62,7 +62,7 @@ class LineStripUpdater(LineStrips):
         #     for s in range(self.nb_strips)
         # }
         # lets try a more advanced approach
-        colors = self.properties.color_to_rerun(self.nb_strips, nb_frames)
+        colors = self.properties.color_to_rerun(nb_frames)
         radii = [self.properties.radius for _ in range(nb_frames * self.nb_strips)]
         labels = [self.properties.strip_names[s] for _ in range(nb_frames) for s in range(self.nb_strips)]
         partition = [self.nb_strips for _ in range(nb_frames)]

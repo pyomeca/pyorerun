@@ -62,9 +62,9 @@ def main():
     )
 
     # Add the kinematics
-    # viz.add_animated_model(
-    #     model, q
-    # )  # This line is just to test the model without markers (but is not necessary for the example to work)
+    viz.add_animated_model(
+        model, q
+    )  # This line is just to test the model without markers (but is not necessary for the example to work)
     viz.add_animated_model(model, q, tracked_markers=pyomarkers, muscle_activations_intensity=pyoemg)
 
     # Play
