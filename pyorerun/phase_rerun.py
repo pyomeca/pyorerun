@@ -1,7 +1,7 @@
 import numpy as np
 import rerun as rr
 from .pyomarkers import PyoMarkers
-from .pyoemg import Pyoemg
+from .pyoemg import PyoMuscles
 
 from .abstract.q import QProperties
 from .model_interfaces import AbstractModel
@@ -60,7 +60,7 @@ class PhaseRerun:
         model: AbstractModel,
         q: np.ndarray,
         tracked_markers: PyoMarkers | np.ndarray = None,
-        emg: Pyoemg | np.ndarray = None,
+        muscle_activations_intensity: PyoMuscles | np.ndarray = None,
         display_q: bool = False,
     ) -> None:
         """
@@ -74,7 +74,7 @@ class PhaseRerun:
             The generalized coordinates of the model.
         tracked_markers: PyoMarkers
             The markers to display, and sets a link between the model markers and the tracked markers.
-        emg: Pyoemg
+        muscle_activations_intensity: PyoMuscles
             The muscle activation level to display.
         display_q: bool
             Whether to display the generalized coordinates q in charts.
@@ -91,10 +91,10 @@ class PhaseRerun:
             tracked_markers = PyoMarkers(tracked_markers, channels=model.marker_names)
 
         muscle_colors = None
-        if isinstance(emg, np.ndarray):
-            muscle_colors = Pyoemg(emg, muscle_names=model.muscle_names).to_colors()
-        elif isinstance(emg, Pyoemg):
-            muscle_colors = emg.to_colors()
+        if isinstance(muscle_activations_intensity, np.ndarray):
+            muscle_colors = PyoMuscles(muscle_activations_intensity, muscle_names=model.muscle_names).to_colors()
+        elif isinstance(muscle_activations_intensity, PyoMuscles):
+            muscle_colors = muscle_activations_intensity.to_colors()
 
         if tracked_markers is not None:
             self.__add_tracked_markers(model, tracked_markers)

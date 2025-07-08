@@ -1,5 +1,5 @@
 """
-Custom Pyoemg class to display muscle activation.
+Custom PyoMuscles class to display muscle activation.
 """
 
 from typing import Optional, List
@@ -9,7 +9,7 @@ from matplotlib.cm import get_cmap
 from matplotlib.colors import ListedColormap
 
 
-class Pyoemg:
+class PyoMuscles:
     """
     A class to handle emg data.
     """
@@ -24,7 +24,7 @@ class Pyoemg:
         attrs: Optional[dict] = None,
     ):
         """
-        Initialize Pyoemg instance.
+        Initialize PyoMuscles instance.
         WARNING: The order in which the muscles are provided must be the same as the MVC values.
 
         Parameters
@@ -131,7 +131,7 @@ class Pyoemg:
     def __truediv__(self, other):
         """Support division for unit conversion."""
         new_data = self.data / other
-        return Pyoemg(
+        return PyoMuscles(
             data=new_data,
             time=self.time.copy(),
             muscle_names=self.muscle_names.copy(),

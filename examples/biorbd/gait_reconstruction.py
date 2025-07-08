@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 
-from pyorerun import BiorbdModel, PhaseRerun, Pyoemg, PyoMarkers
+from pyorerun import BiorbdModel, PhaseRerun, PyoMuscles, PyoMarkers
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
     fake_emg = np.ones((nb_muscles, nb_frames))  # Fake EMG data for demonstration
     for i_muscle in range(nb_muscles):
         fake_emg[i_muscle, :] = np.linspace(0.01, 1, nb_frames)
-    pyoemg = Pyoemg(
+    pyoemg = PyoMuscles(
         data=fake_emg,
         muscle_names=list(model.muscle_names),
         mvc=np.ones((nb_muscles,)),  # Fake MVC values
@@ -65,7 +65,7 @@ def main():
     # viz.add_animated_model(
     #     model, q
     # )  # This line is just to test the model without markers (but is not necessary for the example to work)
-    viz.add_animated_model(model, q, tracked_markers=pyomarkers, emg=pyoemg)
+    viz.add_animated_model(model, q, tracked_markers=pyomarkers, muscle_activations_intensity=pyoemg)
 
     # Play
     viz.rerun("Experimental data with kinematics reconstruction")
