@@ -6,9 +6,8 @@ windows. It also shows how to add experimental markers to the animation.
 
 import numpy as np
 from numpy import random
-from pyorerun.pyomarkers import Pyomarkers as Markers
 
-from pyorerun import BiorbdModel, MultiPhaseRerun
+from pyorerun import BiorbdModel, MultiPhaseRerun, PyoMarkers
 
 
 def building_some_q_and_t_span(nb_frames: int, nb_seconds: int) -> tuple[np.ndarray, np.ndarray]:
@@ -59,7 +58,7 @@ def main():
     rerun_biorbd.add_phase(t_span=time_offset + t_span1, phase=1, window="split_animation")
     rerun_biorbd.add_animated_model(biorbd_model, q1, phase=1, window="split_animation")
 
-    markers = Markers(data=noisy_markers, channels=list(biorbd_model.marker_names))
+    markers = PyoMarkers(data=noisy_markers, channels=list(biorbd_model.marker_names))
     rerun_biorbd.add_xp_markers(
         name="noisy_markers",
         markers=markers,

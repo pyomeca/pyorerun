@@ -1,9 +1,7 @@
 import pickle
 import numpy as np
 
-from pyorerun.pyomarkers import Pyomarkers as PyoMarkers
-
-from pyorerun import BiorbdModel, PhaseRerun, Pyoemg
+from pyorerun import BiorbdModel, PhaseRerun, Pyoemg, PyoMarkers
 
 
 def main():

@@ -1,6 +1,6 @@
 import numpy as np
 import rerun as rr
-from .pyomarkers import Pyomarkers as PyoMarkers
+from .pyomarkers import PyoMarkers
 from .pyoemg import Pyoemg
 
 from .abstract.q import QProperties

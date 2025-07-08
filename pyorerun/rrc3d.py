@@ -8,7 +8,7 @@ import rerun as rr
 
 from .multi_frame_rate_phase_rerun import MultiFrameRatePhaseRerun
 from .phase_rerun import PhaseRerun
-from .pyomarkers import Pyomarkers as PyoMarkers
+from .pyomarkers import PyoMarkers
 
 
 def rrc3d(

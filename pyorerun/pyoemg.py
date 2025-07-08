@@ -146,5 +146,5 @@ class Pyoemg:
         return self
 
     @classmethod
-    def from_c3d(cls, filename: str) -> "Pyomarkers":
+    def from_c3d(cls, filename: str) -> "PyoMarkers":
         raise NotImplementedError("Defining muscle activation from a c3d file is not implmented yet.")
