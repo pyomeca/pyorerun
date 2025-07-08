@@ -11,8 +11,6 @@ class DisplayModelOptions:
     _markers_radius: float = 0.01
     _show_marker_labels: bool = False
 
-    _show_experimental_marker_labels: bool = False
-
     _centers_of_mass_color: tuple[int, int, int] = (0, 0, 0)
     _centers_of_mass_radius: float = 0.01
     _show_center_of_mass_labels: bool = False
@@ -66,16 +64,6 @@ class DisplayModelOptions:
         if not isinstance(value, bool):
             raise ValueError("show_marker_labels must be a boolean.")
         self._show_marker_labels = value
-
-    @property
-    def show_experimental_marker_labels(self) -> bool:
-        return self._show_experimental_marker_labels
-
-    @show_experimental_marker_labels.setter
-    def show_experimental_marker_labels(self, value: bool):
-        if not isinstance(value, bool):
-            raise ValueError("show_experimental_marker_labels must be a boolean.")
-        self._show_experimental_marker_labels = value
 
     @property
     def centers_of_mass_color(self) -> tuple[int, int, int]:
@@ -241,7 +229,6 @@ class DisplayModelOptions:
         if not isinstance(value, bool):
             raise ValueError("Value must be a boolean.")
         self._show_marker_labels = value
-        self._show_experimental_marker_labels = value
         self._show_center_of_mass_labels = value
         self._show_ligament_labels = value
         self._show_muscle_labels = value

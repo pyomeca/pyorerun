@@ -17,6 +17,7 @@ def rrc3d(
     show_force_plates: bool = True,
     show_forces: bool = True,
     show_events: bool = True,
+    show_marker_labels: bool = True,
     down_sampled_forces: bool = False,
     video: str | tuple[str, ...] = None,
     video_crop_mode: str = "from_c3d",
@@ -38,6 +39,8 @@ def rrc3d(
         If True, show the forces.
     show_events: bool
         If True, show the events, as log entries.
+    show_marker_labels: bool
+        If True, show the marker labels.
     down_sampled_forces: bool
         If True, down sample the force data to align with the marker data.
         If False, the force data will be displayed at their original frame rate, It may get slower when loading the data.
@@ -53,7 +56,7 @@ def rrc3d(
     """
 
     # Load a c3d file
-    pyomarkers = PyoMarkers.from_c3d(c3d_file)
+    pyomarkers = PyoMarkers.from_c3d(c3d_file, show_labels=show_marker_labels)
     units = pyomarkers.units
     pyomarkers = adjust_position_unit_to_meters(pyomarkers, pyomarkers.units)
     t_span = pyomarkers.time
