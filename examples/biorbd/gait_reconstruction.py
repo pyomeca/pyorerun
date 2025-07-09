@@ -27,12 +27,11 @@ def main():
     model.options.show_center_of_mass_labels = False
     model.options.show_muscle_labels = False
     model.options.show_ligament_labels = False
-    model.options.show_experimental_marker_labels = False
 
     viz = PhaseRerun(t_span)
 
     # Add experimental markers
-    pyomarkers = PyoMarkers(data=markers, channels=list(model.marker_names))
+    pyomarkers = PyoMarkers(data=markers, channels=list(model.marker_names), show_labels=False)
 
     # Add experimental emg
     nb_muscles = model.nb_muscles
