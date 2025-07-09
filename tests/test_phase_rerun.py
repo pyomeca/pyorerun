@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
-from pyorerun.pyomarkers import Pyomarkers as PyoMarkers
 
-from pyorerun import BiorbdModel, PhaseRerun
+from pyorerun import BiorbdModel, PhaseRerun, PyoMarkers
 from pyorerun.model_phase import ModelRerunPhase
 from pyorerun.timeless_components import TimelessRerunPhase
 from pyorerun.xp_phase import XpRerunPhase

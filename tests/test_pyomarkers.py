@@ -1,18 +1,18 @@
 """
-Tests for the custom Pyomarkers class.
+Tests for the custom PyoMarkers class.
 """
 
 import numpy as np
 import pytest
-from pyorerun.pyomarkers import Pyomarkers
+from pyorerun.pyomarkers import PyoMarkers
 
 
 def test_pyomarkers_basic_init():
-    """Test basic initialization of Pyomarkers."""
+    """Test basic initialization of PyoMarkers."""
     # Create test data with shape (3, 2, 5) - 2 markers, 5 frames
     data = np.random.rand(3, 2, 5)
 
-    markers = Pyomarkers(data)
+    markers = PyoMarkers(data)
 
     # Check shape - should be (4, 2, 5) after adding homogeneous coordinate
     assert markers.shape == (4, 2, 5)
@@ -38,13 +38,13 @@ def test_pyomarkers_basic_init():
 
 
 def test_pyomarkers_with_custom_params():
-    """Test Pyomarkers with custom parameters."""
+    """Test PyoMarkers with custom parameters."""
     data = np.random.rand(3, 3, 10)
     time = np.linspace(0, 1, 10)
     marker_names = ["head", "shoulder", "elbow"]
     attrs = {"units": "m", "rate": 100}
 
-    markers = Pyomarkers(data=data, time=time, marker_names=marker_names, show_labels=False, attrs=attrs)
+    markers = PyoMarkers(data=data, time=time, marker_names=marker_names, show_labels=False, attrs=attrs)
 
     assert markers.shape == (4, 3, 10)
     assert markers.marker_names == marker_names
@@ -55,10 +55,10 @@ def test_pyomarkers_with_custom_params():
 
 
 def test_pyomarkers_4d_input():
-    """Test Pyomarkers with 4D input data."""
+    """Test PyoMarkers with 4D input data."""
     data = np.random.rand(4, 2, 5)
 
-    markers = Pyomarkers(data)
+    markers = PyoMarkers(data)
 
     # Should preserve the input data as-is
     assert markers.shape == (4, 2, 5)
@@ -66,30 +66,30 @@ def test_pyomarkers_4d_input():
 
 
 def test_pyomarkers_validation_errors():
-    """Test validation errors in Pyomarkers."""
+    """Test validation errors in PyoMarkers."""
     # Wrong number of dimensions
     with pytest.raises(ValueError, match="Data must be 3D array"):
-        Pyomarkers(np.random.rand(3, 5))  # 2D array
+        PyoMarkers(np.random.rand(3, 5))  # 2D array
 
     # Wrong first dimension size
     with pytest.raises(ValueError, match="First dimension must be 3 or 4"):
-        Pyomarkers(np.random.rand(5, 2, 3))  # 5D first dimension
+        PyoMarkers(np.random.rand(5, 2, 3))  # 5D first dimension
 
     # Mismatched marker names
     data = np.random.rand(3, 2, 5)
     with pytest.raises(ValueError, match="Number of marker names must match"):
-        Pyomarkers(data, marker_names=["one", "two", "three"])  # 3 names for 2 markers
+        PyoMarkers(data, marker_names=["one", "two", "three"])  # 3 names for 2 markers
 
     # Mismatched time vector
     with pytest.raises(ValueError, match="Time vector length must match"):
-        Pyomarkers(data, time=np.arange(3))  # 3 time points for 5 frames
+        PyoMarkers(data, time=np.arange(3))  # 3 time points for 5 frames
 
 
 def test_compatibility_with_existing_usage():
     """Test compatibility with existing usage patterns from the codebase."""
     # Create data similar to existing tests
     data = np.array([[[1000, 2000]], [[3000, 4000]], [[5000, 6000]]], dtype=float)
-    markers = Pyomarkers(data)
+    markers = PyoMarkers(data)
     markers.attrs["units"] = "mm"
 
     # Test shape access patterns
@@ -113,7 +113,7 @@ def test_max_xy_coordinate_span_compatibility():
     """Test compatibility with max_xy_coordinate_span function pattern."""
     # Create test data that matches the existing test pattern
     data = np.array([[[1, 2], [-1, -2]], [[0.5, 1], [-0.5, -1]], [[0, 0], [0, 0]]])  # X, Y, Z coords
-    markers = Pyomarkers(data)
+    markers = PyoMarkers(data)
 
     # Test the actual function logic from max_xy_coordinate_span_by_markers
     marker_data = markers.to_numpy()

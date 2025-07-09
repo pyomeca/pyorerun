@@ -107,8 +107,12 @@ class BiorbdModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMe
         Returns a biorbd object containing the roto-translation matrix of the segment in the global reference frame.
         This is useful if you want to interact with biorbd directly later on.
         """
-        rt_matrix = self.model.globalJCS(GeneralizedCoordinates(q), segment_index)
-        return rt_matrix.to_array()
+        if np.sum(np.isnan(q)) != 0:
+            # If q contains NaN, return an identity matrix as biorbd will throw an error otherwise
+            rt_matrix = np.identity(4)
+        else:
+            rt_matrix = self.model.globalJCS(GeneralizedCoordinates(q), segment_index).to_array()
+        return rt_matrix
 
     def markers(self, q: np.ndarray) -> np.ndarray:
         """
@@ -285,9 +289,18 @@ class BiorbdModel(BiorbdModelNoMesh, AbstractModel):  # Inherits from BiorbdMode
         """
         Returns a list of homogeneous matrices of the mesh in the global reference frame
         """
-        mesh_rt = (
-            super(BiorbdModel, self).segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
-        )
-        # mesh_rt = self.segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
-        segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)
-        return segment_rt @ mesh_rt
+        if np.sum(np.isnan(q)) != 0:
+            # If q contains NaN, return an identity matrix as biorbd will throw an error otherwise
+            return np.identity(4)
+        else:
+            mesh_rt = (
+                super(BiorbdModel, self)
+                .segments[segment_index]
+                .segment.characteristics()
+                .mesh()
+                .getRotation()
+                .to_array()
+            )
+            # mesh_rt = self.segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
+            segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)
+            return segment_rt @ mesh_rt

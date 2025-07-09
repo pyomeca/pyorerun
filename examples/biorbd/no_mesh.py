@@ -1,7 +1,6 @@
 import numpy as np
 
-from pyorerun import BiorbdModelNoMesh, PhaseRerun
-from pyorerun.pyomarkers import Pyomarkers as PyoMarkers
+from pyorerun import BiorbdModelNoMesh, PhaseRerun, PyoMarkers
 
 
 def main():

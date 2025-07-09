@@ -16,7 +16,12 @@ from ..model_interfaces import BiorbdModel, BiorbdModelNoMesh, OsimModel, OsimMo
 
 
 class ModelUpdater(Components):
-    def __init__(self, name, model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel | AbstractModel):
+    def __init__(
+        self,
+        name: str,
+        model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel | AbstractModel,
+        muscle_colors: np.ndarray = None,
+    ):
         self.name = name
         self.model = model
         self.markers = self.create_markers_updater()
@@ -25,7 +30,7 @@ class ModelUpdater(Components):
         self.rigid_contacts = self.create_rigid_contacts_updater()
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
-        self.muscles = self.create_muscles_updater()
+        self.muscles = self.create_muscles_updater(muscle_colors)
 
     @classmethod
     def from_file(cls, model_path: str, options: DisplayModelOptions = None):
@@ -186,14 +191,15 @@ class ModelUpdater(Components):
             segments.append(SegmentUpdater(name=segment_name, transform_callable=transform_callable, meshes=meshes))
         return segments
 
-    def create_muscles_updater(self):
+    def create_muscles_updater(self, muscle_colors: np.ndarray = None):
         if self.model.nb_muscles == 0:
             return EmptyUpdater(self.name + "/muscles")
+        colors = muscle_colors if muscle_colors is not None else np.array(self.model.options.muscles_color)
         return MusclesUpdater(
             self.name,
             properties=LineStripProperties(
                 strip_names=self.model.muscle_names,
-                color=np.array(self.model.options.muscles_color),
+                color=colors,
                 radius=self.model.options.muscles_radius,
                 show_labels=self.model.options.show_muscle_labels,
             ),

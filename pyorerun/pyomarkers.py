@@ -1,5 +1,5 @@
 """
-Custom Pyomarkers class to replace pyomeca dependency.
+Custom PyoMarkers class to replace pyomeca dependency.
 """
 
 from typing import Optional, List
@@ -8,7 +8,7 @@ import ezc3d
 import numpy as np
 
 
-class Pyomarkers:
+class PyoMarkers:
     """
     A class to handle 3D marker data, designed to replace pyomeca.Markers.
 
@@ -40,7 +40,7 @@ class Pyomarkers:
         attrs: Optional[dict] = None,
     ):
         """
-        Initialize Pyomarkers instance.
+        Initialize PyoMarkers instance.
 
         Parameters
         ----------
@@ -133,7 +133,7 @@ class Pyomarkers:
     def __truediv__(self, other):
         """Support division for unit conversion."""
         new_data = self.data / other
-        return Pyomarkers(
+        return PyoMarkers(
             data=new_data,
             time=self.time.copy(),
             marker_names=self.marker_names.copy(),
@@ -149,9 +149,9 @@ class Pyomarkers:
     @classmethod
     def from_c3d(
         cls, filename: str, prefix_delimiter: str = ":", suffix_delimiter: str = None, show_labels: bool = True
-    ) -> "Pyomarkers":
+    ) -> "PyoMarkers":
         """
-        Create Pyomarkers from a C3D file.
+        Create PyoMarkers from a C3D file.
 
         Parameters
         ----------
@@ -166,8 +166,8 @@ class Pyomarkers:
 
         Returns
         -------
-        Pyomarkers
-            A new Pyomarkers instance
+        PyoMarkers
+            A new PyoMarkers instance
         """
         c3d = ezc3d.c3d(filename)
 

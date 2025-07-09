@@ -91,7 +91,7 @@ class LineStripProperties:
         else:
             return self.radius
 
-    def color_to_rerun(self) -> np.ndarray:
+    def color_to_rerun(self, nb_frames: int) -> np.ndarray:
         """
         Returns a numpy array with the color of each line.
 
@@ -100,10 +100,14 @@ class LineStripProperties:
         np.ndarray
             A numpy array with the color of each line.
         """
-        if self.color.ndim == 1:
-            return np.tile(self.color, (self.nb_strips, 1))
+        nb_strips = len(self.strip_names)
+        if len(self.color.shape) == 3:
+            colors = [self.color[s, f, :] for f in range(nb_frames) for s in range(nb_strips)]
+        elif len(self.color.shape) == 2:
+            colors = [self.color[s, :, :] for _ in range(nb_frames) for s in range(nb_strips)]
         else:
-            return self.color
+            colors = [self.color for _ in range(nb_frames * nb_strips)]
+        return colors
 
     def show_labels_to_rerun(self) -> list[bool]:
         """

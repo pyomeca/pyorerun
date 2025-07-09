@@ -20,14 +20,15 @@ classifiers = [
          "Operating System :: OS Independent",
      ]
 dependencies = [
-    "ezc3d",  # Now needed for C3D file loading in our custom Pyomarkers
+    "ezc3d",  # Now needed, but imported for our custom PyoMarkers.from_c3d()
     "numpy==1.26.4",
     "rerun-sdk==0.21.0",
     "trimesh",
     "tk",
     "imageio",
     "imageio-ffmpeg",
-#    "opensim", # Not yet available on pypi, use `conda install opensim-org::opensim`
+    "matplotlib",
+#    "opensim", # Not yet available on pypi, use `conda install opensim-org opensim=4.5.1`
 #    "biorbd" # Not yet available on pypi, use `conda install -c conda-forge biorbd`
     ]
 keywords = ["c3d", "motion capture", "rerun", "biorbd", "markers"]

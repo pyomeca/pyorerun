@@ -28,7 +28,7 @@ class LineStripUpdater(LineStrips):
         return rr.LineStrips3D(
             strips=self.update_callable(q),
             radii=self.properties.radius_to_rerun(),
-            colors=self.properties.color_to_rerun(),
+            colors=self.properties.color_to_rerun(1),
             labels=self.properties.strip_names,
             show_labels=self.properties.show_labels_to_rerun(),
         )
@@ -62,7 +62,7 @@ class LineStripUpdater(LineStrips):
         #     for s in range(self.nb_strips)
         # }
         # lets try a more advanced approach
-        colors = [self.properties.color for _ in range(nb_frames * self.nb_strips)]
+        colors = self.properties.color_to_rerun(nb_frames)
         radii = [self.properties.radius for _ in range(nb_frames * self.nb_strips)]
         labels = [self.properties.strip_names[s] for _ in range(nb_frames) for s in range(self.nb_strips)]
         partition = [self.nb_strips for _ in range(nb_frames)]
@@ -125,7 +125,7 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
             rr.LineStrips3D(
                 strips=self.line_strips(q, markers),
                 radii=self.properties.radius_to_rerun(),
-                colors=self.properties.color_to_rerun(),
+                colors=self.properties.color_to_rerun(1),
                 # labels=self.properties.strip_names,
             ),
         )
@@ -180,7 +180,7 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
         self.rerun_mesh = rr.LineStrips3D(
             strips=strips,
             radii=self.properties.radius_to_rerun(),
-            colors=self.properties.color_to_rerun(),
+            colors=self.properties.color_to_rerun(1),
         )
 
     def initialize(self):
