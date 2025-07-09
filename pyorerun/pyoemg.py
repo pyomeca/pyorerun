@@ -42,6 +42,17 @@ class PyoMuscles:
         attrs : dict
             Metadata attributes (e.g., units)
         """
+        self.data = self.check_and_rectify_data(data)
+        self.time = self.initialize_time_vector(time)
+        self.muscle_names = self.initialize_muscle_names(muscle_names)
+        self.mvc = self.initialize_mvc(mvc)
+        self.colormap = self.initialize_colormap(colormap)
+        self.check_dimensions()
+        self.attrs = attrs if attrs is not None else {}
+
+    @staticmethod
+    def check_and_rectify_data(data: np.ndarray) -> np.ndarray:
+        """Check if the data is valid and return the absolute value of the muscle activation (useful in the case of raw EMG)."""
         if data is None:
             raise ValueError("Data must be provided")
 
@@ -49,23 +60,32 @@ class PyoMuscles:
         if data.ndim != 2:
             raise ValueError("Data must be 2D array with shape (n_emg, n_frames)")
         # Rectify the emg signal
-        self.data = np.abs(data)
+        rectified_data = np.abs(data)
 
-        # Set up time vector
+        return rectified_data
+
+    def initialize_time_vector(self, time: Optional[np.ndarray | list | tuple] = None) -> np.ndarray:
+        """Set up the time vector as a np.ndarray."""
         if time is None:
-            self.time = np.arange(self.data.shape[1], dtype=float)
+            time_vector = np.arange(self.data.shape[1], dtype=float)
         else:
             if time.shape[0] != self.data.shape[1]:
                 raise ValueError("Time vector length must match number of frames provided in the data.")
-            self.time = np.array(time)
+            time_vector = np.array(time)
+        return time_vector
 
+    def initialize_muscle_names(self, muscle_names: Optional[List[str]] = None) -> List[str]:
+        """Check if muscle names are provided and set default names if not."""
         if muscle_names is None:
-            self.muscle_names = [f"muscle_{i}" for i in range(self.data.shape[0])]
+            muscle_names = [f"muscle_{i}" for i in range(self.data.shape[0])]
         else:
-            self.muscle_names = list(muscle_names)
+            muscle_names = list(muscle_names)
+        return muscle_names
 
+    def initialize_mvc(self, mvc: Optional[np.ndarray] = None) -> np.ndarray:
+        """Check that the mvc values provided are correct."""
         if mvc is None:
-            self.mvc = np.nanmax(self.data, axis=1)
+            mvc = np.nanmax(self.data, axis=1)
         else:
             if mvc.shape[0] != self.data.shape[0]:
                 raise ValueError(
@@ -73,23 +93,24 @@ class PyoMuscles:
                 )
             if np.any(mvc <= 0.0):
                 raise ValueError("MVC values must be strictly positive.")
-            self.mvc = mvc
+        return mvc
 
+    @staticmethod
+    def initialize_colormap(colormap: Optional[ListedColormap | str] = None) -> ListedColormap:
+        """Check that the colormap provided is correct"""
         if colormap is not None:
             if isinstance(colormap, str):
                 colormap = get_cmap(colormap)
             if not isinstance(colormap, ListedColormap):
                 raise TypeError("colormap must be a matplotlib.cm.get_cmap instance or the name of the colormap (str).")
-        self.colormap = colormap
+        return colormap
 
-        # Validate dimensions
+    def check_dimensions(self):
+        """Validate that the dimensions match."""
         if len(self.muscle_names) != self.data.shape[0]:
             raise ValueError("Number of marker names must match number of markers")
         if len(self.time) != self.data.shape[1]:
             raise ValueError("Time vector length must match number of frames")
-
-        # Set attributes
-        self.attrs = attrs if attrs is not None else {}
 
     @property
     def shape(self) -> tuple:
