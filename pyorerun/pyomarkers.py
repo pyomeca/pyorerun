@@ -1,5 +1,5 @@
 """
-Custom Pyomarkers class to replace pyomeca dependency.
+Custom PyoMarkers class to replace pyomeca dependency.
 """
 
 from typing import Optional, List

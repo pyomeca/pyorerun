@@ -28,7 +28,7 @@ class LineStripUpdater(LineStrips):
         return rr.LineStrips3D(
             strips=self.update_callable(q),
             radii=self.properties.radius_to_rerun(),
-            colors=self.properties.color_to_rerun(),
+            colors=self.properties.color_to_rerun(1),
             labels=self.properties.strip_names,
             show_labels=self.properties.show_labels_to_rerun(),
         )
@@ -125,7 +125,7 @@ class ModelMarkerLinkUpdater(LineStripUpdater):
             rr.LineStrips3D(
                 strips=self.line_strips(q, markers),
                 radii=self.properties.radius_to_rerun(),
-                colors=self.properties.color_to_rerun(),
+                colors=self.properties.color_to_rerun(1),
                 # labels=self.properties.strip_names,
             ),
         )
@@ -180,7 +180,7 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
         self.rerun_mesh = rr.LineStrips3D(
             strips=strips,
             radii=self.properties.radius_to_rerun(),
-            colors=self.properties.color_to_rerun(),
+            colors=self.properties.color_to_rerun(1),
         )
 
     def initialize(self):
