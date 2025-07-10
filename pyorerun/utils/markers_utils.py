@@ -11,7 +11,7 @@ def check_and_adjust_markers(model: AbstractModel, tracked_markers: PyoMarkers) 
     """
 
     shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
-    tracked_marker_names = tuple(tracked_markers.channel.data)
+    tracked_marker_names = tracked_markers.marker_names
     if shape_of_markers_is_not_consistent:
         raise ValueError(
             f"The markers of the model and the tracked markers are inconsistent. "
@@ -33,9 +33,9 @@ def check_and_adjust_markers(model: AbstractModel, tracked_markers: PyoMarkers) 
     if names_are_ordered_differently:
         # Replace the markers in the right order based on the names provided in PyoMarkers
         reordered_markers = np.zeros_like(tracked_markers.to_numpy())
-        for marker in model.marker_names:
+        for i_marker, marker in enumerate(model.marker_names):
             marker_index = tracked_marker_names.index(marker)
-            reordered_markers[:, marker_index, :] = tracked_markers.to_numpy()[:, model.marker_names.index(marker), :]
-        tracked_markers = PyoMarkers(reordered_markers, channels=list(model.marker_names))
+            reordered_markers[:, i_marker, :] = tracked_markers.to_numpy()[:, marker_index, :]
+        tracked_markers = PyoMarkers(reordered_markers, marker_names=list(model.marker_names))
 
     return tracked_markers
