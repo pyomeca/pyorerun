@@ -97,9 +97,8 @@ class PhaseRerun:
             muscle_colors = muscle_activations_intensity.to_colors()
 
         if tracked_markers is not None:
+            tracked_markers = check_and_adjust_markers(model, tracked_markers)
             self.__add_tracked_markers(model, tracked_markers)
-
-        if tracked_markers is not None:
             tracked_markers = tracked_markers.to_numpy()[:3, :, :]
         self.models.add_animated_model(model, q, tracked_markers, muscle_colors)
 
@@ -121,8 +120,6 @@ class PhaseRerun:
         tracked_markers: PyoMarkers,
     ) -> None:
         """Add the tracked markers to the phase."""
-
-        tracked_markers = check_and_adjust_markers(model, tracked_markers)
         self.add_xp_markers(f"{model.name}_tracked_markers", tracked_markers)
 
     def add_xp_markers(self, name, markers: PyoMarkers) -> None:
