@@ -62,15 +62,16 @@ def rrc3d(
     t_span = pyomarkers.time
     filename = Path(c3d_file).name
 
-    force_plates_corners = get_force_plates(c3d_file, units=units)
-    lowest_corner = get_lowest_corner(c3d_file, units=units)
-
     phase_reruns = []
     phase_rerun = PhaseRerun(t_span)
     phase_reruns.append(phase_rerun)
     phase_rerun.add_xp_markers(filename, pyomarkers)
 
+    lowest_corner = 0.0
     if show_force_plates:
+        force_plates_corners = get_force_plates(c3d_file, units=units)
+        lowest_corner = get_lowest_corner(c3d_file, units=units)
+
         for i, corners in enumerate(force_plates_corners):
             phase_rerun.add_force_plate(f"force_plate_{i}", corners["corners"])
 
