@@ -11,7 +11,7 @@ def check_and_adjust_markers(model: AbstractModel, tracked_markers: PyoMarkers) 
     """
 
     shape_of_markers_is_not_consistent = model.nb_markers != tracked_markers.shape[1]
-    tracked_marker_names = tracked_markers.marker_names
+    tracked_marker_names = tuple(tracked_markers.marker_names)
     if shape_of_markers_is_not_consistent:
         raise ValueError(
             f"The markers of the model and the tracked markers are inconsistent. "
