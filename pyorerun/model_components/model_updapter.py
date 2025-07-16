@@ -12,14 +12,14 @@ from ..abstract.empty_updater import EmptyUpdater
 from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
 from ..model_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
-from ..model_interfaces import BiorbdModel, BiorbdModelNoMesh, OsimModel, OsimModelNoMesh, AbstractModel
+from ..model_interfaces import AbstractModel, model_from_file
 
 
 class ModelUpdater(Components):
     def __init__(
         self,
-        name: str,
-        model: BiorbdModelNoMesh | BiorbdModel | OsimModelNoMesh | OsimModel | AbstractModel,
+        name,
+        model: AbstractModel,
         muscle_colors: np.ndarray = None,
     ):
         self.name = name
@@ -62,14 +62,7 @@ class ModelUpdater(Components):
         >>> rr.log("anything", rr.Anything())
 
         """
-        if model_path.endswith(".osim"):
-            model = OsimModel(model_path, options=options)
-            no_mesh_instance = OsimModelNoMesh
-        elif model_path.endswith(".bioMod"):
-            model = BiorbdModel(model_path, options=options)
-            no_mesh_instance = BiorbdModelNoMesh
-        else:
-            raise ValueError("The model must be in biorbd or opensim format.")
+        model, no_mesh_instance = model_from_file(model_path, options=options)
 
         if model.has_mesh or model.has_meshlines:
             return cls(model.name, model)
