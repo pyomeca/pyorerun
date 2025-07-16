@@ -1,11 +1,19 @@
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from pyorerun import OsimTimeSeries
 
+try:
+    import opensim
 
-@pytest.mark.skipif("opensim" not in globals(), reason="OpenSim is not installed.")
+    HAS_OPENSIM = True
+except ImportError:
+    HAS_OPENSIM = False
+
+
+@pytest.mark.skipif(not HAS_OPENSIM, reason="OpenSim is not installed.")
 def test_osim_time_series():
 
     MOT_FILE = "../examples/osim/ik.mot"
