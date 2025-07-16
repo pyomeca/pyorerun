@@ -62,15 +62,14 @@ def rrc3d(
     t_span = pyomarkers.time
     filename = Path(c3d_file).name
 
-    force_plates_corners = get_force_plates(c3d_file, units=units)
-    lowest_corner = get_lowest_corner(c3d_file, units=units)
-
     phase_reruns = []
     phase_rerun = PhaseRerun(t_span)
     phase_reruns.append(phase_rerun)
     phase_rerun.add_xp_markers(filename, pyomarkers)
 
     if show_force_plates:
+        force_plates_corners = get_force_plates(c3d_file, units=units)
+
         for i, corners in enumerate(force_plates_corners):
             phase_rerun.add_force_plate(f"force_plate_{i}", corners["corners"])
 
@@ -99,6 +98,7 @@ def rrc3d(
 
     if show_floor:
         square_width = max_xy_coordinate_span_by_markers(pyomarkers)
+        lowest_corner = 0 if not show_force_plates else get_lowest_corner(c3d_file, units=units)
         phase_rerun.add_floor(square_width, height_offset=lowest_corner - 0.0005)
 
     if video is not None:
