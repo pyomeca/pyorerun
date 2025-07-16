@@ -6,7 +6,7 @@ And also animate biorbd models from the pyomeca organization.
 
 ``` conda install -c conda-forge pyorerun rerun-sdk=0.21```
 
-``` conda install opensim-org::opensim   # mandatory dependency```
+``` conda install opensim-org::opensim   # not a mandatory dependency```
 
 # Rerun .c3d - As simple as that
 
@@ -59,7 +59,9 @@ animation.rerun()
 
 ## From source
 ```conda install -c conda-forge ezc3d rerun-sdk=0.21 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
-```conda install opensim-org::opensim```
+
+if you want to use the OpenSim, you also need to install separately:
+```conda install -c opensim-org::opensim```
 
 Then, ensure it is accessible in your Python environment by installing the package:
 

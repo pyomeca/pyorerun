@@ -2,11 +2,19 @@ from .live_animation import LiveModelAnimation
 from .live_integration import LiveModelIntegration
 from .model_components.model_display_options import DisplayModelOptions
 from .model_components.model_updapter import ModelUpdater
+
+try:
+    from .model_interfaces import (
+        OsimModel,
+        OsimModelNoMesh,
+    )
+except ImportError:
+    # OpenSim n'est pas installé, ces classes ne seront pas disponibles
+    pass
+
 from .model_interfaces import (
     BiorbdModel,
     BiorbdModelNoMesh,
-    OsimModel,
-    OsimModelNoMesh,
     AbstractSegment,
     AbstractModel,
     AbstractModelNoMesh,
