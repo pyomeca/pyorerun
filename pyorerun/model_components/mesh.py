@@ -64,6 +64,7 @@ class TransformableMeshUpdater(Component):
         if file_path.endswith(".stl") or file_path.endswith(".STL"):
             mesh = load(file_path, file_type="stl")
             mesh.apply_scale(scale_factor)
+            mesh.metadata["file_name"] = file_path
             return cls(name, mesh, transform_callable)
         elif file_path.endswith(".vtp"):
             output = read_vtp_file(file_path)
@@ -156,3 +157,4 @@ class TransformableMeshUpdater(Component):
                 ),
             ]
         }
+
