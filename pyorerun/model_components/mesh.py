@@ -157,4 +157,3 @@ class TransformableMeshUpdater(Component):
                 ),
             ]
         }
-
