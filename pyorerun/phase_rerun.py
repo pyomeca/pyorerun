@@ -168,12 +168,7 @@ class PhaseRerun:
                 f"Current shapes are vector_origin: {vector_origin.shape}, vector_endpoint: {vector_endpoint.shape}, and tspan: {self.t_span.shape}."
             )
         self.xp_data.add_data(
-            VectorXp(
-                name=f"{self.name}/{name}",
-                num=num,
-                vector_origin=vector_origin,
-                vector_endpoint=vector_endpoint
-            )
+            VectorXp(name=f"{self.name}/{name}", num=num, vector_origin=vector_origin, vector_endpoint=vector_endpoint)
         )
 
     def add_q(

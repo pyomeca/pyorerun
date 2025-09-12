@@ -65,7 +65,8 @@ def main():
         name="Custom vector",
         num=0,
         vector_origin=f_ext_1[:3, :],
-        vector_endpoint=f_ext_1[:3, :] + f_ext_1[6:9, :] / 200,  # This /200 scaling is done automatically in pyorerun for force vectors
+        vector_endpoint=f_ext_1[:3, :]
+        + f_ext_1[6:9, :] / 200,  # This /200 scaling is done automatically in pyorerun for force vectors
     )
 
     # Add the kinematics

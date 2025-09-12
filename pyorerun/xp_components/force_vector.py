@@ -60,6 +60,7 @@ class ForceVector(Vector):
         super().__init__(name, num, vector_origins, vector_magnitudes)
         self.vector_magnitude = vector_magnitudes / 200
 
+
 class VectorXp(Vector):
     """
     Display a vector in rerun.
