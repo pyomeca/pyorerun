@@ -65,6 +65,6 @@ class VectorXp(Vector):
     Display a vector in rerun.
     """
 
-    def __init__(self, name: str, num: int, vector_origins: np.ndarray, vector_endpoints: np.ndarray):
-        vector_magnitudes = vector_endpoints - vector_origins
-        super().__init__(name, num, vector_origins, vector_magnitudes)
+    def __init__(self, name: str, num: int, vector_origin: np.ndarray, vector_endpoint: np.ndarray):
+        vector_magnitude = vector_endpoint - vector_origin
+        super().__init__(name, num, vector_origin, vector_magnitude)
