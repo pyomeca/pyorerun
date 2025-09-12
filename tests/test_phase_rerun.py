@@ -121,6 +121,42 @@ def test_add_force_data():
         phase_rerun.add_force_data(num=0, force_origin=wrong_force, force_vector=force_vector)
 
 
+def test_add_vector():
+    t_span = np.linspace(0, 1, 50)
+    phase_rerun = PhaseRerun(t_span)
+    vector_origin = np.random.rand(3, 50)
+    vector_endpoint = np.random.rand(3, 50)
+
+    # Test valid force data
+    phase_rerun.add_xp_vector(name="vector", num=0, vector_origin=vector_origin, vector_endpoint=vector_endpoint)
+    assert len(phase_rerun.xp_data.xp_data) == 1
+
+    # Test shape mismatch error
+    wrong_force = np.random.rand(3, 40)
+    with pytest.raises(
+        ValueError,
+        match=r"The shapes of vector and tspan are inconsistent. They must have the same length. Current shapes are vector_origin: \(3, 40\), vector_endpoint: \(3, 50\), and tspan: \(50,\).",
+    ):
+        phase_rerun.add_xp_vector(name="vector", num=0, vector_origin=wrong_force, vector_endpoint=vector_endpoint)
+    with pytest.raises(
+        ValueError,
+        match=r"The shapes of vector and tspan are inconsistent. They must have the same length. Current shapes are vector_origin: \(3, 50\), vector_endpoint: \(3, 40\), and tspan: \(50,\).",
+    ):
+        phase_rerun.add_xp_vector(name="vector", num=0, vector_origin=vector_origin, vector_endpoint=wrong_force)
+
+    wrong_force = np.random.rand(2, 50)
+    with pytest.raises(
+        ValueError,
+        match=r"The shapes of vector_origin and vector_endpoint must be \(3, nb_frames\). Current shapes are vector_origin: \(2, 50\) and vector_endpoint: \(3, 50\).",
+    ):
+        phase_rerun.add_xp_vector(name="vector", num=0, vector_origin=wrong_force, vector_endpoint=vector_endpoint)
+    with pytest.raises(
+        ValueError,
+        match=r"The shapes of vector_origin and vector_endpoint must be \(3, nb_frames\). Current shapes are vector_origin: \(3, 50\) and vector_endpoint: \(2, 50\).",
+    ):
+        phase_rerun.add_xp_vector(name="vector", num=0, vector_origin=vector_origin, vector_endpoint=wrong_force)
+
+
 def test_add_video():
     t_span = np.linspace(0, 1, 50)
     phase_rerun = PhaseRerun(t_span)

@@ -8,7 +8,7 @@ from .model_interfaces import AbstractModel
 from .model_phase import ModelRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp
 from .xp_phase import XpRerunPhase
 from .utils.markers_utils import check_and_adjust_markers
 
@@ -124,7 +124,7 @@ class PhaseRerun:
 
     def add_xp_markers(self, name, markers: PyoMarkers) -> None:
         """
-        Add an animated model to the phase.
+        Add experimental markers to the phase.
 
         Parameters
         ----------
@@ -140,6 +140,36 @@ class PhaseRerun:
                 f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
+
+    def add_xp_vector(self, name: str, num: int, vector_origin: np.ndarray, vector_endpoint: np.ndarray) -> None:
+        """
+        Add experimental vectors to the phase.
+
+        Parameters
+        ----------
+        name: str
+            The name of the vector set.
+        num: int
+            The number of the vector set.
+        vector_origin: np.ndarray
+            The position of the origin of the vector to display.
+        vector_endpoint: np.ndarray
+            The position of the endpoint of the vector to display.
+        """
+        if vector_origin.shape[0] != 3 or vector_endpoint.shape[0] != 3:
+            raise ValueError(
+                f"The shapes of vector_origin and vector_endpoint must be (3, nb_frames). "
+                f"Current shapes are vector_origin: {vector_origin.shape} and vector_endpoint: {vector_endpoint.shape}."
+            )
+        if vector_origin.shape[1] != self.t_span.shape[0] or vector_endpoint.shape[1] != self.t_span.shape[0]:
+            raise ValueError(
+                f"The shapes of vector and tspan are inconsistent. "
+                f"They must have the same length. "
+                f"Current shapes are vector_origin: {vector_origin.shape}, vector_endpoint: {vector_endpoint.shape}, and tspan: {self.t_span.shape}."
+            )
+        self.xp_data.add_data(
+            VectorXp(name=f"{self.name}/{name}", num=num, vector_origin=vector_origin, vector_endpoint=vector_endpoint)
+        )
 
     def add_q(
         self,
