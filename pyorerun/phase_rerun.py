@@ -124,7 +124,7 @@ class PhaseRerun:
 
     def add_xp_markers(self, name, markers: PyoMarkers) -> None:
         """
-        Add an animated model to the phase.
+        Add experimental markers to the phase.
 
         Parameters
         ----------
@@ -140,6 +140,23 @@ class PhaseRerun:
                 f"Current shapes are markers: {markers.shape} and tspan: {self.t_span.shape}."
             )
         self.xp_data.add_data(MarkersXp(name=f"{self.name}/{name}", markers=markers))
+
+    def add_xp_vectors(self, num: int, vector_origin: np.ndarray, vector_endpoint: np.ndarray) -> None:
+        """
+        Add experimental vectors to the phase.
+
+        Parameters
+        ----------
+        vectors: PyoVectors
+            The experimental data to display.
+        """
+        if vectors.shape[2] != self.t_span.shape[0]:
+            raise ValueError(
+                f"The shapes of vectors and tspan are inconsistent. "
+                f"They must have the same length."
+                f"Current shapes are markers: {vectors.shape} and tspan: {self.t_span.shape}."
+            )
+        self.xp_data.add_data(vectors)
 
     def add_q(
         self,

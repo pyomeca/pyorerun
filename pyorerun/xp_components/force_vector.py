@@ -59,3 +59,12 @@ class ForceVector(Vector):
     def __init__(self, name: str, num: int, vector_origins: np.ndarray, vector_magnitudes: np.ndarray):
         super().__init__(name, num, vector_origins, vector_magnitudes)
         self.vector_magnitude = vector_magnitudes / 200
+
+class VectorXp(Vector):
+    """
+    Display a vector in rerun.
+    """
+
+    def __init__(self, name: str, num: int, vector_origins: np.ndarray, vector_endpoints: np.ndarray):
+        vector_magnitudes = vector_endpoints - vector_origins
+        super().__init__(name, num, vector_origins, vector_magnitudes)
