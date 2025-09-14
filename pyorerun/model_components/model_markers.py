@@ -61,6 +61,9 @@ class MarkersUpdater(Component):
             ]
         }
 
+class PersistentMarkersUpdater(MarkersUpdater):
+    def __init__(self, name, marker_properties: MarkerProperties, callable_markers: callable):
+        super().__init__(name, marker_properties, callable_markers)
 
 def from_pyo_to_rerun(maker_positions: np.ndarray) -> np.ndarray:
     """[3 x N] to [N x 3]"""

@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from .abstract_class import Component
+from .abstract_class import Component, PersistentComponent
 
 
 class LineStrips(Component):
@@ -10,6 +10,10 @@ class LineStrips(Component):
     def nb_strips(self):
         pass
 
+class PersistentLineStrips(PersistentComponent):
+    @abstractmethod
+    def nb_strips(self):
+        pass
 
 class LineStripProperties:
     """
