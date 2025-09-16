@@ -10,10 +10,12 @@ class Markers(Component):
     def nb_markers(self):
         pass
 
+
 class PersistentMarkers(PersistentComponent):
     @abstractmethod
     def nb_markers(self):
         pass
+
 
 class MarkerProperties:
     """

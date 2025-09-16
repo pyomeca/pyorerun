@@ -62,13 +62,14 @@ class MarkersUpdater(Component):
             ]
         }
 
+
 class PersistentMarkersUpdater(MarkersUpdater):
     def __init__(
-            self,
-            name,
-            marker_properties: MarkerProperties,
-            callable_markers: callable,
-            marker_trajectories: MarkerTrajectories,
+        self,
+        name,
+        marker_properties: MarkerProperties,
+        callable_markers: callable,
+        marker_trajectories: MarkerTrajectories,
     ):
         super().__init__(name, marker_properties, callable_markers)
         self.marker_trajectories = marker_trajectories
@@ -96,7 +97,9 @@ class PersistentMarkersUpdater(MarkersUpdater):
         # From all markers, keep only the markers to compute a marker trajectory for
         model_markers = self.compute_markers(q)
         model_markers_names = self.marker_properties.markers_names
-        markers_to_keep, markers_to_keep_names = self.marker_trajectories.marker_to_keep(model_markers, model_markers_names)
+        markers_to_keep, markers_to_keep_names = self.marker_trajectories.marker_to_keep(
+            model_markers, model_markers_names
+        )
 
         # Repeat the markers to keep for each frame
         markers = np.empty((0, 3))

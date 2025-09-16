@@ -22,11 +22,11 @@ class ModelUpdater(Components):
         name,
         model: AbstractModel,
         muscle_colors: np.ndarray = None,
-        marker_trajectories: MarkerTrajectories = None
+        marker_trajectories: MarkerTrajectories = None,
     ):
         self.name = name
         self.model = model
-        
+
         # Time dependant components
         self.markers = self.create_markers_updater()
         self.centers_of_mass = self.create_centers_of_mass_updater()
@@ -35,7 +35,7 @@ class ModelUpdater(Components):
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
         self.muscles = self.create_muscles_updater(muscle_colors)
-        
+
         # Persistent components
         self.persistent_markers = self.create_persistent_markers_updater(marker_trajectories)
 

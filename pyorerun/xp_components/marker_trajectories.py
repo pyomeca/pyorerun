@@ -66,4 +66,3 @@ class MarkerTrajectories:
                 markers_to_keep[:, marker_to_keep_idx, :] = model_markers[:, i_marker, :]
                 marker_to_keep_idx += 1
         return markers_to_keep, markers_to_keep_names
-

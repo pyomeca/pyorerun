@@ -10,10 +10,12 @@ class LineStrips(Component):
     def nb_strips(self):
         pass
 
+
 class PersistentLineStrips(PersistentComponent):
     @abstractmethod
     def nb_strips(self):
         pass
+
 
 class LineStripProperties:
     """
