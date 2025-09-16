@@ -226,6 +226,16 @@ class OsimModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMesh
         self._update_kinematics(q)
         return np.array([mark.getLocationInGround(self.state).to_numpy() for mark in self.model.getMarkerSet()])
 
+    def persistent_markers(self, q: np.ndarray, frame_range: range) -> np.ndarray:
+        """
+        Returns a [N_markers x 3] array containing the position of each marker in the global reference frame
+        """
+        markers_position = np.zeros((self.nb_markers, 3, len(frame_range)))
+        for frame in frame_range:
+            self._update_kinematics(q[frame])
+            markers_position[:, :, frame] = np.array([mark.getLocationInGround(self.state).to_numpy() for mark in self.model.getMarkerSet()])
+        return markers_position
+
     def centers_of_mass(self, q: np.ndarray) -> np.ndarray:
         """
         Returns the position of the centers of mass in the global reference frame

@@ -3,6 +3,7 @@ import numpy as np
 from .model_components.model_marker_link_updapter import ModelMarkerLinksUpdater
 from .model_components.model_updapter import ModelUpdater
 from .model_interfaces import AbstractModel
+from .xp_components.marker_trajectories import MarkerTrajectories
 
 
 class ModelRerunPhase:
@@ -29,11 +30,11 @@ class ModelRerunPhase:
         return [i for i, rr_link in enumerate(self.rerun_links) if rr_link is not None]
 
     def add_animated_model(
-        self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None, muscle_colors: np.ndarray = None
+        self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None, muscle_colors: np.ndarray = None, marker_trajectories: MarkerTrajectories = None
     ):
         self.models.append(model)
         self.rerun_models.append(
-            ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model, muscle_colors=muscle_colors)
+            ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model, muscle_colors=muscle_colors, marker_trajectories=marker_trajectories)
         )
         self.q.append(q)
 

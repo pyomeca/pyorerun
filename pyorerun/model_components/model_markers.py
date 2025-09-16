@@ -3,6 +3,7 @@ import rerun as rr
 
 from ..abstract.abstract_class import Component
 from ..abstract.markers import MarkerProperties
+from ..xp_components.marker_trajectories import MarkerTrajectories
 
 
 class MarkersUpdater(Component):
@@ -62,8 +63,63 @@ class MarkersUpdater(Component):
         }
 
 class PersistentMarkersUpdater(MarkersUpdater):
-    def __init__(self, name, marker_properties: MarkerProperties, callable_markers: callable):
+    def __init__(
+            self,
+            name,
+            marker_properties: MarkerProperties,
+            callable_markers: callable,
+            marker_trajectories: MarkerTrajectories,
+    ):
         super().__init__(name, marker_properties, callable_markers)
+        self.marker_trajectories = marker_trajectories
+
+    @property
+    def nb_marker_to_keep(self) -> int:
+        return len(self.marker_trajectories.marker_names)
+
+    def compute_markers_to_display(self, markers_to_keep: np.ndarray, frames: list[int]) -> np.ndarray:
+        markers = np.zeros((3, self.nb_marker_to_keep, len(frames)))
+        for i_frame, frame in enumerate(frames):
+            markers[:, :, i_frame] = markers_to_keep[:, :, frame]
+        return markers
+
+    def to_chunk(self, q: np.ndarray) -> dict[str, list]:
+        """
+        Parameters
+        ----------
+        q: np.ndarray
+            The generalized coordinates (N_markers x N_frames)
+        """
+        nb_frames = q.shape[1]
+        list_frames_to_keep = self.marker_trajectories.list_frames_to_keep(nb_frames)
+
+        # From all markers, keep only the markers to compute a marker trajectory for
+        model_markers = self.compute_markers(q)
+        model_markers_names = self.marker_properties.markers_names
+        markers_to_keep, markers_to_keep_names = self.marker_trajectories.marker_to_keep(model_markers, model_markers_names)
+
+        # Repeat the markers to keep for each frame
+        markers = np.empty((0, 3))
+        for frames_to_keep in list_frames_to_keep:
+            markers_to_display = self.compute_markers_to_display(markers_to_keep, frames_to_keep)
+            markers = np.vstack((markers, markers_to_display.transpose(2, 1, 0).reshape(-1, 3)))
+
+        # Get the partitions
+        partition = [self.nb_marker_to_keep * len(frames_to_keep) for frames_to_keep in list_frames_to_keep]
+        partition_marker_names = []
+        for frames_to_keep in list_frames_to_keep:
+            partition_marker_names += markers_to_keep_names * len(frames_to_keep)
+        return {
+            self.name: [
+                rr.Points3D.indicator(),
+                rr.components.Position3DBatch(markers).partition(partition),
+                rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames)]),
+                rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames)]),
+                rr.components.TextBatch(partition_marker_names).partition(partition),
+                rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames)]),
+            ]
+        }
+
 
 def from_pyo_to_rerun(maker_positions: np.ndarray) -> np.ndarray:
     """[3 x N] to [N x 3]"""

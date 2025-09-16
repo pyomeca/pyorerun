@@ -88,6 +88,11 @@ class AbstractModelNoMesh(ABC):
         """Get the global positions of markers for a given joint configuration q."""
         pass
 
+    @abstractmethod
+    def persistent_markers(self, q: np.ndarray, frame_range: range) -> np.ndarray:
+        """Get the global positions of markers for a given time series of joint configuration q."""
+        pass
+
     @property
     @abstractmethod
     def nb_segments(self) -> int:

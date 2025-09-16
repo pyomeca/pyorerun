@@ -8,7 +8,7 @@ from .model_interfaces import AbstractModel
 from .model_phase import ModelRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp, MarkerTrajectories
 from .xp_phase import XpRerunPhase
 from .utils.markers_utils import check_and_adjust_markers
 
@@ -62,6 +62,7 @@ class PhaseRerun:
         tracked_markers: PyoMarkers | np.ndarray = None,
         muscle_activations_intensity: PyoMuscles | np.ndarray = None,
         display_q: bool = False,
+        marker_trajectories: MarkerTrajectories = None,
     ) -> None:
         """
         Add an animated model to the phase.
@@ -78,6 +79,8 @@ class PhaseRerun:
             The muscle activation level to display.
         display_q: bool
             Whether to display the generalized coordinates q in charts.
+        marker_trajectories: MarkerTrajectories
+            The marker trajectories to display
         """
         shape_is_not_consistent = q.shape[1] != self.t_span.shape[0]
         if shape_is_not_consistent:
@@ -100,7 +103,7 @@ class PhaseRerun:
             tracked_markers = check_and_adjust_markers(model, tracked_markers)
             self.__add_tracked_markers(model, tracked_markers)
             tracked_markers = tracked_markers.to_numpy()[:3, :, :]
-        self.models.add_animated_model(model, q, tracked_markers, muscle_colors)
+        self.models.add_animated_model(model, q, tracked_markers, muscle_colors, marker_trajectories)
 
         if display_q:
             self.add_q(

@@ -5,7 +5,7 @@ import numpy as np
 
 from .mesh import TransformableMeshUpdater
 from .model_display_options import DisplayModelOptions
-from .model_markers import MarkersUpdater
+from .model_markers import MarkersUpdater, PersistentMarkersUpdater
 from .segment import SegmentUpdater
 from ..abstract.abstract_class import Components
 from ..abstract.empty_updater import EmptyUpdater
@@ -13,6 +13,7 @@ from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
 from ..model_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
 from ..model_interfaces import AbstractModel, model_from_file
+from ..xp_components.marker_trajectories import MarkerTrajectories
 
 
 class ModelUpdater(Components):
@@ -21,9 +22,12 @@ class ModelUpdater(Components):
         name,
         model: AbstractModel,
         muscle_colors: np.ndarray = None,
+        marker_trajectories: MarkerTrajectories = None
     ):
         self.name = name
         self.model = model
+        
+        # Time dependant components
         self.markers = self.create_markers_updater()
         self.centers_of_mass = self.create_centers_of_mass_updater()
         self.soft_contacts = self.create_soft_contacts_updater()
@@ -31,6 +35,9 @@ class ModelUpdater(Components):
         self.ligaments = self.create_ligaments_updater()
         self.segments = self.create_segments_updater()
         self.muscles = self.create_muscles_updater(muscle_colors)
+        
+        # Persistent components
+        self.persistent_markers = self.create_persistent_markers_updater(marker_trajectories)
 
     @classmethod
     def from_file(cls, model_path: str, options: DisplayModelOptions = None):
@@ -199,6 +206,22 @@ class ModelUpdater(Components):
             update_callable=self.model.muscle_strips,
         )
 
+    def create_persistent_markers_updater(self, marker_trajectories: MarkerTrajectories):
+        if self.model.nb_markers == 0 or marker_trajectories is None:
+            return EmptyUpdater(self.name + "/persistent_marker")
+        else:
+            return PersistentMarkersUpdater(
+                self.name,
+                marker_properties=MarkerProperties(
+                    markers_names=self.model.marker_names,
+                    color=np.array(self.model.options.markers_color),
+                    radius=self.model.options.markers_radius,
+                    show_labels=self.model.options.show_marker_labels,
+                ),
+                marker_trajectories=marker_trajectories,
+                callable_markers=self.model.markers,
+            )
+
     @property
     def nb_components(self):
         nb_components = 0
@@ -218,6 +241,7 @@ class ModelUpdater(Components):
             *all_segment_components,
             self.ligaments,
             self.muscles,
+            self.persistent_markers,
         ]
 
     @property
