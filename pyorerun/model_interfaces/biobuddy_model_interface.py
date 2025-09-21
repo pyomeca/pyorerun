@@ -58,7 +58,7 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
     A class to handle a biorbd model and its transformations
     """
 
-    def __init__(self, path: str=None, options=None):
+    def __init__(self, path: str = None, options=None):
         """
         A biobuddy.BioemchanicalModelReal cannot be created from a path directly, so we need to use the
         BiobuddyModelNoMesh.from_biobuddy_object() to set it.
@@ -102,12 +102,12 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
 
     @cached_property
     def segments(self):
-        """ Returns a NamedList[SegmentReal] """
+        """Returns a NamedList[SegmentReal]"""
         return self.model.segments
 
     @cached_property
     def segments_with_mass(self) -> tuple:
-        """ Returns a tuple[SegmentReal] """
+        """Returns a tuple[SegmentReal]"""
         segments_with_mass_list = []
         for s in self.segments:
             inertia_parameters = s.segment.inertia_parameters
@@ -312,11 +312,7 @@ class BiobuddyModel(BiobuddyModelNoMesh, AbstractModel):  # Inherits from Biobud
             # If q contains NaN, return an identity matrix as biorbd will throw an error otherwise
             return np.identity(4)
         else:
-            mesh_rt = (
-                super(BiobuddyModel, self)
-                .segments[segment_index]
-                .mesh_file.mesh_rt.rt_matrix
-            )
+            mesh_rt = super(BiobuddyModel, self).segments[segment_index].mesh_file.mesh_rt.rt_matrix
 
             # mesh_rt = self.segments[segment_index].segment.characteristics().mesh().getRotation().to_array()
             segment_rt = self.segment_homogeneous_matrices_in_global(q, segment_index=segment_index)

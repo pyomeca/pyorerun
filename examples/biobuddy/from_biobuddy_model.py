@@ -18,14 +18,12 @@ def main():
     nb_seconds = 1
     t_span = np.linspace(0, nb_seconds, nb_frames)
 
-
     # Creating the model
     biobuddy_model = biobuddy.BiomechanicalModelReal().from_biomod(
         "models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
     )
     display_options = DisplayModelOptions()
     prr_model = BiobuddyModel.from_biobuddy_object(biobuddy_model, options=display_options)
-
 
     # building some generalized coordinates
     q = np.zeros((biobuddy_model.nb_q, nb_frames))
@@ -35,7 +33,6 @@ def main():
     q[13, :] = np.linspace(0, np.pi / 8, nb_frames)
     q[14, :] = np.linspace(0, np.pi / 8, nb_frames)
     q[15, :] = np.linspace(0, np.pi / 8, nb_frames)
-
 
     # Animate the model
     viz = PhaseRerun(t_span)
