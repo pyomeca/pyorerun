@@ -13,7 +13,6 @@ from ..abstract.linestrip import LineStripProperties
 from ..abstract.markers import MarkerProperties
 from ..model_components.ligaments import LigamentsUpdater, MusclesUpdater, LineStripUpdaterFromGlobalTransform
 from ..model_interfaces import AbstractModel, model_from_file
-from ..xp_components.marker_trajectories import MarkerTrajectories
 
 
 class ModelUpdater(Components):
@@ -22,7 +21,6 @@ class ModelUpdater(Components):
         name,
         model: AbstractModel,
         muscle_colors: np.ndarray = None,
-        marker_trajectories: MarkerTrajectories = None,
     ):
         self.name = name
         self.model = model
@@ -37,7 +35,7 @@ class ModelUpdater(Components):
         self.muscles = self.create_muscles_updater(muscle_colors)
 
         # Persistent components
-        self.persistent_markers = self.create_persistent_markers_updater(marker_trajectories)
+        self.persistent_markers = self.create_persistent_markers_updater()
 
     @classmethod
     def from_file(cls, model_path: str, options: DisplayModelOptions = None):
@@ -206,8 +204,8 @@ class ModelUpdater(Components):
             update_callable=self.model.muscle_strips,
         )
 
-    def create_persistent_markers_updater(self, marker_trajectories: MarkerTrajectories):
-        if self.model.nb_markers == 0 or marker_trajectories is None:
+    def create_persistent_markers_updater(self):
+        if self.model.nb_markers == 0 or self.model.options.persistent_markers is None:
             return EmptyUpdater(self.name + "/persistent_marker")
         else:
             return PersistentMarkersUpdater(
@@ -218,7 +216,7 @@ class ModelUpdater(Components):
                     radius=self.model.options.markers_radius,
                     show_labels=self.model.options.show_marker_labels,
                 ),
-                marker_trajectories=marker_trajectories,
+                persistent_markers=self.model.options.persistent_markers,
                 callable_markers=self.model.markers,
             )
 
@@ -241,8 +239,11 @@ class ModelUpdater(Components):
             *all_segment_components,
             self.ligaments,
             self.muscles,
-            self.persistent_markers,
         ]
+
+    @property
+    def persistent_components(self) -> list[Any]:
+        return [self.persistent_markers]
 
     @property
     def component_names(self) -> list[str]:
@@ -263,8 +264,16 @@ class ModelUpdater(Components):
         for component in self.components:
             component.to_rerun(q)
 
+        for persistent_component in self.persistent_components:
+            persistent_component.to_rerun(q)
+
     def to_component(self, q: np.ndarray) -> list:
-        return [component.to_component(q) for component in self.components]
+        components = []
+        for component in self.components:
+            components += [component.to_component(q)]
+        for persistent_component in self.persistent_components:
+            components += [persistent_component.to_component(q)]
+        return components
 
     def initialize(self):
         for segment in self.segments:
@@ -274,6 +283,8 @@ class ModelUpdater(Components):
         output = {}
         for component in self.components:
             output.update(component.to_chunk(q))
+        for persistent_component in self.persistent_components:
+            output.update(persistent_component.to_chunk(q))
         # remove all empty components, this is the "empty" field
         output.pop("empty")
         return output
