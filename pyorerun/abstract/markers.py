@@ -10,6 +10,7 @@ class Markers(Component):
     def nb_markers(self):
         pass
 
+
 class MarkerProperties:
     """
     A class used to represent the properties of a marker.

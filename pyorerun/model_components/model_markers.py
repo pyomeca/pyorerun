@@ -78,8 +78,8 @@ class PersistentMarkersUpdater(MarkersUpdater):
     def nb_marker_to_keep(self) -> int:
         return len(self.persistent_markers.marker_names)
 
-    def get_markers_to_keep(self, q: np.ndarray) ->  tuple[np.ndarray, list[str]]:
-        """ From all markers, keep only the markers to compute a marker trajectory for """
+    def get_markers_to_keep(self, q: np.ndarray) -> tuple[np.ndarray, list[str]]:
+        """From all markers, keep only the markers to compute a marker trajectory for"""
         model_markers = self.compute_markers(q)
         model_markers_names = self.marker_properties.markers_names
         markers_to_keep, markers_to_keep_names = self.persistent_markers.marker_to_keep(
@@ -89,9 +89,9 @@ class PersistentMarkersUpdater(MarkersUpdater):
 
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
-        self.name,
-        self.to_persistent_component(q),
-    )
+            self.name,
+            self.to_persistent_component(q),
+        )
 
     def to_persistent_component(self, q: np.ndarray) -> rr.Points3D:
         nb_frames = q.shape[1]
@@ -139,6 +139,7 @@ class PersistentMarkersUpdater(MarkersUpdater):
                 rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames)]),
             ]
         }
+
 
 def from_pyo_to_rerun(maker_positions: np.ndarray) -> np.ndarray:
     """[3 x N] to [N x 3]"""

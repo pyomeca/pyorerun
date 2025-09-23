@@ -64,7 +64,7 @@ class ModelRerunPhase:
                 self.q[i][:, frame],
             )
             rr_model.to_rerun_persistent(
-                self.q[i][:, :frame + 1],
+                self.q[i][:, : frame + 1],
             )
 
     def to_rerun_links(self, frame: int):
