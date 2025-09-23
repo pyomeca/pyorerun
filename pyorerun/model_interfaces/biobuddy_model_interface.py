@@ -1,3 +1,6 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from biobuddy import NamedList, SegmentReal, BioemchanicalModelReal
 from functools import cached_property
 
 import numpy as np
@@ -34,8 +37,10 @@ class BiobuddySegment(AbstractSegment):  # Inherits from AbstractSegment
 
     @cached_property
     def has_meshlines(self) -> bool:
-        has_mesh = self.segment.mesh is not None
-        return has_mesh
+        """
+        * Not implemented in biobuddy yet, so returns False for now *
+        """
+        return False
 
     @cached_property
     def mesh_path(self) -> list[str]:
@@ -69,11 +74,7 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
         self.model = None
 
     @classmethod
-    def from_biobuddy_object(cls, model: "biobuddy.BioemchanicalModelReal", options=None):
-        """
-        model is a biobuddy.BioemchanicalModelReal object, but we cannot enforce it here due to circular import between
-        biobuddy and pyorerun libraries.
-        """
+    def from_biobuddy_object(cls, model: BioemchanicalModelReal, options=None):
         new_object = cls(None, None)
         new_object.model = model
         if options is not None:
@@ -101,13 +102,11 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
         return self.model.nb_segments
 
     @cached_property
-    def segments(self):
-        """Returns a NamedList[SegmentReal]"""
+    def segments(self) -> NamedList[SegmentReal]:
         return self.model.segments
 
     @cached_property
-    def segments_with_mass(self) -> tuple:
-        """Returns a tuple[SegmentReal]"""
+    def segments_with_mass(self) -> tuple[SegmentReal]:
         segments_with_mass_list = []
         for s in self.segments:
             inertia_parameters = s.segment.inertia_parameters
@@ -208,12 +207,12 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
 
     @cached_property
     def dof_names(self) -> tuple[str, ...]:
-        return self.model.dof_names
+        return tuple(s.dof_names for s in self.model.segments)
 
     @cached_property
     def q_ranges(self) -> tuple[tuple[float, float], ...]:
-        q_ranges = [q_range for segment in self.model.segments for q_range in segment.ranges_q]
-        return tuple((q_range.min(), q_range.max()) for q_range in q_ranges)
+        q_ranges = [q_range for segment in self.model.segments for q_range in segment.q_ranges]
+        return tuple((q_range.min_bound(), q_range.max_bound()) for q_range in q_ranges)
 
     @cached_property
     def gravity(self) -> np.ndarray:
@@ -295,14 +294,14 @@ class BiobuddyModel(BiobuddyModelNoMesh, AbstractModel):  # Inherits from Biobud
 
     @cached_property
     def meshlines(self) -> list[np.ndarray]:
-
-        # TODO
-        meshes = []
-        for segment in self.segments:
-            segment_mesh = segment.segment.mesh
-            meshes += [np.array([segment_mesh.point(i).to_array() for i in range(segment_mesh.nbVertex())])]
-
-        return meshes
+        raise NotImplementedError("Meshlines were not implemented for BioBuddy models.")
+        # # TODO
+        # meshes = []
+        # for segment in self.segments:
+        #     segment_mesh = segment.segment.mesh
+        #     meshes += [np.array([segment_mesh.point(i).to_array() for i in range(segment_mesh.nbVertex())])]
+        #
+        # return meshes
 
     def mesh_homogenous_matrices_in_global(self, q: np.ndarray, segment_index: int, **kwargs) -> np.ndarray:
         """
