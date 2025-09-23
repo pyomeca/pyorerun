@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from biobuddy import NamedList, SegmentReal, BioemchanicalModelReal
 from functools import cached_property
