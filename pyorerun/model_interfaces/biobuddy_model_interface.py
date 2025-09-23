@@ -1,8 +1,3 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from biobuddy import NamedList, SegmentReal, BiomechanicalModelReal
-    
 from functools import cached_property
 
 import numpy as np
@@ -76,7 +71,7 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
         self.model = None
 
     @classmethod
-    def from_biobuddy_object(cls, model: BiomechanicalModelReal, options=None):
+    def from_biobuddy_object(cls, model: "BiomechanicalModelReal", options=None):
         new_object = cls(None, None)
         new_object.model = model
         if options is not None:
@@ -104,11 +99,13 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
         return self.model.nb_segments
 
     @cached_property
-    def segments(self) -> NamedList[SegmentReal]:
+    def segments(self):
+    	""" returns a NamedList[SegmentReal]"""
         return self.model.segments
 
     @cached_property
-    def segments_with_mass(self) -> tuple[SegmentReal]:
+    def segments_with_mass(self) -> tuple:
+    """ returns a tuple[SegmentReal]"""
         segments_with_mass_list = []
         for s in self.segments:
             inertia_parameters = s.segment.inertia_parameters
