@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from biobuddy import NamedList, SegmentReal, BioemchanicalModelReal
+    from biobuddy import NamedList, SegmentReal, BiomechanicalModelReal
+    
 from functools import cached_property
 
 import numpy as np
@@ -66,7 +67,7 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
 
     def __init__(self, path: str = None, options=None):
         """
-        A biobuddy.BioemchanicalModelReal cannot be created from a path directly, so we need to use the
+        A biobuddy.BiomechanicalModelReal cannot be created from a path directly, so we need to use the
         BiobuddyModelNoMesh.from_biobuddy_object() to set it.
         """
         if path is not None:
@@ -75,7 +76,7 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
         self.model = None
 
     @classmethod
-    def from_biobuddy_object(cls, model: BioemchanicalModelReal, options=None):
+    def from_biobuddy_object(cls, model: BiomechanicalModelReal, options=None):
         new_object = cls(None, None)
         new_object.model = model
         if options is not None:
