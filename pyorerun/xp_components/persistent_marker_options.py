@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class PersistentMarkerOptions:
     def __init__(self, marker_names: list[str], nb_frames: int | None = None) -> None:
         """
@@ -17,52 +14,31 @@ class PersistentMarkerOptions:
         self.marker_names = marker_names
         self.nb_frames = nb_frames
 
-    def list_frames_to_keep(self, nb_frames_in_trial: int) -> list[list[int]]:
+    def frames_to_keep(self, frame_idx: int) -> list[int]:
         """
-        For each frame in the trial, it returns a list of the frame numbers that must be displayed.
-        Example: A trial composed of 5 frames with a self.nb_frames of 3 frames would get the following output:
-        [
-            [0],
-            [0, 1],
-            [0, 1, 2],
-            [1, 2, 3],
-            [2, 3, 4],
-        ]
-        Parameters
-        ----------
-        nb_frames_in_trial: int
-            The number of trames that the trial contains
-        """
-        # Deal with the case where nb_frames is None
-        if self.nb_frames is None:
-            self.nb_frames = nb_frames_in_trial
+        Give the list of frames to keep for a given current frame index.
 
-        list_frames_to_keep = []
-        for i in range(nb_frames_in_trial):
-            if i < self.nb_frames:
-                list_frames_to_keep.append(list(range(i + 1)))
-            else:
-                list_frames_to_keep.append(list(range(i - self.nb_frames + 1, i + 1)))
-        return list_frames_to_keep
-
-    def marker_to_keep(self, model_markers: np.ndarray, model_markers_names: list[str]) -> tuple[np.ndarray, list[str]]:
-        """
-        Keep only the markers to compute a marker trajectory for.
+        Examples
+        --------
+        - If nb_frames=5 and frame_idx=10, it will return [6, 7, 8, 9, 10]
+        - If nb_frames=5 and frame_idx=3, it will return [0, 1, 2, 3]
 
         Parameters
         ----------
-        model_markers: np.ndarray
-            All model marker positions (3, N_markers, N_frames)
-        model_markers_names: list[str]
-            All model markers names (N_markers)
+        frame_idx : int
+            The current frame index.
         """
-        trial_nb_frames = model_markers.shape[2]
-        markers_to_keep = np.zeros((3, len(self.marker_names), trial_nb_frames))
-        markers_to_keep_names = []  # To keep track of the reordering of the marker names
-        marker_to_keep_idx = 0
-        for i_marker, marker_name in enumerate(model_markers_names):
-            if marker_name in self.marker_names:
-                markers_to_keep_names += [marker_name]
-                markers_to_keep[:, marker_to_keep_idx, :] = model_markers[:, i_marker, :]
-                marker_to_keep_idx += 1
-        return markers_to_keep, markers_to_keep_names
+        n = self.nb_frames
+        start = max(0, frame_idx - n + 1)
+        return list(range(start, frame_idx + 1))
+
+    def all_frames_to_keep(self, total_frames: int) -> list[list[int]]:
+        """
+        Give the list of frames to keep for all frames from 0 to total_frames-1.
+
+        Parameters
+        ----------
+        total_frames : int
+            The total number of frames in the simulation.
+        """
+        return [self.frames_to_keep(frame_idx) for frame_idx in range(total_frames)]

@@ -208,6 +208,9 @@ class ModelUpdater(Components):
         if self.model.nb_markers == 0 or self.model.options.persistent_markers is None:
             return EmptyUpdater(self.name + "/persistent_marker")
         else:
+            markers_names = self.model.options.persistent_markers.marker_names
+            markers_idx = [self.model.marker_names.index(name) for name in markers_names]
+
             return PersistentMarkersUpdater(
                 self.name,
                 marker_properties=MarkerProperties(
@@ -216,8 +219,8 @@ class ModelUpdater(Components):
                     radius=self.model.options.markers_radius,
                     show_labels=self.model.options.show_marker_labels,
                 ),
-                persistent_markers=self.model.options.persistent_markers,
-                callable_markers=self.model.markers,
+                callable_markers=lambda q: self.model.markers(q)[markers_idx, :],
+                persistent_options=self.model.options.persistent_markers,
             )
 
     @property
@@ -264,7 +267,7 @@ class ModelUpdater(Components):
         for component in self.components:
             component.to_rerun(q)
 
-    def to_rerun_persistent(self, q: np.ndarray) -> None:
+    def to_rerun_persistent(self, q: np.ndarray, frame: int) -> None:
         """
         This function logs the components to rerun.
 
@@ -272,9 +275,12 @@ class ModelUpdater(Components):
         ----------
         q: np.ndarray
             The generalized coordinates of the model two-dimensional array, i.e., q.shape = (n_q, N_frames).
+        frame: int
+            The current frame number.
         """
         for persistent_component in self.persistent_components:
-            persistent_component.to_rerun(q)
+            nb_frames = persistent_component.persistent_options.nb_frames
+            persistent_component.to_rerun(q[:, -nb_frames:], frame)
 
     def to_component(self, q: np.ndarray) -> list:
         components = []
@@ -292,8 +298,10 @@ class ModelUpdater(Components):
         output = {}
         for component in self.components:
             output.update(component.to_chunk(q))
+
         for persistent_component in self.persistent_components:
             output.update(persistent_component.to_chunk(q))
+
         # remove all empty components, this is the "empty" field
         output.pop("empty")
         return output

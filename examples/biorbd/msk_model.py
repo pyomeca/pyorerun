@@ -38,7 +38,7 @@ def main():
     print(f"Time to run: {toc - tic}")
 
     tic = time.time()
-    # viz.rerun_by_frame("msk_model frame by frame")
+    viz.rerun_by_frame("msk_model frame by frame")
     toc = time.time()
     print(f"Time to run with chunks: {toc - tic}")
 
