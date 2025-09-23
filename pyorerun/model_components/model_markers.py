@@ -78,12 +78,6 @@ class PersistentMarkersUpdater(MarkersUpdater):
     def nb_marker_to_keep(self) -> int:
         return len(self.persistent_markers.marker_names)
 
-    def compute_markers_to_display(self, markers_to_keep: np.ndarray, frames: list[int]) -> np.ndarray:
-        markers = np.zeros((3, self.nb_marker_to_keep, len(frames)))
-        for i_frame, frame in enumerate(frames):
-            markers[:, :, i_frame] = markers_to_keep[:, :, frame]
-        return markers
-
     def get_markers_to_keep(self, q: np.ndarray) ->  tuple[np.ndarray, list[str]]:
         """ From all markers, keep only the markers to compute a marker trajectory for """
         model_markers = self.compute_markers(q)
@@ -96,19 +90,14 @@ class PersistentMarkersUpdater(MarkersUpdater):
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
         self.name,
-        self.to_component(q),
+        self.to_persistent_component(q),
     )
 
-    def to_component(self, q: np.ndarray) -> rr.Points3D:
+    def to_persistent_component(self, q: np.ndarray) -> rr.Points3D:
         nb_frames = q.shape[1]
-        list_frames_to_keep = self.persistent_markers.list_frames_to_keep(nb_frames)
+        frames_to_keep = self.persistent_markers.list_frames_to_keep(nb_frames)[-1]
         markers_to_keep, markers_to_keep_names = self.get_markers_to_keep(q)
-
-        # Repeat the markers to keep for this frame # !!!!!!!!
-        markers = np.empty((0, 3))
-        for frames_to_keep in list_frames_to_keep:
-            markers_to_display = self.compute_markers_to_display(markers_to_keep, frames_to_keep)
-            markers = np.vstack((markers, markers_to_display.transpose(2, 1, 0).reshape(-1, 3)))
+        markers = markers_to_keep[:, :, frames_to_keep].transpose(2, 1, 0).reshape(-1, 3)
 
         return rr.Points3D(
             positions=markers,

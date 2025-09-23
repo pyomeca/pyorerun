@@ -264,6 +264,15 @@ class ModelUpdater(Components):
         for component in self.components:
             component.to_rerun(q)
 
+    def to_rerun_persistent(self, q: np.ndarray) -> None:
+        """
+        This function logs the components to rerun.
+
+        Parameters
+        ----------
+        q: np.ndarray
+            The generalized coordinates of the model two-dimensional array, i.e., q.shape = (n_q, N_frames).
+        """
         for persistent_component in self.persistent_components:
             persistent_component.to_rerun(q)
 

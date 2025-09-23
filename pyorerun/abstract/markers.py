@@ -2,20 +2,13 @@ from abc import abstractmethod
 
 import numpy as np
 
-from .abstract_class import Component, PersistentComponent
+from .abstract_class import Component
 
 
 class Markers(Component):
     @abstractmethod
     def nb_markers(self):
         pass
-
-
-class PersistentMarkers(PersistentComponent):
-    @abstractmethod
-    def nb_markers(self):
-        pass
-
 
 class MarkerProperties:
     """

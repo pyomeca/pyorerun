@@ -27,21 +27,6 @@ class Component(ABC):
         pass
 
 
-class PersistentComponent(ABC):
-
-    @abstractmethod
-    def to_rerun(self, q: np.ndarray, frame_bounds: tuple[int, int]):
-        pass
-
-    @abstractmethod
-    def nb_components(self):
-        pass
-
-    @abstractmethod
-    def to_chunk(self, q: np.ndarray):
-        pass
-
-
 class Components(ABC):
     @abstractmethod
     def to_rerun(self, q: np.ndarray):

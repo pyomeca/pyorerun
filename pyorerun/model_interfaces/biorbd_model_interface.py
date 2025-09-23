@@ -120,16 +120,6 @@ class BiorbdModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMe
         """
         return np.array([self.model.markers(GeneralizedCoordinates(q))[i].to_array() for i in range(self.nb_markers)])
 
-    def persistent_markers(self, q: np.ndarray, frame_range: range) -> np.ndarray:
-        """
-        Returns a [N_markers x 3 x N_frames] array containing the position of each marker in the global reference frame over time
-        """
-        markers_position = np.zeros((self.nb_markers, 3, len(frame_range)))
-        for frame in frame_range:
-            for i in range(self.nb_markers):
-                markers_position[i, :, frame] = self.model.markers(GeneralizedCoordinates(q[frame]))[i].to_array()
-        return markers_position
-
     def centers_of_mass(self, q: np.ndarray) -> np.ndarray:
         """
         Returns the position of the centers of mass in the global reference frame

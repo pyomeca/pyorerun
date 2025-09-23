@@ -1,7 +1,5 @@
 import numpy as np
 
-from ..abstract.abstract_class import PersistentComponent
-
 
 class PersistentMarkerOptions:
     def __init__(self, marker_names: list[str], nb_frames: int | None = None) -> None:
