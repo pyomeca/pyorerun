@@ -100,12 +100,12 @@ class BiobuddyModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNo
 
     @cached_property
     def segments(self):
-    	""" returns a NamedList[SegmentReal]"""
+        """returns a NamedList[SegmentReal]"""
         return self.model.segments
 
     @cached_property
     def segments_with_mass(self) -> tuple:
-    """ returns a tuple[SegmentReal]"""
+        """returns a tuple[SegmentReal]"""
         segments_with_mass_list = []
         for s in self.segments:
             inertia_parameters = s.segment.inertia_parameters
