@@ -4,12 +4,12 @@ from ..abstract.markers import MarkerProperties
 
 class PersistentMarkerOptions(MarkerProperties):
     def __init__(
-            self,
-            marker_names: list[str] | tuple[str, ...],
-            radius: float | tuple[float, ...],
-            color: np.ndarray,
-            show_labels: bool | list[bool] = True,
-            nb_frames: int | None = None,
+        self,
+        marker_names: list[str] | tuple[str, ...],
+        radius: float | tuple[float, ...],
+        color: np.ndarray,
+        show_labels: bool | list[bool] = True,
+        nb_frames: int | None = None,
     ) -> None:
         """
         Initialization of a marker trajectory
