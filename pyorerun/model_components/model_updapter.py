@@ -213,12 +213,6 @@ class ModelUpdater(Components):
 
             return PersistentMarkersUpdater(
                 self.name,
-                marker_properties=MarkerProperties(
-                    marker_names=self.model.marker_names,
-                    color=np.array(self.model.options.markers_color),
-                    radius=self.model.options.markers_radius,
-                    show_labels=self.model.options.show_marker_labels,
-                ),
                 callable_markers=lambda q: self.model.markers(q)[markers_idx, :],
                 persistent_options=self.model.options.persistent_markers,
             )

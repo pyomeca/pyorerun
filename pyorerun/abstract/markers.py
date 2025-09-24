@@ -37,7 +37,7 @@ class MarkerProperties:
 
     def __init__(
         self,
-        marker_names: list[str, ...] | tuple[str, ...],
+        marker_names: list[str] | tuple[str, ...],
         radius: float | tuple[float, ...],
         color: np.ndarray,
         show_labels: bool | list[bool] = True,

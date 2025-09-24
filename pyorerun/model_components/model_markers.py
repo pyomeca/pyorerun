@@ -59,12 +59,10 @@ class PersistentMarkersUpdater(PersistentComponent):
     def __init__(
         self,
         name,
-        marker_properties: MarkerProperties,
         callable_markers: callable,
         persistent_options: PersistentMarkerOptions,
     ):
         self.name = name + "/persistent_model_markers"
-        self.marker_properties = marker_properties
         self.callable_markers = callable_markers
         self.persistent_options = persistent_options
 
@@ -100,10 +98,10 @@ class PersistentMarkersUpdater(PersistentComponent):
 
         return rr.Points3D(
             positions=markers,
-            radii=self.marker_properties.radius_to_rerun(),
-            colors=self.marker_properties.color_to_rerun(),
+            radii=self.persistent_options.radius_to_rerun(),
+            colors=self.persistent_options.color_to_rerun(),
             labels=self.persistent_options.marker_names * len(frames_to_keep),
-            show_labels=self.marker_properties.show_labels_to_rerun(),
+            show_labels=self.persistent_options.show_labels_to_rerun(),
         )
 
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
@@ -134,10 +132,10 @@ class PersistentMarkersUpdater(PersistentComponent):
             self.name: [
                 rr.Points3D.indicator(),
                 rr.components.Position3DBatch(markers).partition(partition),
-                rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames_trials)]),
-                rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames_trials)]),
+                rr.components.ColorBatch([self.persistent_options.color for _ in range(nb_frames_trials)]),
+                rr.components.RadiusBatch([self.persistent_options.radius for _ in range(nb_frames_trials)]),
                 rr.components.TextBatch(partition_marker_names).partition(partition),
-                rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames_trials)]),
+                rr.components.ShowLabelsBatch([self.persistent_options.show_labels for _ in range(nb_frames_trials)]),
             ]
         }
 

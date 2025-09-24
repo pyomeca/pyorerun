@@ -1,17 +1,34 @@
-class PersistentMarkerOptions:
-    def __init__(self, marker_names: list[str], nb_frames: int | None = None) -> None:
+import numpy as np
+from ..abstract.markers import MarkerProperties
+
+
+class PersistentMarkerOptions(MarkerProperties):
+    def __init__(
+            self,
+            marker_names: list[str] | tuple[str, ...],
+            radius: float | tuple[float, ...],
+            color: np.ndarray,
+            show_labels: bool | list[bool] = True,
+            nb_frames: int | None = None,
+    ) -> None:
         """
         Initialization of a marker trajectory
 
         Parameters
         ----------
-        marker_names: str
+        marker_names: list[str, ...] | tuple[str, ...]
             The name of the markers to display a trajectory for.
+        radius : float | tuple[float, ...]
+                the radius of the markers to display a trajectory for.
+        color : np.ndarray
+            the color of the markers to display a trajectory for
+        show_labels : bool
+            whether to show the labels of the markers to display a trajectory for.
         nb_frames: int | None
             The number of frames to display the trajectory for. If None, all previous frames will be displayed.
             Example: nb_frames=20 means that the position of the marker for the last 20 frames will be displayed at each current frame.
         """
-        self.marker_names = marker_names
+        super().__init__(marker_names, radius, color, show_labels)
         self.nb_frames = nb_frames
 
     def frames_to_keep(self, frame_idx: int) -> list[int]:

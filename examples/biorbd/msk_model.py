@@ -27,7 +27,13 @@ def main():
     viz = PhaseRerun(t_span)
 
     # Example of how to add a persistent marker
-    model.options.persistent_markers = PersistentMarkerOptions(marker_names=["ULNA", "RADIUS"], nb_frames=20)
+    model.options.persistent_markers = PersistentMarkerOptions(
+        marker_names=["ULNA", "RADIUS"],
+        radius=0.005,
+        color=np.array([255, 0, 0]),  # Red
+        show_labels=False,
+        nb_frames=20,
+    )
 
     # viz.add_animated_model(model, q, display_q=True)
     viz.add_animated_model(model, q, display_q=False)
