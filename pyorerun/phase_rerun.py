@@ -8,7 +8,7 @@ from .model_interfaces import AbstractModel
 from .model_phase import ModelRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp, PersistentMarkerOptions
 from .xp_phase import XpRerunPhase
 from .utils.markers_utils import check_and_adjust_markers
 
