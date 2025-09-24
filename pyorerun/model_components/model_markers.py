@@ -31,7 +31,7 @@ class MarkersUpdater(Component):
             positions=self.callable_markers(q),
             radii=self.marker_properties.radius_to_rerun(),
             colors=self.marker_properties.color_to_rerun(),
-            labels=self.marker_properties.markers_names,
+            labels=self.marker_properties.marker_names,
             show_labels=self.marker_properties.show_labels_to_rerun(),
         )
 
@@ -41,7 +41,7 @@ class MarkersUpdater(Component):
     def to_chunk(self, q) -> dict[str, list]:
         nb_frames = q.shape[1]
         markers = self.compute_markers(q).transpose(2, 1, 0).reshape(-1, 3)
-        markers_names = [name for _ in range(nb_frames) for name in self.marker_properties.markers_names]
+        marker_names = [name for _ in range(nb_frames) for name in self.marker_properties.marker_names]
         partition = [self.nb_markers for _ in range(nb_frames)]
         return {
             self.name: [
@@ -49,7 +49,7 @@ class MarkersUpdater(Component):
                 rr.components.Position3DBatch(markers).partition(partition),
                 rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames)]),
                 rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames)]),
-                rr.components.TextBatch(markers_names).partition(partition),
+                rr.components.TextBatch(marker_names).partition(partition),
                 rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames)]),
             ]
         }

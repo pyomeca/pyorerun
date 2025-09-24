@@ -80,7 +80,7 @@ class ModelUpdater(Components):
         return MarkersUpdater(
             self.name,
             marker_properties=MarkerProperties(
-                markers_names=self.model.marker_names,
+                marker_names=self.model.marker_names,
                 color=np.array(self.model.options.markers_color),
                 radius=self.model.options.markers_radius,
                 show_labels=self.model.options.show_marker_labels,
@@ -94,7 +94,7 @@ class ModelUpdater(Components):
             return MarkersUpdater(
                 self.name + "/centers_of_mass",
                 marker_properties=MarkerProperties(
-                    markers_names=self.model.segment_names_with_mass,
+                    marker_names=self.model.segment_names_with_mass,
                     color=np.array(self.model.options.centers_of_mass_color),
                     radius=self.model.options.centers_of_mass_radius,
                     show_labels=self.model.options.show_center_of_mass_labels,
@@ -110,7 +110,7 @@ class ModelUpdater(Components):
         return MarkersUpdater(
             self.name + "/soft_contacts",
             marker_properties=MarkerProperties(
-                markers_names=self.model.soft_contacts_names,
+                marker_names=self.model.soft_contacts_names,
                 color=np.array(self.model.options.soft_contacts_color),
                 radius=self.model.soft_contact_radii,
                 show_labels=self.model.options.show_contact_labels,
@@ -124,7 +124,7 @@ class ModelUpdater(Components):
         return MarkersUpdater(
             self.name + "/rigid_contacts",
             marker_properties=MarkerProperties(
-                markers_names=self.model.rigid_contacts_names,
+                marker_names=self.model.rigid_contacts_names,
                 color=np.array(self.model.options.rigid_contacts_color),
                 radius=0.01,
                 show_labels=self.model.options.show_contact_labels,
@@ -208,13 +208,13 @@ class ModelUpdater(Components):
         if self.model.nb_markers == 0 or self.model.options.persistent_markers is None:
             return EmptyUpdater(self.name + "/persistent_marker")
         else:
-            markers_names = self.model.options.persistent_markers.marker_names
-            markers_idx = [self.model.marker_names.index(name) for name in markers_names]
+            marker_names = self.model.options.persistent_markers.marker_names
+            markers_idx = [self.model.marker_names.index(name) for name in marker_names]
 
             return PersistentMarkersUpdater(
                 self.name,
                 marker_properties=MarkerProperties(
-                    markers_names=self.model.marker_names,
+                    marker_names=self.model.marker_names,
                     color=np.array(self.model.options.markers_color),
                     radius=self.model.options.markers_radius,
                     show_labels=self.model.options.show_marker_labels,

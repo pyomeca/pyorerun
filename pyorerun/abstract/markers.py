@@ -18,7 +18,7 @@ class MarkerProperties:
 
     Attributes
     ----------
-    markers_names : list[str]
+    marker_names : list[str]
         a list of names for the markers
     radius : float
         the radius of the markers
@@ -37,7 +37,7 @@ class MarkerProperties:
 
     def __init__(
         self,
-        markers_names: list[str, ...] | tuple[str, ...],
+        marker_names: list[str, ...] | tuple[str, ...],
         radius: float | tuple[float, ...],
         color: np.ndarray,
         show_labels: bool | list[bool] = True,
@@ -47,7 +47,7 @@ class MarkerProperties:
 
         Parameters
         ----------
-            markers_names : list[str, ...] | tuple[str, ...]
+            marker_names : list[str, ...] | tuple[str, ...]
                 a list of names for the markers
             radius : float | tuple[float, ...]
                 the radius of the markers
@@ -56,7 +56,7 @@ class MarkerProperties:
             show_labels : bool
                 whether to show the labels of the markers (this can be changed by checking the appropriate box in the GUI)
         """
-        self.markers_names = markers_names
+        self.marker_names = marker_names
         self.radius = radius
         self.color = color
         self.show_labels = show_labels
@@ -71,7 +71,7 @@ class MarkerProperties:
         int
             The number of markers.
         """
-        return len(self.markers_names)
+        return len(self.marker_names)
 
     def radius_to_rerun(self) -> None:
         """
