@@ -273,6 +273,8 @@ class ModelUpdater(Components):
             The current frame number.
         """
         for persistent_component in self.persistent_components:
+            if isinstance(persistent_component, EmptyUpdater):
+                continue
             nb_frames = persistent_component.persistent_options.nb_frames
             persistent_component.to_rerun(q[:, -nb_frames:], frame)
 
