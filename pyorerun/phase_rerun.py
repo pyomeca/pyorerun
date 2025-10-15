@@ -275,15 +275,15 @@ class PhaseRerun:
         for name, chunk in self.xp_data.to_chunk().items():
             rr.send_columns(
                 name,
-                times=times,
-                components=chunk,
+                indexes=times,
+                columns=chunk,
             )
 
         for name, chunk in self.models.to_chunk().items():
             rr.send_columns(
                 name,
-                times=times,
-                components=chunk,
+                indexes=times,
+                columns=chunk,
             )
 
         if clear_last_node:

@@ -22,7 +22,7 @@ classifiers = [
 dependencies = [
     "ezc3d",  # Now needed, but imported for our custom PyoMarkers.from_c3d()
     "numpy==1.26.4",
-    "rerun-sdk==0.21.0",
+    "rerun-sdk==0.22.1",
     "trimesh",
     "tk",
     "imageio",

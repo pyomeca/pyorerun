@@ -59,6 +59,8 @@ def rrc3d(
     pyomarkers = PyoMarkers.from_c3d(c3d_file, show_labels=show_marker_labels)
     units = pyomarkers.units
     pyomarkers = adjust_position_unit_to_meters(pyomarkers, pyomarkers.units)
+    pyomarkers.show_labels = False
+
     t_span = pyomarkers.time
     filename = Path(c3d_file).name
 
@@ -134,10 +136,10 @@ def rrc3d(
             for j, axis in enumerate(["X", "Y", "Z"]):
                 rr.send_columns(
                     f"markers_graphs/{m}/{axis}",
-                    times=[rr.TimeSecondsColumn("stable_time", t_span)],
-                    components=[
-                        rr.components.ScalarBatch(
-                            phase_rerun.xp_data.xp_data[0].markers_numpy[j, marker_names.index(m), :]
+                    indexes=[rr.TimeSecondsColumn("stable_time", t_span)],
+                    columns=[
+                        *rr.Scalar.columns(
+                            scalar=phase_rerun.xp_data.xp_data[0].markers_numpy[j, marker_names.index(m), :]
                         )
                     ],
                 )

@@ -129,15 +129,15 @@ class MultiFrameRatePhaseRerun:
             for name, chunk in phase_rerun.xp_data.to_chunk().items():
                 rr.send_columns(
                     name,
-                    times=times,
-                    components=chunk,
+                    indexes=times,
+                    columns=chunk,
                 )
 
             for name, chunk in phase_rerun.models.to_chunk().items():
                 rr.send_columns(
                     name,
-                    times=times,
-                    components=chunk,
+                    indexes=times,
+                    columns=chunk,
                 )
 
         # cumulative_frames_in_merged_t_span = self.cumulative_frames_in_merged_t_span
