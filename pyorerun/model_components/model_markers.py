@@ -43,14 +43,18 @@ class MarkersUpdater(Component):
         markers = self.compute_markers(q).transpose(2, 1, 0).reshape(-1, 3)
         marker_names = [name for _ in range(nb_frames) for name in self.marker_properties.marker_names]
         partition = [self.nb_markers for _ in range(nb_frames)]
+
         return {
             self.name: [
-                rr.Points3D.indicator(),
-                rr.components.Position3DBatch(markers).partition(partition),
-                rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames)]),
-                rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames)]),
-                rr.components.TextBatch(marker_names).partition(partition),
-                rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames)]),
+                *rr.Points3D.columns(
+                    positions=markers,
+                    labels=marker_names,
+                ).partition(partition),
+                *rr.Points3D.columns(
+                    colors=[self.marker_properties.color for _ in range(nb_frames)],
+                    radii=[self.marker_properties.radius for _ in range(nb_frames)],
+                    show_labels=[self.marker_properties.show_labels for _ in range(nb_frames)],
+                ),
             ]
         }
 
@@ -132,10 +136,10 @@ class PersistentMarkersUpdater(PersistentComponent):
             self.name: [
                 rr.Points3D.indicator(),
                 rr.components.Position3DBatch(markers).partition(partition),
-                rr.components.ColorBatch([self.persistent_options.color for _ in range(nb_frames_trials)]),
-                rr.components.RadiusBatch([self.persistent_options.radius for _ in range(nb_frames_trials)]),
+                rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames_trials)]),
+                rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames_trials)]),
                 rr.components.TextBatch(partition_marker_names).partition(partition),
-                rr.components.ShowLabelsBatch([self.persistent_options.show_labels for _ in range(nb_frames_trials)]),
+                rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames_trials)]),
             ]
         }
 

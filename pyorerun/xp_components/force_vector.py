@@ -41,12 +41,21 @@ class Vector(ExperimentalData, ABC):
 
     def to_chunk(self, **kwargs) -> dict[str, list]:
 
+        # return {
+        #     self.name: [
+        #         rr.Arrows3D.indicator(),
+        #         rr.components.Position3DBatch(self.vector_origins.T),
+        #         rr.components.Vector3DBatch(self.vector_magnitude.T),
+        #         rr.components.ColorBatch([np.array([201, 219, 227]) for _ in range(self.nb_frames)]),
+        #     ]
+        # }
         return {
             self.name: [
-                rr.Arrows3D.indicator(),
-                rr.components.Position3DBatch(self.vector_origins.T),
-                rr.components.Vector3DBatch(self.vector_magnitude.T),
-                rr.components.ColorBatch([np.array([201, 219, 227]) for _ in range(self.nb_frames)]),
+                *rr.Arrows3D.columns(
+                    origins=self.vector_origins.T.tolist(),
+                    vectors=self.vector_magnitude.T.tolist(),
+                    colors=[np.array([201, 219, 227]) for _ in range(self.nb_frames)],
+                )
             ]
         }
 

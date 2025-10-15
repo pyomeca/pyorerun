@@ -5,7 +5,7 @@ channels:
 - opensim-org
 dependencies:
 - ezc3d
-- rerun-sdk=0.21.0
+- rerun-sdk=0.22.1
 - numpy
 - matplotlib
 - biorbd>=1.10.5

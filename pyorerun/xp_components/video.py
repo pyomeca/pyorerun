@@ -52,6 +52,8 @@ class Video(ExperimentalData):
     def to_chunk(self, **kwargs) -> dict[str, list]:
         return {
             self.name: [
-                rr.components.ImageBufferBatch(self.video.reshape(self.nb_frames, -1)),
+                *rr.Image.columns(
+                    buffer=[self.video[f, :, :, :].tolist() for f in range(self.nb_frames)],
+                )
             ]
         }

@@ -92,12 +92,15 @@ class MarkersXp(Markers, ExperimentalData):
         partition = [self.nb_markers for _ in range(self.nb_frames)]
         return {
             self.name: [
-                rr.Points3D.indicator(),
-                rr.components.Position3DBatch(flattened_markers).partition(partition),
-                rr.components.ColorBatch([self.markers_properties.color for _ in range(self.nb_frames)]),
-                rr.components.RadiusBatch([self.markers_properties.radius for _ in range(self.nb_frames)]),
-                rr.components.TextBatch(marker_names).partition(partition),
-                rr.components.ShowLabelsBatch([self.markers_properties.show_labels for _ in range(self.nb_frames)]),
+                *rr.Points3D.columns(
+                    positions=flattened_markers,
+                    labels=marker_names,
+                ).partition(partition),
+                *rr.Points3D.columns(
+                    colors=[self.markers_properties.color for _ in range(self.nb_frames)],
+                    radii=[self.markers_properties.radius for _ in range(self.nb_frames)],
+                    show_labels=[self.markers_properties.show_labels for _ in range(self.nb_frames)],
+                ),
             ]
         }
 
