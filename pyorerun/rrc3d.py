@@ -139,7 +139,7 @@ def rrc3d(
                     indexes=[rr.TimeSecondsColumn("stable_time", t_span)],
                     columns=[
                         *rr.Scalar.columns(
-                            scalar=phase_rerun.xp_data.xp_data[0].markers_numpy[j, markers_names.index(m), :]
+                            scalar=phase_rerun.xp_data.xp_data[0].markers_numpy[j, marker_names.index(m), :]
                         )
                     ],
                 )
