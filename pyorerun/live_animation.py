@@ -93,17 +93,17 @@ class LiveModelAnimation:
         dof_names = self.model.dof_names
         for joint_idx in range(self.biorbd_model.nbQ()):
             name = f"q{joint_idx} - {dof_names[joint_idx]}"
-            rr.log(f"{name}/min", rr.SeriesLine(color=[255, 0, 0], name="min", width=0.5))
-            rr.log(f"{name}/max", rr.SeriesLine(color=[255, 0, 0], name="max", width=0.5))
-            rr.log(f"{name}/value", rr.SeriesLine(color=[0, 255, 0], name="q", width=0.5))
+            rr.log(f"{name}/min", rr.SeriesLines(colors=[255, 0, 0], names="min", widths=0.5))
+            rr.log(f"{name}/max", rr.SeriesLines(colors=[255, 0, 0], names="max", widths=0.5))
+            rr.log(f"{name}/value", rr.SeriesLines(colors=[0, 255, 0], names="q", widths=0.5))
 
             q_range = q_ranges[joint_idx]
             self.to_serie_line(name=name, min=q_range.min(), max=q_range.max(), val=q[joint_idx])
 
     def to_serie_line(self, name: str, min: float, max: float, val: float):
-        rr.log(f"{name}/min", rr.Scalar(min))
-        rr.log(f"{name}/max", rr.Scalar(max))
-        rr.log(f"{name}/value", rr.Scalar(val))
+        rr.log(f"{name}/min", rr.Scalars(min))
+        rr.log(f"{name}/max", rr.Scalars(max))
+        rr.log(f"{name}/value", rr.Scalars(val))
 
     def rerun(self, name: str = None):
         # update manually here

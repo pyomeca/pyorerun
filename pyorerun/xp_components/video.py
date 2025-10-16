@@ -32,9 +32,12 @@ class Video(ExperimentalData):
             color_model="RGB",
             channel_datatype="U8",
         )
+        image_zero = rr.Image.from_fields(
+            format=format_static,
+        )
         rr.log(
             self.name,
-            [format_static, rr.Image.indicator()],
+            image_zero,
             static=True,
         )
 
