@@ -134,12 +134,15 @@ class PersistentMarkersUpdater(PersistentComponent):
 
         return {
             self.name: [
-                rr.Points3D.indicator(),
-                rr.components.Position3DBatch(markers).partition(partition),
-                rr.components.ColorBatch([self.marker_properties.color for _ in range(nb_frames_trials)]),
-                rr.components.RadiusBatch([self.marker_properties.radius for _ in range(nb_frames_trials)]),
-                rr.components.TextBatch(partition_marker_names).partition(partition),
-                rr.components.ShowLabelsBatch([self.marker_properties.show_labels for _ in range(nb_frames_trials)]),
+                *rr.Points3D.columns(
+                    positions=markers,
+                    labels=partition_marker_names,
+                ).partition(partition),
+                *rr.Points3D.columns(
+                    colors=[self.persistent_options.color for _ in range(nb_frames_trials)],
+                    radii=[self.persistent_options.radius for _ in range(nb_frames_trials)],
+                    show_labels=[self.persistent_options.show_labels for _ in range(nb_frames_trials)],
+                ),
             ]
         }
 

@@ -78,7 +78,7 @@ class LiveModelAnimation:
         self.q[the_dof_idx] = the_value
         # update counter
         self.counter += 1
-        rr.set_time_sequence(timeline="step", sequence=self.counter)
+        rr.set_time(timeline="step", sequence=self.counter)
         # Update the model
         self.update_model(self.q)
         # Update the q trajectories
