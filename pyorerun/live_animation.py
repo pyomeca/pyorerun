@@ -16,8 +16,10 @@ class LiveModelAnimation:
     ----------
     counter : int
         A counter to keep track of the number of updates.
-    model : BiorbdModel
-        The biorbd model to animate.
+    model_updater : ModelUpdater
+        An instance of ModelUpdater to handle model updates.
+    model : AbstractModel
+        The model to animate.
     q : np.ndarray
         The current joint angles.
     dof_sliders : list
@@ -41,6 +43,10 @@ class LiveModelAnimation:
         """
 
         self.counter = 0
+        self.use_degrees = False
+        self.root = None
+        self._btn_toggle_units = None
+
         self.model_updater = model_updater
         self.model = self.model_updater.model
 
@@ -109,11 +115,13 @@ class LiveModelAnimation:
         self.create_window_with_sliders()
 
     def create_window_with_sliders(self):
-        root = tk.Tk()
+        self.root = tk.Tk()
+        root = self.root
         root.title("Degree of Freedom q Sliders")
 
         for i in range(self.model.nb_q):
             self.update_functions.append(lambda event, idx=i: self.update_viewer(event, idx))
+
             dof_slider_label = ttk.Label(root, text=f"q{i} - {self.model.dof_names[i]}: ", anchor="w")
             dof_slider_label.grid(row=i, column=0, padx=10, pady=5, sticky="w")
 
@@ -121,7 +129,67 @@ class LiveModelAnimation:
                 ttk.Scale(root, from_=-5, to=5, orient="horizontal", command=self.update_functions[i], length=200)
             )
             self.dof_sliders[i].grid(row=i, column=1, padx=30, pady=5)
-            self.dof_slider_values.append(ttk.Label(root, text="0"))
+
+            self.dof_slider_values.append(ttk.Label(root, text=self._format_value_for_ui(0.0)))
             self.dof_slider_values[i].grid(row=i, column=2, padx=10, pady=5)
 
+        base_row = self.model.nb_q
+        btn_copy = ttk.Button(root, text="Copy q", command=self._copy_q_values())
+        btn_copy.grid(row=base_row, column=0, padx=10, pady=10, sticky="ew")
+
+        self._btn_toggle_units = ttk.Button(root, text="Switch rad/deg", command=self._toggle_units)
+        self._btn_toggle_units.grid(row=base_row, column=1, padx=10, pady=10, sticky="ew")
+
+        btn_reset = ttk.Button(root, text="Reset all", command=self._reset_all)
+        btn_reset.grid(row=base_row, column=2, padx=10, pady=10, sticky="ew")
+
         root.mainloop()
+
+    def _format_value_for_ui(self, value_rad: float) -> str:
+        if self.use_degrees:
+            return f"{np.degrees(value_rad):.2f}°"
+        return f"{value_rad:.2f} rad"
+
+    def _update_value_label(self, idx: int):
+        val_rad = float(self.dof_sliders[idx].get())
+        self.dof_slider_values[idx].config(text=self._format_value_for_ui(val_rad))
+
+    def _toggle_units(self):
+        self.use_degrees = not self.use_degrees
+        # rafraîchir toutes les étiquettes de valeurs
+        for i in range(self.model.nb_q):
+            self._update_value_label(i)
+
+    def _copy_q_values(self):
+        if self.root is None:
+            return
+        if self.use_degrees:
+            values = [float(np.degrees(self.dof_sliders[i].get())) for i in range(self.model.nb_q)]
+            unit = "deg"
+        else:
+            values = [float(self.dof_sliders[i].get()) for i in range(self.model.nb_q)]
+            unit = "rad"
+
+        text = ", ".join(f"{v:.6f}" for v in values) + f"  [{unit}]"
+        self.root.clipboard_clear()
+        self.root.clipboard_append(text)
+
+    def _reset_all(self):
+        self.q[:] = 0.0
+        for i, s in enumerate(self.dof_sliders):
+            s.configure(command=None)
+            s.set(0.0)
+            self._update_value_label(i)
+            s.configure(command=self.update_functions[i])
+
+        self.counter += 1
+        rr.set_time(timeline="step", sequence=self.counter)
+        self.update_model(self.q)
+        if self.with_q_charts:
+            self.update_trajectories(self.q)
+
+    def fetch_and_update_slider_value(self, event, dof_index: int) -> tuple[int, float]:
+        the_dof_idx = dof_index
+        val_rad = float(self.dof_sliders[the_dof_idx].get())
+        self.dof_slider_values[the_dof_idx].config(text=self._format_value_for_ui(val_rad))
+        return the_dof_idx, val_rad
