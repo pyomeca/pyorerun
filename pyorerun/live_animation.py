@@ -18,8 +18,6 @@ class LiveModelAnimation:
         A counter to keep track of the number of updates.
     model : BiorbdModel
         The biorbd model to animate.
-    biorbd_model : biorbd.Model
-        The underlying biorbd model.
     q : np.ndarray
         The current joint angles.
     dof_sliders : list
@@ -45,9 +43,8 @@ class LiveModelAnimation:
         self.counter = 0
         self.model_updater = model_updater
         self.model = self.model_updater.model
-        self.biorbd_model = self.model.model
 
-        self.q = np.zeros(self.biorbd_model.nbQ())
+        self.q = np.zeros(self.model.nb_q)
         self.dof_sliders = []
         self.dof_slider_values = []
         self.update_functions = []
@@ -89,16 +86,16 @@ class LiveModelAnimation:
         self.model_updater.to_rerun(q)
 
     def update_trajectories(self, q: np.ndarray):
-        q_ranges = [q_range for segment in self.biorbd_model.segments() for q_range in segment.QRanges()]
+        q_ranges = self.model.q_ranges
         dof_names = self.model.dof_names
-        for joint_idx in range(self.biorbd_model.nbQ()):
+        for joint_idx in range(self.model.nb_q):
             name = f"q{joint_idx} - {dof_names[joint_idx]}"
             rr.log(f"{name}/min", rr.SeriesLines(colors=[255, 0, 0], names="min", widths=0.5))
             rr.log(f"{name}/max", rr.SeriesLines(colors=[255, 0, 0], names="max", widths=0.5))
             rr.log(f"{name}/value", rr.SeriesLines(colors=[0, 255, 0], names="q", widths=0.5))
 
             q_range = q_ranges[joint_idx]
-            self.to_serie_line(name=name, min=q_range.min(), max=q_range.max(), val=q[joint_idx])
+            self.to_serie_line(name=name, min=q_range[0], max=q_range[-1], val=q[joint_idx])
 
     def to_serie_line(self, name: str, min: float, max: float, val: float):
         rr.log(f"{name}/min", rr.Scalars(min))
@@ -115,7 +112,7 @@ class LiveModelAnimation:
         root = tk.Tk()
         root.title("Degree of Freedom q Sliders")
 
-        for i in range(self.model.model.nbQ()):
+        for i in range(self.model.nb_q):
             self.update_functions.append(lambda event, idx=i: self.update_viewer(event, idx))
             dof_slider_label = ttk.Label(root, text=f"q{i} - {self.model.dof_names[i]}: ", anchor="w")
             dof_slider_label.grid(row=i, column=0, padx=10, pady=5, sticky="w")
