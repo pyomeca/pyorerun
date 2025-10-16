@@ -5,7 +5,6 @@ We can rerun c3d files and display their original content.
 And also animate biorbd models from the pyomeca organization.
 
 ``` conda install -c conda-forge pyorerun rerun-sdk=0.24.1```
-
 ``` conda install opensim-org::opensim   # not a mandatory dependency```
 
 # Rerun .c3d - As simple as that
