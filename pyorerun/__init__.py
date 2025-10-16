@@ -3,13 +3,24 @@ from .live_integration import LiveModelIntegration
 from .model_components.model_display_options import DisplayModelOptions
 from .model_components.model_updapter import ModelUpdater
 
+# Opensim
 try:
     from .model_interfaces import (
         OsimModel,
         OsimModelNoMesh,
     )
 except ImportError:
-    # OpenSim n'est pas installé, ces classes ne seront pas disponibles
+    # OpenSim is not installed, these classes will not be available
+    pass
+
+# biobuddy
+try:
+    from .model_interfaces import (
+        BiobuddyModel,
+        BiobuddyModelNoMesh,
+    )
+except ImportError:
+    # BioBuddy is not installed, these classes will not be available
     pass
 
 from .model_interfaces import (
