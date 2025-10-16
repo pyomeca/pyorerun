@@ -136,10 +136,10 @@ def rrc3d(
             for j, axis in enumerate(["X", "Y", "Z"]):
                 rr.send_columns(
                     f"markers_graphs/{m}/{axis}",
-                    indexes=[rr.TimeSecondsColumn("stable_time", t_span)],
+                    indexes=[rr.TimeColumn("stable_time", duration=t_span)],
                     columns=[
-                        *rr.Scalar.columns(
-                            scalar=phase_rerun.xp_data.xp_data[0].markers_numpy[j, marker_names.index(m), :]
+                        *rr.Scalars.columns(
+                            scalars=phase_rerun.xp_data.xp_data[0].markers_numpy[j, marker_names.index(m), :]
                         )
                     ],
                 )
@@ -153,7 +153,7 @@ def set_event_as_log(c3d_file: str) -> None:
     context = c3d_file["parameters"]["EVENT"]["CONTEXTS"]["value"]
 
     for i, (time, label, description, context) in enumerate(zip(times, labels, descriptions, context)):
-        rr.set_time_seconds("stable_time", time)
+        rr.set_time("stable_time", duration=time)
         rr.log(
             f"events",
             rr.TextLog(

@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from functools import cached_property
 
 import numpy as np
 
@@ -52,14 +53,18 @@ class MarkerProperties:
             radius : float | tuple[float, ...]
                 the radius of the markers
             color : np.ndarray
-                the color of the markers
+                the color of the markers in RGB format from 0 to 255, e.g. [0, 0, 255] for blue
             show_labels : bool
                 whether to show the labels of the markers (this can be changed by checking the appropriate box in the GUI)
         """
         self.marker_names = marker_names
         self.radius = radius
-        self.color = color
+        self._color = color
         self.show_labels = show_labels
+
+    @cached_property
+    def color(self):
+        return rgb255_to_hex_rgba(self._color)
 
     @property
     def nb_markers(self):
@@ -107,3 +112,10 @@ class MarkerProperties:
             return self.show_labels
         else:
             raise ValueError("The show_labels attribute must be a boolean or a list of booleans.")
+
+
+def rgb255_to_hex_rgba(color_rgb, alpha=255) -> int:
+    # color_rgb: np.ndarray ou list \[R, G, B] en 0–255
+    r, g, b = [int(np.clip(c, 0, 255)) for c in color_rgb[:3]]
+    a = int(np.clip(alpha, 0, 255))
+    return (r << 24) | (g << 16) | (b << 8) | a

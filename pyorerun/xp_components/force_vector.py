@@ -4,6 +4,9 @@ import numpy as np
 import rerun as rr
 
 from ..abstract.abstract_class import ExperimentalData
+from ..abstract.markers import rgb255_to_hex_rgba
+
+VECTOR_COLOR = rgb255_to_hex_rgba(np.array([201, 219, 227]))
 
 
 class Vector(ExperimentalData, ABC):
@@ -27,7 +30,7 @@ class Vector(ExperimentalData, ABC):
         return rr.Arrows3D(
             origins=self.vector_origins[:, frame],
             vectors=self.vector_magnitude[:, frame],
-            colors=np.array([201, 219, 227]),
+            colors=VECTOR_COLOR,
         )
 
     def initialize(self):
@@ -41,20 +44,12 @@ class Vector(ExperimentalData, ABC):
 
     def to_chunk(self, **kwargs) -> dict[str, list]:
 
-        # return {
-        #     self.name: [
-        #         rr.Arrows3D.indicator(),
-        #         rr.components.Position3DBatch(self.vector_origins.T),
-        #         rr.components.Vector3DBatch(self.vector_magnitude.T),
-        #         rr.components.ColorBatch([np.array([201, 219, 227]) for _ in range(self.nb_frames)]),
-        #     ]
-        # }
         return {
             self.name: [
                 *rr.Arrows3D.columns(
                     origins=self.vector_origins.T.tolist(),
                     vectors=self.vector_magnitude.T.tolist(),
-                    colors=[np.array([201, 219, 227]) for _ in range(self.nb_frames)],
+                    colors=[VECTOR_COLOR for _ in range(self.nb_frames)],
                 )
             ]
         }

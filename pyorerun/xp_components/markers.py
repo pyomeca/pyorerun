@@ -71,7 +71,7 @@ class MarkersXp(Markers, ExperimentalData):
             for j, axis in enumerate(["X", "Y", "Z"]):
                 rr.log(
                     f"markers_graphs/{m}/{axis}",
-                    rr.Scalar(
+                    rr.Scalars(
                         positions_f[marker_names.index(m), j],
                     ),
                 )
@@ -90,6 +90,7 @@ class MarkersXp(Markers, ExperimentalData):
         flattened_markers = self.markers_numpy[:3, :, :].transpose(2, 1, 0).reshape(-1, 3)
         marker_names = self.marker_names * self.nb_frames
         partition = [self.nb_markers for _ in range(self.nb_frames)]
+
         return {
             self.name: [
                 *rr.Points3D.columns(
