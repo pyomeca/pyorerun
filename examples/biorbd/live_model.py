@@ -4,7 +4,12 @@ The user can interact with the model by changing the joint angles using sliders.
 """
 
 from pyorerun import LiveModelAnimation
+from pyorerun import BiorbdModel
 
 model_path = "models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
-animation = LiveModelAnimation(model_path, with_q_charts=True)
+animation = LiveModelAnimation.from_file(model_path, with_q_charts=True)
 animation.rerun()
+
+# model = BiorbdModel(model_path)
+# animation = LiveModelAnimation.from_model(model, with_q_charts=True)
+# animation.rerun()
