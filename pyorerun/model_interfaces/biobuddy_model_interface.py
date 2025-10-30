@@ -41,7 +41,7 @@ class BiobuddySegment(AbstractSegment):  # Inherits from AbstractSegment
 
     @cached_property
     def mesh_path(self) -> list[str]:
-        return [self.segment.mesh_file.mesh_file_name]
+        return [self.segment.mesh_file.mesh_file_directory + "/" + self.segment.mesh_file.mesh_file_name]
 
     @cached_property
     def mesh_scale_factor(self) -> list[np.ndarray]:

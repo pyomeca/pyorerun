@@ -19,9 +19,11 @@ def main():
     t_span = np.linspace(0, nb_seconds, nb_frames)
 
     # Creating the model
+    model_path = "../biorbd/models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
     biobuddy_model = biobuddy.BiomechanicalModelReal().from_biomod(
-        "models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
+        model_path
     )
+    biobuddy_model.change_mesh_directories("../biorbd/models/Geometry_cleaned")
     display_options = DisplayModelOptions()
     prr_model = BiobuddyModel.from_biobuddy_object(biobuddy_model, options=display_options)
 
@@ -37,7 +39,8 @@ def main():
     # Animate the model
     viz = PhaseRerun(t_span)
     viz.add_animated_model(prr_model, q)
-    viz.rerun("msk_model")
+    # viz.rerun("msk_model")
+    viz.rerun_by_frame("msk_model")
 
 
 if __name__ == "__main__":
