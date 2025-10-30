@@ -7,7 +7,7 @@ packages = ["pyorerun"]
 
 [project]
 name = "pyorerun"
-version = " 1.2.3"
+version = " 1.5.0"
 authors = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 maintainers = [{name = "Pierre Puchaud", email = "puchaud.pierre@gmail.com"}]
 description = "A Python package to rerun C3D files and biomechanical simulations."
@@ -21,8 +21,8 @@ classifiers = [
      ]
 dependencies = [
     "ezc3d",  # Now needed, but imported for our custom PyoMarkers.from_c3d()
-    "numpy==1.26.4",
-    "rerun-sdk==0.21.0",
+    "numpy",
+    "rerun-sdk==0.24.1",
     "trimesh",
     "tk",
     "imageio",

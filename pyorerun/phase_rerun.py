@@ -8,7 +8,7 @@ from .model_interfaces import AbstractModel
 from .model_phase import ModelRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp, PersistentMarkerOptions
 from .xp_phase import XpRerunPhase
 from .utils.markers_utils import check_and_adjust_markers
 
@@ -240,13 +240,13 @@ class PhaseRerun:
             rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
 
         frame = 0
-        rr.set_time_seconds("stable_time", self.t_span[frame])
+        rr.set_time("stable_time", duration=self.t_span[frame])
         self.timeless_components.to_rerun()
         self.models.to_rerun(frame)
         self.xp_data.to_rerun(frame)
 
         for frame, t in enumerate(self.t_span[1:]):
-            rr.set_time_seconds("stable_time", t)
+            rr.set_time("stable_time", duration=t)
             self.models.to_rerun(frame + 1)
             self.xp_data.to_rerun(frame + 1)
 
@@ -265,29 +265,29 @@ class PhaseRerun:
             rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
 
         frame = 0
-        rr.set_time_seconds("stable_time", self.t_span[frame])
+        rr.set_time("stable_time", duration=self.t_span[frame])
         self.timeless_components.to_rerun()
         self.models.initialize()
         self.xp_data.initialize()
 
-        times = [rr.TimeSecondsColumn("stable_time", self.t_span)]
+        times = [rr.TimeColumn("stable_time", duration=self.t_span)]
 
         for name, chunk in self.xp_data.to_chunk().items():
             rr.send_columns(
                 name,
-                times=times,
-                components=chunk,
+                indexes=times,
+                columns=chunk,
             )
 
         for name, chunk in self.models.to_chunk().items():
             rr.send_columns(
                 name,
-                times=times,
-                components=chunk,
+                indexes=times,
+                columns=chunk,
             )
 
         if clear_last_node:
-            rr.set_time_seconds("stable_time", self.t_span[-1])
+            rr.set_time("stable_time", duration=self.t_span[-1])
             for component in [
                 *self.models.component_names,
                 *self.xp_data.component_names,

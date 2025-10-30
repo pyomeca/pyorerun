@@ -24,7 +24,7 @@ class MarkersXp(Markers, ExperimentalData):
         self.markers = markers
         self.markers_numpy = markers.to_numpy()
         self.markers_properties = MarkerProperties(
-            markers_names=markers.channel.values.tolist(),
+            marker_names=markers.channel.values.tolist(),
             radius=0.01,
             color=MarkersXp._MARKERS_COLORS[MarkersXp._counter],
             show_labels=markers.show_labels,
@@ -34,10 +34,10 @@ class MarkersXp(Markers, ExperimentalData):
 
     @property
     def nb_markers(self):
-        return len(self.markers_names)
+        return len(self.marker_names)
 
     @property
-    def markers_names(self):
+    def marker_names(self):
         return self.markers.channel.values.tolist()
 
     @property
@@ -58,7 +58,7 @@ class MarkersXp(Markers, ExperimentalData):
                 positions=from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame]),
                 radii=self.markers_properties.radius_to_rerun(),
                 colors=self.markers_properties.color_to_rerun(),
-                labels=self.markers_names,
+                labels=self.marker_names,
                 show_labels=self.markers_properties.show_labels_to_rerun(),
             ),
         )
@@ -66,13 +66,13 @@ class MarkersXp(Markers, ExperimentalData):
     def to_rerun_curve(self, frame) -> None:
         """todo:  should it be a MarkerCurve type?"""
         positions_f = from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame])
-        markers_names = self.markers_names
-        for m in markers_names:
+        marker_names = self.marker_names
+        for m in marker_names:
             for j, axis in enumerate(["X", "Y", "Z"]):
                 rr.log(
                     f"markers_graphs/{m}/{axis}",
-                    rr.Scalar(
-                        positions_f[markers_names.index(m), j],
+                    rr.Scalars(
+                        positions_f[marker_names.index(m), j],
                     ),
                 )
 
@@ -81,23 +81,27 @@ class MarkersXp(Markers, ExperimentalData):
             positions=from_pyomeca_to_rerun(self.markers_numpy[:3, :, frame]),
             radii=self.markers_properties.radius_to_rerun(),
             colors=self.markers_properties.color_to_rerun(),
-            labels=self.markers_names,
+            labels=self.marker_names,
             show_labels=self.markers_properties.show_labels_to_rerun(),
         )
 
     def to_chunk(self, **kwargs) -> dict[str, list]:
         # flatten the markers to 3 x (nb_markers * nb_frames)
         flattened_markers = self.markers_numpy[:3, :, :].transpose(2, 1, 0).reshape(-1, 3)
-        markers_names = self.markers_names * self.nb_frames
+        marker_names = self.marker_names * self.nb_frames
         partition = [self.nb_markers for _ in range(self.nb_frames)]
+
         return {
             self.name: [
-                rr.Points3D.indicator(),
-                rr.components.Position3DBatch(flattened_markers).partition(partition),
-                rr.components.ColorBatch([self.markers_properties.color for _ in range(self.nb_frames)]),
-                rr.components.RadiusBatch([self.markers_properties.radius for _ in range(self.nb_frames)]),
-                rr.components.TextBatch(markers_names).partition(partition),
-                rr.components.ShowLabelsBatch([self.markers_properties.show_labels for _ in range(self.nb_frames)]),
+                *rr.Points3D.columns(
+                    positions=flattened_markers,
+                    labels=marker_names,
+                ).partition(partition),
+                *rr.Points3D.columns(
+                    colors=[self.markers_properties.color for _ in range(self.nb_frames)],
+                    radii=[self.markers_properties.radius for _ in range(self.nb_frames)],
+                    show_labels=[self.markers_properties.show_labels for _ in range(self.nb_frames)],
+                ),
             ]
         }
 

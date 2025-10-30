@@ -2,11 +2,11 @@ from setuptools import setup
 
 setup(
     name="pyorerun",
-    version="1.2.5",
+    version="1.5.0",
     install_requires=[
         "ezc3d",  # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
-        "numpy=1.26.4",
-        "rerun-sdk=0.21.0",
+        "numpy",
+        "rerun-sdk=0.24.1",
         "trimesh",
         "tk",
         "imageio",

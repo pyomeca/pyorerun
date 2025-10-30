@@ -29,11 +29,19 @@ class ModelRerunPhase:
         return [i for i, rr_link in enumerate(self.rerun_links) if rr_link is not None]
 
     def add_animated_model(
-        self, model: AbstractModel, q: np.ndarray, tracked_markers: np.ndarray = None, muscle_colors: np.ndarray = None
+        self,
+        model: AbstractModel,
+        q: np.ndarray,
+        tracked_markers: np.ndarray = None,
+        muscle_colors: np.ndarray = None,
     ):
         self.models.append(model)
         self.rerun_models.append(
-            ModelUpdater(name=f"{self.name}/{self.nb_models}_{model.name}", model=model, muscle_colors=muscle_colors)
+            ModelUpdater(
+                name=f"{self.name}/{self.nb_models}_{model.name}",
+                model=model,
+                muscle_colors=muscle_colors,
+            )
         )
         self.q.append(q)
 
@@ -54,6 +62,10 @@ class ModelRerunPhase:
         for i, rr_model in enumerate(self.rerun_models):
             rr_model.to_rerun(
                 self.q[i][:, frame],
+            )
+            rr_model.to_rerun_persistent(
+                self.q[i][:, : frame + 1],
+                frame,
             )
 
     def to_rerun_links(self, frame: int):

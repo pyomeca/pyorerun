@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyorerun import BiorbdModel, PhaseRerun
+from pyorerun import BiorbdModel, PhaseRerun, PersistentMarkerOptions
 
 
 def main():
@@ -23,16 +23,28 @@ def main():
 
     import time
 
+    # Initialize the animation with a time vector
     viz = PhaseRerun(t_span)
+
+    # Example of how to add a persistent marker
+    model.options.persistent_markers = PersistentMarkerOptions(
+        marker_names=["ULNA", "RADIUS"],
+        radius=0.005,
+        color=np.array([255, 0, 0]),  # Red
+        show_labels=False,
+        nb_frames=20,
+    )
+
     # viz.add_animated_model(model, q, display_q=True)
     viz.add_animated_model(model, q, display_q=False)
+
     tic = time.time()
     viz.rerun("msk_model with chunks")
     toc = time.time()
     print(f"Time to run: {toc - tic}")
 
     tic = time.time()
-    # viz.rerun_by_frame("msk_model frame by frame")
+    viz.rerun_by_frame("msk_model frame by frame")
     toc = time.time()
     print(f"Time to run with chunks: {toc - tic}")
 

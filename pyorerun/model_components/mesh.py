@@ -6,6 +6,8 @@ from trimesh import Trimesh, load
 from ..abstract.abstract_class import Component
 from ..utils.vtp_parser import read_vtp_file
 
+LOCAL_FRAME_SCALE = 0.1
+
 
 class TransformableMeshUpdater(Component):
     """
@@ -150,10 +152,10 @@ class TransformableMeshUpdater(Component):
 
         return {
             self.name: [
-                rr.InstancePoses3D.indicator(),
-                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
-                rr.components.PoseTransformMat3x3Batch(
-                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
-                ),
+                *rr.Transform3D.columns(
+                    translation=homogenous_matrices[:3, 3, :].T.tolist(),
+                    mat3x3=[homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])],
+                    axis_length=[LOCAL_FRAME_SCALE] * homogenous_matrices.shape[2],
+                )
             ]
         }

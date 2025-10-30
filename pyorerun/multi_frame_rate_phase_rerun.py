@@ -85,14 +85,14 @@ class MultiFrameRatePhaseRerun:
 
         for phase_rerun in self.phase_reruns:
             frame = 0
-            rr.set_time_seconds("stable_time", phase_rerun.t_span[frame])
+            rr.set_time("stable_time", duration=phase_rerun.t_span[frame])
             phase_rerun.timeless_components.to_rerun()
             phase_rerun.biorbd_models.to_rerun(frame)
             phase_rerun.xp_data.to_rerun(frame)
 
         cumulative_frames_in_merged_t_span = self.cumulative_frames_in_merged_t_span
         for frame, (t, idx) in enumerate(zip(self.merged_t_span[1:], self.frame_t_span_idx[1:])):
-            rr.set_time_seconds("stable_time", t)
+            rr.set_time("stable_time", duration=t)
             for i in idx:
                 frame_i = cumulative_frames_in_merged_t_span[i][frame + 1]
                 self.phase_reruns[i].biorbd_models.to_rerun(frame_i)
@@ -119,25 +119,25 @@ class MultiFrameRatePhaseRerun:
 
         for phase_rerun in self.phase_reruns:
             frame = 0
-            rr.set_time_seconds("stable_time", phase_rerun.t_span[frame])
+            rr.set_time("stable_time", duration=phase_rerun.t_span[frame])
             phase_rerun.timeless_components.to_rerun()
             phase_rerun.models.initialize()
             phase_rerun.xp_data.initialize()
 
-            times = [rr.TimeSecondsColumn("stable_time", phase_rerun.t_span)]
+            times = [rr.TimeColumn("stable_time", duration=phase_rerun.t_span)]
 
             for name, chunk in phase_rerun.xp_data.to_chunk().items():
                 rr.send_columns(
                     name,
-                    times=times,
-                    components=chunk,
+                    indexes=times,
+                    columns=chunk,
                 )
 
             for name, chunk in phase_rerun.models.to_chunk().items():
                 rr.send_columns(
                     name,
-                    times=times,
-                    components=chunk,
+                    indexes=times,
+                    columns=chunk,
                 )
 
         # cumulative_frames_in_merged_t_span = self.cumulative_frames_in_merged_t_span

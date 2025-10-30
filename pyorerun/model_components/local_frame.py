@@ -58,11 +58,10 @@ class LocalFrameUpdater(Component):
 
         return {
             self.name: [
-                rr.InstancePoses3D.indicator(),
-                rr.components.PoseTranslation3DBatch(homogenous_matrices[:3, 3, :].T),
-                rr.components.PoseTransformMat3x3Batch(
-                    [homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])]
-                ),
-                rr.components.AxisLengthBatch([self.scale] * homogenous_matrices.shape[2]),
+                *rr.Transform3D.columns(
+                    translation=homogenous_matrices[:3, 3, :].T.tolist(),
+                    mat3x3=[homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])],
+                    scale=[[self.scale] * 3] * homogenous_matrices.shape[2],
+                )
             ]
         }

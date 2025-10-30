@@ -24,7 +24,10 @@ def main():
     rerun_biorbd = PhaseRerun(t_span)
     q = np.zeros((biorbd_model.model.nbQ(), nb_frames))  # no movement
     rerun_biorbd.add_animated_model(biorbd_model, q)
+
     markers = PyoMarkers(data=noisy_markers, channels=[f"marker_{i}" for i in range(1, nb_random_markers + 1)])
+    markers.show_labels = False
+
     rerun_biorbd.add_xp_markers(
         name="noisy_markers",
         markers=markers,

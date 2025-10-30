@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from ..xp_components import PersistentMarkerOptions
 
 
 @dataclass
@@ -34,6 +35,8 @@ class DisplayModelOptions:
     _show_contact_labels: bool = False
 
     _mesh_path: str = ""
+
+    _persistent_markers: PersistentMarkerOptions = None
 
     @property
     def markers_color(self) -> tuple[int, int, int]:
@@ -224,6 +227,16 @@ class DisplayModelOptions:
         if not isinstance(value, str):
             raise ValueError("mesh_path must be a string.")
         self._mesh_path = value
+
+    @property
+    def persistent_markers(self) -> PersistentMarkerOptions:
+        return self._persistent_markers
+
+    @persistent_markers.setter
+    def persistent_markers(self, value: PersistentMarkerOptions):
+        if not isinstance(value, PersistentMarkerOptions):
+            raise ValueError("persistent_markers must be a PersistentMarkerOptions object.")
+        self._persistent_markers = value
 
     def set_all_labels(self, value: bool):
         if not isinstance(value, bool):

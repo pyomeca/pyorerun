@@ -59,6 +59,8 @@ def rrc3d(
     pyomarkers = PyoMarkers.from_c3d(c3d_file, show_labels=show_marker_labels)
     units = pyomarkers.units
     pyomarkers = adjust_position_unit_to_meters(pyomarkers, pyomarkers.units)
+    pyomarkers.show_labels = False
+
     t_span = pyomarkers.time
     filename = Path(c3d_file).name
 
@@ -129,15 +131,15 @@ def rrc3d(
 
     if marker_trajectories:
         # # todo: find a better way to display curves but hacky way ok for now
-        markers_names = phase_rerun.xp_data.xp_data[0].markers_names
-        for m in markers_names:
+        marker_names = phase_rerun.xp_data.xp_data[0].marker_names
+        for m in marker_names:
             for j, axis in enumerate(["X", "Y", "Z"]):
                 rr.send_columns(
                     f"markers_graphs/{m}/{axis}",
-                    times=[rr.TimeSecondsColumn("stable_time", t_span)],
-                    components=[
-                        rr.components.ScalarBatch(
-                            phase_rerun.xp_data.xp_data[0].markers_numpy[j, markers_names.index(m), :]
+                    indexes=[rr.TimeColumn("stable_time", duration=t_span)],
+                    columns=[
+                        *rr.Scalars.columns(
+                            scalars=phase_rerun.xp_data.xp_data[0].markers_numpy[j, marker_names.index(m), :]
                         )
                     ],
                 )
@@ -151,7 +153,7 @@ def set_event_as_log(c3d_file: str) -> None:
     context = c3d_file["parameters"]["EVENT"]["CONTEXTS"]["value"]
 
     for i, (time, label, description, context) in enumerate(zip(times, labels, descriptions, context)):
-        rr.set_time_seconds("stable_time", time)
+        rr.set_time("stable_time", duration=time)
         rr.log(
             f"events",
             rr.TextLog(

@@ -48,4 +48,14 @@ class AxisUpdater(Component):
         )
 
     def to_chunk(self, q: np.ndarray) -> dict[str, list]:
-        pass
+        homogenous_matrices = self.transform_callable(q)
+
+        return {
+            self.name: [
+                *rr.Arrows3D.columns(
+                    origins=homogenous_matrices[:3, 3].T.tolist(),
+                    vectors=(homogenous_matrices[:3, self.axis] * self.scale).T.tolist(),
+                    colors=[self.color] * homogenous_matrices.shape[2],
+                )
+            ]
+        }
