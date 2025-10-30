@@ -168,3 +168,4 @@ cython_debug/
 sandbox/
 
 .DS_Store
+.aider*
