@@ -20,9 +20,7 @@ def main():
 
     # Creating the model
     model_path = "../biorbd/models/Wu_Shoulder_Model_kinova_scaled_adjusted_2.bioMod"
-    biobuddy_model = biobuddy.BiomechanicalModelReal().from_biomod(
-        model_path
-    )
+    biobuddy_model = biobuddy.BiomechanicalModelReal().from_biomod(model_path)
     biobuddy_model.change_mesh_directories("../biorbd/models/Geometry_cleaned")
     display_options = DisplayModelOptions()
     prr_model = BiobuddyModel.from_biobuddy_object(biobuddy_model, options=display_options)
