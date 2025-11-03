@@ -1,8 +1,8 @@
 """
 To run this example, you need to install biobuddy:
-    `pip install biobuddy`
+    `pip install biobuddy == 0.2.0`
     or
-    `conda-forge install -c conda-forge biobuddy`
+    `conda-forge install -c conda-forge biobuddy=0.2.0`
 """
 
 import numpy as np
