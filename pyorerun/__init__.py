@@ -38,5 +38,6 @@ from .pyomarkers import PyoMarkers
 from .pyoemg import PyoMuscles
 from .rrbiomod import rr_biorbd as animate
 from .rrc3d import rrc3d as c3d
+from .rrtrc import rrtrc as trc
 from .xp_components.timeseries_q import OsimTimeSeries
 from .xp_components.persistent_marker_options import PersistentMarkerOptions
