@@ -28,6 +28,7 @@ dependencies = [
     "imageio",
     "imageio-ffmpeg",
     "matplotlib",
+    "trc-data-reader"
 #    "opensim", # Not yet available on pypi, use `conda install opensim-org opensim=4.5.1`
 #    "biorbd" # Not yet available on pypi, use `conda install -c conda-forge biorbd`
     ]

@@ -5,6 +5,7 @@ Custom PyoMarkers class to replace pyomeca dependency.
 from typing import Optional, List
 
 import ezc3d
+from trc import TRCData
 import numpy as np
 
 
@@ -199,6 +200,58 @@ class PyoMarkers:
         }
 
         return cls(data=points, time=time, marker_names=marker_names, show_labels=show_labels, attrs=attrs)
+
+    @classmethod
+    def from_trc(cls, filename: str, show_labels: bool = True) -> "PyoMarkers":
+        """
+        Create PyoMarkers from a TRC file.
+
+        Parameters
+        ----------
+        filename : str
+            Path to the TRC file
+        show_labels : bool, default True
+            Whether to show marker labels
+
+        Returns
+        -------
+        PyoMarkers
+            A new PyoMarkers instance
+        """
+        trc_data = TRCData()
+        trc_data.load(filename)
+
+        # Get marker names
+        marker_names = trc_data["Markers"]
+        n_markers = len(marker_names)
+        n_frames = int(trc_data["NumFrames"])
+
+        # Initialize data array (3, n_markers, n_frames)
+        data = np.zeros((3, n_markers, n_frames))
+
+        # Fill data array with marker coordinates
+        for frame_idx, frame_num in enumerate(trc_data["Frame#"]):
+            _, frame_data = trc_data[frame_num]
+            for marker_idx, marker_coords in enumerate(frame_data):
+                # marker_coords is [X, Y, Z]
+                data[:, marker_idx, frame_idx] = marker_coords
+
+        # Get time vector
+        time = np.array(trc_data["Time"])
+
+        # Get units and rate
+        units = trc_data.get("Units", "mm")
+        rate = trc_data.get("DataRate", None)
+
+        attrs = {
+            "units": units,
+            "rate": rate,
+            "filename": filename,
+            "first_frame": trc_data["Frame#"][0] if trc_data["Frame#"] else 0,
+            "last_frame": trc_data["Frame#"][-1] if trc_data["Frame#"] else n_frames - 1,
+        }
+
+        return cls(data=data, time=time, marker_names=marker_names, show_labels=show_labels, attrs=attrs)
 
 
 class MockChannel:
