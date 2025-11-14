@@ -59,7 +59,7 @@ animation.rerun()
 ```
 
 ## From source
-```conda install -c conda-forge ezc3d rerun-sdk=0.24.1 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
+```conda install -c conda-forge ezc3d rerun-sdk=0.24 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
 
 if you want to use the OpenSim, you also need to install separately:
 ```conda install -c opensim-org::opensim```
