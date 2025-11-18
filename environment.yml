@@ -15,6 +15,7 @@ dependencies:
 - imageio-ffmpeg
 - opensim
 - pinocchio
+- pycollada
 # from pip
 # pip install trc-data-reader
 
