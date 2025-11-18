@@ -14,6 +14,14 @@ except ImportError:
     # OpenSim n'est pas installé, ces classes ne seront pas disponibles
     pass
 
+try:
+    from .pinocchio_model_interface import PinocchioModelNoMesh, PinocchioModel
+
+    AVAILABLE_INTERFACES["pinocchio"] = (PinocchioModel, PinocchioModelNoMesh)
+except ImportError:
+    # Pinocchio is not installed, these classes will not be available
+    pass
+
 
 def model_from_file(model_path: str, options: DisplayModelOptions = None) -> tuple[AbstractModel, AbstractModelNoMesh]:
     """
@@ -43,7 +51,15 @@ def model_from_file(model_path: str, options: DisplayModelOptions = None) -> tup
     elif model_path.endswith(".bioMod"):
         model = AVAILABLE_INTERFACES["biorbd"][0](model_path, options=options)
         no_instance_mesh = AVAILABLE_INTERFACES["biorbd"][1]
+    elif model_path.endswith(".urdf"):
+        if "pinocchio" not in AVAILABLE_INTERFACES:
+            raise ImportError(
+                f"Pinocchio is not installed. Please install it to use URDF models."
+                f"Use: pip install pin (or conda install pinocchio)"
+            )
+        model = AVAILABLE_INTERFACES["pinocchio"][0](model_path, options=options)
+        no_instance_mesh = AVAILABLE_INTERFACES["pinocchio"][1]
     else:
-        raise ValueError("The model must be in biorbd or opensim format.")
+        raise ValueError("The model must be in biorbd (.bioMod), opensim (.osim), or pinocchio (.urdf) format.")
 
     return model, no_instance_mesh

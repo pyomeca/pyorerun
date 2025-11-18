@@ -4,7 +4,7 @@ Run each example script to ensure they execute without errors.
 """
 
 import pytest
-from utils_examples import ExampleRunner
+from .utils_examples import ExampleRunner
 
 
 def test_c3d_main():
