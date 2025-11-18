@@ -1,3 +1,14 @@
+## Supported Interfaces
+
+This module currently supports the following biomechanical model formats:
+
+- **Biorbd** (`.bioMod` files) - Full support with mesh visualization
+- **OpenSim** (`.osim` files) - Full support with mesh visualization  
+- **BioBuddy** - Support through adapter
+- **Pinocchio** (`.urdf` files) - Full support with mesh visualization
+
+---
+
 # Guide to Implementing a New Model Interface
 
 This guide explains how to add support for a new biomechanical model format (e.g., from a different software) to this project. By following these steps, you can ensure your new model interface is compatible with the existing application structure.

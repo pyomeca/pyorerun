@@ -3,7 +3,7 @@ Tests for biorbd examples.
 Run each example script to ensure they execute without errors.
 """
 
-from utils_examples import ExampleRunner
+from .utils_examples import ExampleRunner
 
 
 def test_main_double_pendulum():

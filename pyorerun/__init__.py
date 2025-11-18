@@ -23,6 +23,16 @@ except ImportError:
     # BioBuddy is not installed, these classes will not be available
     pass
 
+# Pinocchio
+try:
+    from .model_interfaces import (
+        PinocchioModel,
+        PinocchioModelNoMesh,
+    )
+except ImportError:
+    # Pinocchio is not installed, these classes will not be available
+    pass
+
 from .model_interfaces import (
     BiorbdModel,
     BiorbdModelNoMesh,

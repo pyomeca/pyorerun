@@ -83,8 +83,27 @@ class TransformableMeshUpdater(Component):
             )
             mesh.apply_scale(scale_factor)
             return cls(name, mesh, transform_callable)
+        elif file_path.lower().endswith((".dae", ".obj", ".ply", ".off", ".gltf", ".glb")):
+            # Use trimesh's universal loader for other supported formats
+            mesh = load(file_path)
+            mesh.apply_scale(scale_factor)
+
+            # assume the first geometry if multiple are present
+            first_key = list(mesh.geometry.keys())[0]
+
+            real_mesh = Trimesh(
+                vertices=mesh.geometry[first_key].vertices,
+                faces=mesh.geometry[first_key].faces,
+                vertex_normals=mesh.geometry[first_key].vertex_normals,
+                metadata=dict(file_name=mesh.source.file_name),
+            )
+            if "file_name" not in mesh.metadata:
+                mesh.metadata["file_name"] = file_path.split("/")[-1].split(".")[0]
+            return cls(name, real_mesh, transform_callable)
         else:
-            raise ValueError(f"The file {file_path} is not a valid mesh file. It should be either .stl or .vtp.")
+            raise ValueError(
+                f"The file {file_path} is not a valid mesh file. Supported formats: .stl, .vtp, .dae, .obj, .ply, .off, .gltf, .glb"
+            )
 
     def apply_transform(self, homogenous_matrix: np.ndarray) -> Trimesh:
         """Apply a transform to the mesh from its initial position"""

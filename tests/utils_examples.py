@@ -15,12 +15,13 @@ class ExampleRunner:
         return Path(__file__).parent / "../examples"
 
     @staticmethod
-    def run_example_module(module_path: Path):
+    def run_example_module(module_path: Path, skip_if_no_env: bool = False):
         """
         Dynamically import and run an example module.
 
         Args:
             module_path: Path to the example Python file to run
+            skip_if_no_env: If True, skip execution if required environment variables are missing
         """
         # Add the module's directory to sys.path temporarily
         module_dir = str(module_path.parent)
