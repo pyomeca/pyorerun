@@ -156,10 +156,9 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
         In Pinocchio, markers can be represented as frames or operational frames.
         This returns all frame names that could represent markers.
         """
-        # Get all frames that are not joint frames
         marker_frames = []
         for frame in self.model.frames:
-            if frame.type == pin.FrameType.OP_FRAME:
+            if frame.type == pin.FrameType.SENSOR:
                 marker_frames.append(frame.name)
         return tuple(marker_frames)
 
