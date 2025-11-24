@@ -63,8 +63,6 @@ class PinocchioSegment(AbstractSegment):
                         ".mesh",
                         ".ply",
                     ]:
-                        if self._mesh_dir and not os.path.isabs(mesh_path_str):
-                            mesh_path_str = str(self._mesh_dir / mesh_path_str)
                         mesh_paths.append(mesh_path_str)
         return mesh_paths
 
@@ -158,10 +156,9 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
         In Pinocchio, markers can be represented as frames or operational frames.
         This returns all frame names that could represent markers.
         """
-        # Get all frames that are not joint frames
         marker_frames = []
         for frame in self.model.frames:
-            if frame.type == pin.FrameType.OP_FRAME:
+            if frame.type == pin.FrameType.SENSOR:
                 marker_frames.append(frame.name)
         return tuple(marker_frames)
 
@@ -275,8 +272,21 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
     def dof_names(self) -> tuple[str, ...]:
         """
         Returns the names of all degrees of freedom.
+
+        Notes
+        -----
+        We need to skip the first joint (universe) as it has no DoFs.
+        Joint DoFs can have individual names if they have multiple DoFs (e.g., a 3-DoF joint).
         """
-        return tuple(self.model.names[1:])  # Skip universe/world
+        dof_names = []
+        for joint, name in zip(self.model.joints[1:], self.model.names[1:]):
+            if joint.nq == 0:
+                continue
+
+            for k in range(joint.nq):
+                dof_names.append(f"{name}_{k}")
+
+        return tuple(dof_names)
 
     @cached_property
     def q_ranges(self) -> tuple[tuple[float, float], ...]:
