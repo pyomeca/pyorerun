@@ -4,10 +4,13 @@
 We can rerun c3d files and display their original content.
 And also animate biorbd models from the pyomeca organization.
 
-``` conda install -c conda-forge pyorerun rerun-sdk=0.27.2```
-``` pip install trc-data-reader``` # for .trc file support
-``` conda install opensim-org::opensim   # not a mandatory dependency```
-``` conda install -c conda-forge biobuddy=0.2.0   # not a mandatory dependency```
+```bash
+conda install -c conda-forge pyorerun rerun-sdk=0.27.2
+pip install trc-data-reader # for .trc file support, not available on conda
+conda install opensim-org::opensim   # not a mandatory dependency
+conda install -c conda-forge biobuddy=0.2.0   # not a mandatory dependency
+```
+
 
 # Rerun .c3d - As simple as that
 
