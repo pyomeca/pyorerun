@@ -22,6 +22,10 @@ def test_from_osim_model():
     ExampleRunner.run_example_module(example_path)
 
 
+@pytest.mark.skipif(
+    not pytest.importorskip("trc", reason="trc is not installed"),
+    reason="trc module not available",
+)
 def test_trc_reader():
     """
     Test the TRC reader example.

@@ -70,13 +70,6 @@ class LiveModelAnimation:
         the_dof_idx, the_value = self.fetch_and_update_slider_value(event, dof_index)
         self.update_rerun_components(the_dof_idx, the_value)
 
-    def fetch_and_update_slider_value(self, event, dof_index: int) -> tuple[int, float]:
-        the_dof_idx = dof_index
-        the_value = self.dof_sliders[the_dof_idx].get()
-        # update the slider value q
-        self.dof_slider_values[the_dof_idx].config(text=f"{the_value:.2f}")
-        return the_dof_idx, the_value
-
     def update_rerun_components(self, the_dof_idx: int, the_value: float):
         self.q[the_dof_idx] = the_value
         # update counter
@@ -119,29 +112,75 @@ class LiveModelAnimation:
         root = self.root
         root.title("Degree of Freedom q Sliders")
 
+        # Create a canvas with scrollbar for many DOFs
+        canvas = tk.Canvas(root)
+        scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Enable mouse wheel scrolling
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        def _on_mousewheel_linux(event):
+            if event.num == 4:
+                canvas.yview_scroll(-1, "units")
+            elif event.num == 5:
+                canvas.yview_scroll(1, "units")
+
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows/MacOS
+        canvas.bind_all("<Button-4>", _on_mousewheel_linux)  # Linux scroll up
+        canvas.bind_all("<Button-5>", _on_mousewheel_linux)  # Linux scroll down
+
         for i in range(self.model.nb_q):
             self.update_functions.append(lambda event, idx=i: self.update_viewer(event, idx))
 
-            dof_slider_label = ttk.Label(root, text=f"q{i} - {self.model.dof_names[i]}: ", anchor="w")
+            dof_slider_label = ttk.Label(scrollable_frame, text=f"q{i} - {self.model.dof_names[i]}: ", anchor="w")
             dof_slider_label.grid(row=i, column=0, padx=10, pady=5, sticky="w")
 
             self.dof_sliders.append(
-                ttk.Scale(root, from_=-5, to=5, orient="horizontal", command=self.update_functions[i], length=200)
+                ttk.Scale(
+                    scrollable_frame, from_=-5, to=5, orient="horizontal", command=self.update_functions[i], length=200
+                )
             )
             self.dof_sliders[i].grid(row=i, column=1, padx=30, pady=5)
 
-            self.dof_slider_values.append(ttk.Label(root, text=self._format_value_for_ui(0.0)))
+            self.dof_slider_values.append(ttk.Label(scrollable_frame, text=self._format_value_for_ui(0.0)))
             self.dof_slider_values[i].grid(row=i, column=2, padx=10, pady=5)
 
-        base_row = self.model.nb_q
-        btn_copy = ttk.Button(root, text="Copy q", command=self._copy_q_values())
-        btn_copy.grid(row=base_row, column=0, padx=10, pady=10, sticky="ew")
+        # Place canvas and scrollbar
+        canvas.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
 
-        self._btn_toggle_units = ttk.Button(root, text="Switch rad/deg", command=self._toggle_units)
-        self._btn_toggle_units.grid(row=base_row, column=1, padx=10, pady=10, sticky="ew")
+        # Button frame at the bottom (outside scrollable area)
+        button_frame = ttk.Frame(root)
+        button_frame.grid(row=1, column=0, columnspan=2, sticky="ew")
 
-        btn_reset = ttk.Button(root, text="Reset all", command=self._reset_all)
-        btn_reset.grid(row=base_row, column=2, padx=10, pady=10, sticky="ew")
+        btn_copy = ttk.Button(button_frame, text="Copy q", command=self._copy_q_values())
+        btn_copy.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
+        self._btn_toggle_units = ttk.Button(button_frame, text="Switch rad/deg", command=self._toggle_units)
+        self._btn_toggle_units.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+
+        btn_reset = ttk.Button(button_frame, text="Reset all", command=self._reset_all)
+        btn_reset.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
+
+        button_frame.columnconfigure(0, weight=1)
+        button_frame.columnconfigure(1, weight=1)
+        button_frame.columnconfigure(2, weight=1)
+
+        # Configure grid weights for resizing
+        root.columnconfigure(0, weight=1)
+        root.rowconfigure(0, weight=1)
+
+        # Set a reasonable initial window size
+        max_visible_dofs = min(self.model.nb_q, 15)
+        window_height = max_visible_dofs * 40 + 60
+        root.geometry(f"450x{window_height}")
 
         root.mainloop()
 
