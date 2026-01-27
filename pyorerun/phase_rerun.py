@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import rerun as rr
 import rerun.blueprint as rrb
@@ -239,8 +241,9 @@ class PhaseRerun:
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
-            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
-            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
+            spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+            rr.init(f"{name}_{self.phase}", spawn=spawn)
+            rr.init(f"{name}_{self.phase}", spawn=spawn)
             rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
             rr.send_blueprint(
                 rrb.Blueprint(
@@ -275,7 +278,8 @@ class PhaseRerun:
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
-            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
+            spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+            rr.init(f"{name}_{self.phase}", spawn=spawn)
             rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
             rr.send_blueprint(
                 rrb.Blueprint(

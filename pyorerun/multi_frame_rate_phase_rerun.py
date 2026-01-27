@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import rerun as rr
 
@@ -81,7 +83,8 @@ class MultiFrameRatePhaseRerun:
             return
 
         if init:
-            rr.init(f"{name}_{0}", spawn=True if not notebook else False)
+            spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+            rr.init(f"{name}_{0}", spawn=spawn)
 
         for phase_rerun in self.phase_reruns:
             frame = 0
@@ -115,7 +118,8 @@ class MultiFrameRatePhaseRerun:
             return
 
         if init:
-            rr.init(f"{name}_{0}", spawn=True if not notebook else False)
+            spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+            rr.init(f"{name}_{0}", spawn=spawn)
 
         for phase_rerun in self.phase_reruns:
             frame = 0

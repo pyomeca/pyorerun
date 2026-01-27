@@ -39,6 +39,8 @@ jobs:
 
       - name: Run the actual tests
         run: pytest -v --color=yes --cov-report term-missing --cov=pyorerun tests
+        env:
+          PYORERUN_HEADLESS: "1"
         
       - name: Upload coverage to Codecov
         run: codecov

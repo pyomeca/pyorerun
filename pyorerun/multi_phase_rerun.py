@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import rerun as rr  # NOTE: `rerun`, not `rerun-sdk`!
 import rerun.blueprint as rrb
@@ -82,7 +84,8 @@ class MultiPhaseRerun:
         return [windows for phase in self.rerun_biorbd_phases for windows in phase.keys()]
 
     def rerun_by_frame(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
-        rr.init(server_name, spawn=True if not notebook else False)
+        spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+        rr.init(server_name, spawn=spawn)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
 
@@ -95,7 +98,8 @@ class MultiPhaseRerun:
                 rr_phase.rerun_by_frame(init=False, clear_last_node=more_phases_after_this_one)
 
     def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
-        rr.init(server_name, spawn=True if not notebook else False)
+        spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+        rr.init(server_name, spawn=spawn)
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
 
