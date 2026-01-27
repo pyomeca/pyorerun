@@ -96,7 +96,7 @@ class MultiPhaseRerun:
                 )
             )
         )
-        
+
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
 
