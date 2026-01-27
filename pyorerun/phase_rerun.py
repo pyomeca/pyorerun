@@ -1,5 +1,9 @@
+import os
+
 import numpy as np
 import rerun as rr
+import rerun.blueprint as rrb
+
 from .pyomarkers import PyoMarkers
 from .pyoemg import PyoMuscles
 
@@ -8,7 +12,7 @@ from .model_interfaces import AbstractModel
 from .model_phase import ModelRerunPhase
 from .timeless import Gravity, Floor, ForcePlate
 from .timeless_components import TimelessRerunPhase
-from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp, PersistentMarkerOptions
+from .xp_components import MarkersXp, TimeSeriesQ, ForceVector, Video, VectorXp
 from .xp_phase import XpRerunPhase
 from .utils.markers_utils import check_and_adjust_markers
 
@@ -237,7 +241,19 @@ class PhaseRerun:
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
-            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
+            spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+            rr.init(f"{name}_{self.phase}", spawn=spawn)
+            rr.init(f"{name}_{self.phase}", spawn=spawn)
+            rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
+            rr.send_blueprint(
+                rrb.Blueprint(
+                    rrb.Spatial3DView(
+                        name="",
+                        origin=f"/",
+                        eye_controls=rrb.archetypes.EyeControls3D(eye_up=[0, 1, 0]),  # Y-axis as up
+                    )
+                )
+            )
 
         frame = 0
         rr.set_time("stable_time", duration=self.t_span[frame])
@@ -262,7 +278,18 @@ class PhaseRerun:
         self, name: str = "animation_phase", init: bool = True, clear_last_node: bool = False, notebook: bool = False
     ) -> None:
         if init:
-            rr.init(f"{name}_{self.phase}", spawn=True if not notebook else False)
+            spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
+            rr.init(f"{name}_{self.phase}", spawn=spawn)
+            rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
+            rr.send_blueprint(
+                rrb.Blueprint(
+                    rrb.Spatial3DView(
+                        name="",
+                        origin=f"/",
+                        eye_controls=rrb.archetypes.EyeControls3D(eye_up=[0, 1, 0]),  # Y-axis as up
+                    )
+                )
+            )
 
         frame = 0
         rr.set_time("stable_time", duration=self.t_span[frame])
