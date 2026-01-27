@@ -28,6 +28,7 @@ class LocalFrameUpdater(Component):
             rr.Transform3D(
                 translation=np.zeros(3),
                 mat3x3=np.eye(3),
+                axis_length=1,
             ),
         )
 
