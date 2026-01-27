@@ -1,5 +1,6 @@
 # Pyorerun
-[Maintainability](https://qlty.sh/badges/b2a2112d-ef8b-4683-9518-edc72add9630/maintainability.svg)](https://qlty.sh/gh/pyomeca/projects/pyorerun) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/pyorerun.svg)](https://anaconda.org/conda-forge/pyorerun)
+[![Maintainability](https://qlty.sh/badges/b2a2112d-ef8b-4683-9518-edc72add9630/maintainability.svg)](https://qlty.sh/gh/pyomeca/projects/pyorerun)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/pyorerun.svg)](https://anaconda.org/conda-forge/pyorerun)
 
 We can rerun c3d files and display their original content.
 And also animate biorbd models from the pyomeca organization.
