@@ -7,7 +7,6 @@ And also animate biorbd models from the pyomeca organization.
 
 ```bash
 conda install -c conda-forge pyorerun rerun-sdk=0.27.2
-pip install trc-data-reader # for .trc file support, not available on conda
 conda install opensim-org::opensim   # not a mandatory dependency
 conda install -c conda-forge biobuddy=0.2.0   # not a mandatory dependency
 ```
@@ -63,7 +62,7 @@ animation.rerun()
 ```
 
 ## From source
-```conda install -c conda-forge ezc3d rerun-sdk=0.27.2 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg```
+```conda install -c conda-forge ezc3d rerun-sdk=0.27.2 trimesh numpy biorbd pyomeca tk imageio imageio-ffmpeg trc-data-reader```
 
 if you want to use the OpenSim, you also need to install separately:
 ```conda install -c opensim-org::opensim```
@@ -71,9 +70,6 @@ if you want to use the OpenSim, you also need to install separately:
 if you want to use the BioBuddy, you also need to install separately:
 ```conda install -c conda-forge biobuddy=0.2.0``` or
 ```pip install biobuddy==0.2.0```
-
-if you want to use the .trc file support, you also need to install separately:
-``` pip install trc-data-reader ```
 
 Then, ensure it is accessible in your Python environment by installing the package:
 

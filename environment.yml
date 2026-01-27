@@ -5,6 +5,7 @@ channels:
 - opensim-org
 dependencies:
 - ezc3d
+- trc-data-reader>=0.4.0
 - rerun-sdk=0.27.2
 - numpy
 - matplotlib
