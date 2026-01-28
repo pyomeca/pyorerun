@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import rerun as rr
+import rerun.blueprint as rrb
 
 from .phase_rerun import PhaseRerun
 
@@ -120,6 +121,16 @@ class MultiFrameRatePhaseRerun:
         if init:
             spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
             rr.init(f"{name}_{0}", spawn=spawn)
+            rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
+            rr.send_blueprint(
+                rrb.Blueprint(
+                    rrb.Spatial3DView(
+                        name="",
+                        origin=f"/",
+                        eye_controls=rrb.archetypes.EyeControls3D(eye_up=[0, 1, 0]),  # Y-axis as up
+                    )
+                )
+            )
 
         for phase_rerun in self.phase_reruns:
             frame = 0

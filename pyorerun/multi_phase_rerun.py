@@ -86,6 +86,17 @@ class MultiPhaseRerun:
     def rerun_by_frame(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
         spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
         rr.init(server_name, spawn=spawn)
+        rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
+        rr.send_blueprint(
+            rrb.Blueprint(
+                rrb.Spatial3DView(
+                    name="",
+                    origin=f"/",
+                    eye_controls=rrb.archetypes.EyeControls3D(eye_up=[0, 1, 0]),  # Y-axis as up
+                )
+            )
+        )
+
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
 
@@ -100,6 +111,17 @@ class MultiPhaseRerun:
     def rerun(self, server_name: str = "multi_phase_animation", notebook=False) -> None:
         spawn = not notebook and os.environ.get("PYORERUN_HEADLESS", "0").lower() not in ("1", "true", "yes")
         rr.init(server_name, spawn=spawn)
+        rr.log("/", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
+        rr.send_blueprint(
+            rrb.Blueprint(
+                rrb.Spatial3DView(
+                    name="",
+                    origin=f"/",
+                    eye_controls=rrb.archetypes.EyeControls3D(eye_up=[0, 1, 0]),  # Y-axis as up
+                )
+            )
+        )
+
         for i, phase in enumerate(self.rerun_biorbd_phases):
             for j, (window, rr_phase) in enumerate(phase.items()):
 
