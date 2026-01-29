@@ -1,10 +1,15 @@
 from .abstract_model_interface import AbstractModel, AbstractModelNoMesh
-from .biorbd_model_interface import BiorbdModelNoMesh, BiorbdModel
 from ..model_components.model_display_options import DisplayModelOptions
 
-AVAILABLE_INTERFACES = {
-    "biorbd": (BiorbdModel, BiorbdModelNoMesh),
-}
+AVAILABLE_INTERFACES = {}
+
+# Biorbd
+try:
+    from .biorbd_model_interface import BiorbdModelNoMesh, BiorbdModel
+    AVAILABLE_INTERFACES["biorbd"] = (BiorbdModel, BiorbdModelNoMesh)
+except ImportError:
+    # biorbd is not installed, these classes will not be available
+    pass
 
 try:
     from .osim_model_interface import OsimModelNoMesh, OsimModel
@@ -49,6 +54,11 @@ def model_from_file(model_path: str, options: DisplayModelOptions = None) -> tup
         model = AVAILABLE_INTERFACES["opensim"][0](model_path, options=options)
         no_instance_mesh = AVAILABLE_INTERFACES["opensim"][1]
     elif model_path.endswith(".bioMod"):
+        if "biorbd" not in AVAILABLE_INTERFACES:
+            raise ImportError(
+                f"biorbd is not installed. Please install it to use biorbd models."
+                f"Use: conda install -c conda-forge biorbd"
+            )
         model = AVAILABLE_INTERFACES["biorbd"][0](model_path, options=options)
         no_instance_mesh = AVAILABLE_INTERFACES["biorbd"][1]
     elif model_path.endswith(".urdf"):

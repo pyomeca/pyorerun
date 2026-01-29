@@ -1,5 +1,4 @@
 from .live_animation import LiveModelAnimation
-from .live_integration import LiveModelIntegration
 from .model_components.model_display_options import DisplayModelOptions
 from .model_components.model_updapter import ModelUpdater
 
@@ -33,9 +32,20 @@ except ImportError:
     # Pinocchio is not installed, these classes will not be available
     pass
 
+# Biorbd (model interfaces and biorbd-specific utilities)
+try:
+    from .model_interfaces import (
+        BiorbdModel,
+        BiorbdModelNoMesh,
+    )
+    from .live_integration import LiveModelIntegration
+    from .rrbiomod import rr_biorbd as animate
+except ImportError:
+    # biorbd is not installed, these classes will not be available
+    pass
+
+# Abstract classes (always available)
 from .model_interfaces import (
-    BiorbdModel,
-    BiorbdModelNoMesh,
     AbstractSegment,
     AbstractModel,
     AbstractModelNoMesh,
@@ -46,7 +56,7 @@ from .multi_phase_rerun import MultiPhaseRerun
 from .phase_rerun import PhaseRerun
 from .pyomarkers import PyoMarkers
 from .pyoemg import PyoMuscles
-from .rrbiomod import rr_biorbd as animate
+
 from .rrc3d import rrc3d as c3d
 from .rrtrc import rrtrc as trc
 from .xp_components.timeseries_q import OsimTimeSeries
