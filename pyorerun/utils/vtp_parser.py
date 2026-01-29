@@ -213,4 +213,3 @@ def convert_polygon_to_triangles(polygons, nodes, normals) -> tuple[np.ndarray, 
         nodes,
         normals,
     )
-

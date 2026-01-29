@@ -6,6 +6,7 @@ AVAILABLE_INTERFACES = {}
 # Biorbd
 try:
     from .biorbd_model_interface import BiorbdModelNoMesh, BiorbdModel
+
     AVAILABLE_INTERFACES["biorbd"] = (BiorbdModel, BiorbdModelNoMesh)
 except ImportError:
     # biorbd is not installed, these classes will not be available
