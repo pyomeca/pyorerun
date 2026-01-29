@@ -70,11 +70,7 @@ class TransformableMeshUpdater(Component):
             return cls(name, mesh, transform_callable)
         elif file_path.endswith(".vtp"):
             output = read_vtp_file(file_path)
-            is_not_a_trimesh = output["polygons"].shape[1] > 3
-            if is_not_a_trimesh:
-                raise ValueError(
-                    f"The file {file_path} is not a triangular-only mesh. It has polygons with more than 3 vertices."
-                )
+            # Triangulation is now handled in read_vtp_file, so polygons are always triangles
             mesh = Trimesh(
                 vertices=output["nodes"],
                 faces=output["polygons"],
