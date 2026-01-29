@@ -1,5 +1,12 @@
 from .abstract_model_interface import AbstractSegment, AbstractModel, AbstractModelNoMesh
-from .biorbd_model_interface import BiorbdModelNoMesh, BiorbdModel
+
+# Biorbd
+try:
+    from .biorbd_model_interface import BiorbdModelNoMesh, BiorbdModel
+except ImportError:
+    # biorbd is not installed, these classes will not be available
+    pass
+
 
 # Opensim
 try:
