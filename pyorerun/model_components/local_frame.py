@@ -25,17 +25,18 @@ class LocalFrameUpdater(Component):
     def initialize(self):
         rr.log(
             self.name,
-            rr.Transform3D(
+            rr.Transform3D.from_fields(
                 translation=np.zeros(3),
                 mat3x3=np.eye(3),
-                axis_length=1,
             ),
+            rr.TransformAxes3D(1),
         )
 
     def to_rerun(self, q: np.ndarray) -> None:
         rr.log(
             self.name,
             self.to_component(q),
+            rr.TransformAxes3D(self.scale),
         )
 
     def to_component(self, q: np.ndarray) -> rr.Transform3D:
@@ -43,7 +44,6 @@ class LocalFrameUpdater(Component):
         return rr.Transform3D(
             translation=homogenous_matrices[:3, 3],
             mat3x3=homogenous_matrices[:3, :3],
-            axis_length=self.scale,
         )
 
     def compute_all_transforms(self, q: np.ndarray) -> np.ndarray:
