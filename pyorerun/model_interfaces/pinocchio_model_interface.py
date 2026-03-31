@@ -131,9 +131,10 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
             raise ValueError(f"Unsupported file format for Pinocchio: {path}. Expected .urdf")
 
         self.data = self.model.createData()
+        self.muscles_names = []  # Pinocchio doesn't have native muscle support, so this will be empty
 
     @classmethod
-    def from_pinocchio_object(cls, model: pin.Model, path: str = None, options=None):
+    def from_pinocchio_object(cls, model: pin.Model, path: str = None, options=None, muscles_names: list[str] = None):
         """
         Create from an existing Pinocchio model object.
         """
@@ -144,7 +145,12 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
         instance.options = options if options is not None else DisplayModelOptions()
         instance._mesh_dir = Path(path).parent if path else Path.cwd()
         instance.visual_model = None
+        instance.muscles_names = muscles_names if muscles_names is not None else []
         return instance
+
+    @cached_property
+    def _frame_list_names(self) -> list[str]:
+        return [frame.name for frame in self.model.frames]
 
     @cached_property
     def name(self) -> str:
@@ -355,20 +361,34 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
         """
         Pinocchio doesn't have native muscle support.
         """
-        return 0
+        return len(self.muscles_names)
 
     @cached_property
     def muscle_names(self) -> tuple[str, ...]:
         """
         Pinocchio doesn't have native muscle support.
         """
-        return tuple()
+        return tuple(self.muscles_names)
 
     def muscle_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
         """
         Pinocchio doesn't have native muscle support.
         """
-        return []
+        pin.forwardKinematics(self.model, self.data, q)
+        pin.updateFramePlacements(self.model, self.data)
+
+        muscles = []
+        for idx in range(self.nb_muscles):
+            muscle_name = self.muscle_names[idx]
+            muscle_frames = [f_name for f_name in self._frame_list_names if muscle_name == f_name.split("-")[0]] # assume muscle frames are named like "muscleName-1", "muscleName-2", etc.
+            muscle_strip = []
+            print(f"Muscle {muscle_name} frames: {muscle_frames}")
+            for i in range(len(muscle_frames)):
+                f1_id = self.model.getFrameId(muscle_frames[i])
+                frame_location = self.data.oMf[f1_id].translation
+                muscle_strip.append(frame_location)
+            muscles.append(muscle_strip)
+        return muscles
 
     @cached_property
     def gravity(self) -> np.ndarray:
@@ -443,6 +463,7 @@ class PinocchioModel(PinocchioModelNoMesh, AbstractModel):
         collision_model: pin.GeometryModel = None,
         path: str = None,
         options=None,
+        muscles_names: list[str] = None,
     ):
         """
         Create from existing Pinocchio objects.
@@ -455,6 +476,7 @@ class PinocchioModel(PinocchioModelNoMesh, AbstractModel):
         instance.path = path if path else "pinocchio_model"
         instance.options = options if options is not None else DisplayModelOptions()
         instance._mesh_dir = Path(path).parent if path else Path.cwd()
+        instance.muscles_names = muscles_names if muscles_names is not None else []
         return instance
 
     @cached_property
