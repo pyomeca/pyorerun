@@ -162,20 +162,20 @@ class BiorbdModelNoMesh(AbstractModelNoMesh):  # Inherits from AbstractModelNoMe
     @cached_property
     def nb_muscles(self) -> int:
         """
-        Returns the number of ligaments
+        Returns the number of muscles
         """
         return self.model.nbMuscles()
 
     @cached_property
     def muscle_names(self) -> tuple[str, ...]:
         """
-        Returns the names of the ligaments
+        Returns the names of the muscles
         """
         return tuple([s.to_string() for s in self.model.muscleNames()])
 
     def muscle_strips(self, q: np.ndarray) -> list[list[np.ndarray]]:
         """
-        Returns the position of the ligaments in the global reference frame
+        Returns the position of the muscles in the global reference frame
         """
         muscles = []
         self.model.updateMuscles(q, True)
