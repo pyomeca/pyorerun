@@ -84,17 +84,19 @@ class TransformableMeshUpdater(Component):
             mesh = load(file_path)
             mesh.apply_scale(scale_factor)
 
-            # assume the first geometry if multiple are present
-            first_key = list(mesh.geometry.keys())[0]
+            # Handle both Scene (multiple geometries) and single Trimesh
+            if hasattr(mesh, 'geometry') and len(mesh.geometry) > 0:
+                # It's a Scene with multiple geometries - merge them properly
+                from trimesh.util import concatenate
+                geometries = list(mesh.geometry.values())
+                real_mesh = concatenate(geometries)
+                real_mesh.metadata = dict(file_name=mesh.source.file_name if hasattr(mesh, 'source') else file_path.split("/")[-1])
+            else:
+                # It's already a single Trimesh
+                real_mesh = mesh
+                if "file_name" not in real_mesh.metadata:
+                    real_mesh.metadata["file_name"] = file_path.split("/")[-1].split(".")[0]
 
-            real_mesh = Trimesh(
-                vertices=mesh.geometry[first_key].vertices,
-                faces=mesh.geometry[first_key].faces,
-                vertex_normals=mesh.geometry[first_key].vertex_normals,
-                metadata=dict(file_name=mesh.source.file_name),
-            )
-            if "file_name" not in mesh.metadata:
-                mesh.metadata["file_name"] = file_path.split("/")[-1].split(".")[0]
             return cls(name, real_mesh, transform_callable)
         else:
             raise ValueError(
