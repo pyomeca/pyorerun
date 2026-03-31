@@ -85,12 +85,15 @@ class TransformableMeshUpdater(Component):
             mesh.apply_scale(scale_factor)
 
             # Handle both Scene (multiple geometries) and single Trimesh
-            if hasattr(mesh, 'geometry') and len(mesh.geometry) > 0:
+            if hasattr(mesh, "geometry") and len(mesh.geometry) > 0:
                 # It's a Scene with multiple geometries - merge them properly
                 from trimesh.util import concatenate
+
                 geometries = list(mesh.geometry.values())
                 real_mesh = concatenate(geometries)
-                real_mesh.metadata = dict(file_name=mesh.source.file_name if hasattr(mesh, 'source') else file_path.split("/")[-1])
+                real_mesh.metadata = dict(
+                    file_name=mesh.source.file_name if hasattr(mesh, "source") else file_path.split("/")[-1]
+                )
             else:
                 # It's already a single Trimesh
                 real_mesh = mesh

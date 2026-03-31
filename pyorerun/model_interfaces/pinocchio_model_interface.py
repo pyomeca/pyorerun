@@ -380,7 +380,9 @@ class PinocchioModelNoMesh(AbstractModelNoMesh):
         muscles = []
         for idx in range(self.nb_muscles):
             muscle_name = self.muscle_names[idx]
-            muscle_frames = [f_name for f_name in self._frame_list_names if muscle_name == f_name.split("-")[0]] # assume muscle frames are named like "muscleName-1", "muscleName-2", etc.
+            muscle_frames = [
+                f_name for f_name in self._frame_list_names if muscle_name == f_name.split("-")[0]
+            ]  # assume muscle frames are named like "muscleName-1", "muscleName-2", etc.
             muscle_strip = []
             print(f"Muscle {muscle_name} frames: {muscle_frames}")
             for i in range(len(muscle_frames)):
