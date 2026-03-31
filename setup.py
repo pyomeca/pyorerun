@@ -6,7 +6,7 @@ setup(
     install_requires=[
         "ezc3d",  # Not yet available on pypi, use `conda install -c conda-forge ezc3d`
         "numpy",
-        "rerun-sdk=0.27.2",
+        "rerun-sdk==0.27.2",
         "trimesh",
         "tk",
         "imageio",
@@ -28,5 +28,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.11",
+    python_requires=">=3.10",
 )
