@@ -168,8 +168,8 @@ class LineStripUpdaterFromGlobalTransform(LineStripUpdater):
             rr.Transform3D(
                 translation=homogenous_matrices[:3, 3],
                 mat3x3=homogenous_matrices[:3, :3],
-                # axis_length=1,
             ),
+            rr.TransformAxes3D(1),
         )
         rr.log(
             self.name,
