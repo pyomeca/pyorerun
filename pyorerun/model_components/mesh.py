@@ -175,7 +175,7 @@ class TransformableMeshUpdater(Component):
                 *rr.Transform3D.columns(
                     translation=homogenous_matrices[:3, 3, :].T.tolist(),
                     mat3x3=[homogenous_matrices[:3, :3, f] for f in range(homogenous_matrices.shape[2])],
-                    axis_length=[LOCAL_FRAME_SCALE] * homogenous_matrices.shape[2],
+                    # axis_length=[LOCAL_FRAME_SCALE] * homogenous_matrices.shape[2],
                 )
             ]
         }
