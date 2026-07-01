@@ -3,6 +3,8 @@ This example is a simple example of how to use the LiveModelAnimation class to a
 The user can interact with the model by changing the joint angles using sliders.
 """
 
+from fontTools.feaLib import variableScalar
+
 from pyorerun import LiveModelAnimation
 from pyorerun import BiorbdModel
 
