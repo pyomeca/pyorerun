@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib.colors import ListedColormap
 
+
 class PyoMuscles:
     """
     A class to handle emg data.
