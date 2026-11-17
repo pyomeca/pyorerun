@@ -5,9 +5,8 @@ Custom PyoMuscles class to display muscle activation.
 from typing import Optional, List
 
 import numpy as np
-from matplotlib.cm import get_cmap
+import matplotlib as mpl
 from matplotlib.colors import ListedColormap
-
 
 class PyoMuscles:
     """
@@ -20,7 +19,7 @@ class PyoMuscles:
         time: Optional[np.ndarray] = None,
         muscle_names: Optional[List[str]] = None,
         mvc: Optional[np.ndarray] = None,
-        colormap: Optional[ListedColormap] | str = get_cmap("magma"),
+        colormap: Optional[ListedColormap] | str = mpl.colormaps["magma"],
         attrs: Optional[dict] = None,
     ):
         """
@@ -37,7 +36,7 @@ class PyoMuscles:
             Names/labels of the emg/muscles
         mvc : np.ndarray
             The maximal voluntary contraction values for each muscle. If None, the default is the maximal value across all frames for each muscle independently.
-        colormap: matplotlib.cm.get_cmap() instance, optional
+        colormap: matplotlib.colormaps instance, optional
             The colormap to use when displaying the emg data. If None, the default is "magma".
         attrs : dict
             Metadata attributes (e.g., units)
@@ -100,9 +99,9 @@ class PyoMuscles:
         """Check that the colormap provided is correct"""
         if colormap is not None:
             if isinstance(colormap, str):
-                colormap = get_cmap(colormap)
+                colormap = mpl.colormaps[colormap]
             if not isinstance(colormap, ListedColormap):
-                raise TypeError("colormap must be a matplotlib.cm.get_cmap instance or the name of the colormap (str).")
+                raise TypeError("colormap must be a matplotlib.colormaps instance or the name of the colormap (str).")
         return colormap
 
     def check_dimensions(self):
